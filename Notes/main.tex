@@ -318,8 +318,7 @@ network=\{
         \item \textbf{Partition - LVM}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{(parted)} \textcolor{command}{mkpart} primary <1050624s> 100\%
-\textcolor{root}{(parted)} \textcolor{command}{name} 2 lvm
-\textcolor{root}{(parted)} \textcolor{command}{set} 2 lvm on
+\textcolor{root}{(parted)} \textcolor{command}{name} 2 crypt
 \end{Verbatim}
         \item \textbf{Quit parted:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -327,25 +326,34 @@ network=\{
 \end{Verbatim}
     \end{enumerate}
 
-    \item \textbf{Create EFI Filesystem:}
+    \item \textbf{Create filesystems:}
+    \begin{enumerate}
+        \item \textbf{Create EFI filesystem:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{mkfs.vfat} <\textcolor{block}{/dev/sdX1}>
 \end{Verbatim}
 
-    \item \textbf{Encrypted LVM}
-    \begin{enumerate}
-        \item \textbf{Encrypt LVM partition:}
+        \item \textbf{Encrypted root filesystem:}
+        \begin{enumerate}
+            \item \textbf{Encrypt root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat <\textcolor{block}{/dev/sdX2}>
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
-\end{Verbatim}
-        \item \textbf{Open Encrypted LVM partition:}
+\end{Verbatim}            
+
+            \item \textbf{Open Encrypted root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <lvm>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <cryptroot>
 > <PASSWORD>
 \end{Verbatim}        
+
+        \item \textbf{Create Root filesystem:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/mapper/cryptroot}>
+\end{Verbatim}      
+        \end{enumerate}
     \end{enumerate}
 
     \item \textbf{OPTIONAL LUKS stuff:}
@@ -377,38 +385,6 @@ network=\{
         \end{enumerate}
     \end{itemize}
 
-\item \textbf{LVM Partitions}
-    \begin{enumerate}
-        \item \textbf{Initialize disk/partition to be used by LVM:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} pvcreate <\textcolor{block}{/dev/mapper/<lvm>}>
-\end{Verbatim}
-        \item \textbf{Create volume group "vg0":}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{vgcreate} <vg0> <\textcolor{block}{/dev/mapper/<lvm>}>
-\end{Verbatim}        
-    \item \textbf{Logical Volume - SWAP (same as RAM size):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvcreate} -L 16G -n swap <vg0>
-\end{Verbatim}      
-    \item \textbf{Logical Volume - Root:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvcreate} -l 100\%FREE -n root <vg0>
-\end{Verbatim}    
-    \end{enumerate}
-
-\item \textbf{Create LVM Filesystems}
-    \begin{enumerate}
-        \item \textbf{SWAP filesystem:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkswap} <\textcolor{block}{/dev/mapper/vg0-swap}>
-\textcolor{root}{root#} \textcolor{command}{swapon} <\textcolor{block}{/dev/mapper/vg0-swap}>
-\end{Verbatim}           
-        \item \textbf{Root filesystem:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/mapper/vg0-root}>
-\end{Verbatim}   
-    \end{enumerate}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mount FS}
@@ -416,7 +392,7 @@ network=\{
 \begin{enumerate}
     \item \textbf{Mount Root filesystem:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/vg0/root}> <\textcolor{dir}{/mnt/}>
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/mapper/cryptroot}> <\textcolor{dir}{/mnt/}>
 \end{Verbatim}
     \item \textbf{Create EFI dir:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -473,10 +449,6 @@ network=\{
         \item \textbf{Install VFAT fs support:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dosfstools
-\end{Verbatim}
-        \item \textbf{Install LVM support:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S lvm2
 \end{Verbatim}
         \item \textbf{Install vim:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -567,15 +539,14 @@ KEYMAP=us
 
     \item \textbf{Find UUID of encrypted root fs:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{blkid} | \textcolor{command}{grep} "<vg0-root>"
+\textcolor{root}{[root#]} \textcolor{command}{blkid} | \textcolor{command}{grep} "<cryptsetup>"
 \end{Verbatim}    
 
     \item \textbf{Edit GRUB config for encryption:}
 \newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<vg0-root> root=</dev/mapper/vg0-root>"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<cryptsetup> root=</dev/mapper/cryptsetup>"
 \end{Verbatim}
-
 
     \item \textbf{Make/Update GRUB config file:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -629,5 +600,5 @@ GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<vg0-root> root=</dev/mapper/vg0-roo
 \end{Verbatim}
 \end{itemize}
 
-%https://www.youtube.com/watch?v=XNJ4oKla8B0&list=WL&index=10
+
 \end{document}
