@@ -1,0 +1,391 @@
+\documentclass[10pt, a4paper, onecolumn, openany]{book} % openany make chapter start whenever, DELETE in OFFICIAL
+
+% PACKAGES:
+% Font Encoding
+\usepackage[utf8]{inputenc}     % Use UTF-8
+\usepackage[T1]{fontenc}        % T1 font encoding (latin characters)
+% Header
+\usepackage{fancyhdr}           % fancy page header options
+\usepackage{titlesec}           % used to have \thechapter in same line as \chaptertitlename
+% MISC
+\usepackage{hyperref}           % \url{}
+\usepackage{xurl}
+\usepackage{graphicx}           % images
+\usepackage{xcolor}            % colors
+\usepackage{fancyvrb}          % colors in Verbatin, header: \begin{Verbatim}[commandchars=\\\{\}]
+
+% DECORATIVE LINES + CHAPTER IN SAME LINE:
+\renewcommand{\headrulewidth}{2pt}  % Top decorative line
+\renewcommand{\footrulewidth}{2pt}  % Bottom decorative line
+\pagestyle{fancy}                   % better header for normal pages, not only chapter ones
+\fancyhf{}                          % clear header and adjust as wanted:
+    \chead{\leftmark}               % header
+    \cfoot{Page \thepage}           % footer
+\fancypagestyle{plain}{
+\fancyhf{} 
+    \chead{\leftmark}       % header
+    \cfoot{Page \thepage}   % footer
+}
+\renewcommand{\chaptername}{}       % change word chapter to {}
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter.}{1em}{} % Chapter in same line as chapter name
+
+% SIZES OF SECTIONS:
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+
+% DISABLE huge space after (paragraph indent) section name before text starts:
+\setlength{\parindent}{0pt}
+
+% COLOR EXAMPLES:
+% \definecolor{MyColor}{RGB}{219, 48, 122}  % define
+% \textcolor{MyColor}{Some random text}     % usage in document
+\definecolor{root}{RGB}{222, 0, 0}
+\definecolor{user}{RGB}{0, 150, 00}
+\definecolor{dir}{RGB}{0, 100, 200}
+\definecolor{file}{RGB}{77, 187, 101}
+\definecolor{block}{RGB}{255, 80, 0}
+\definecolor{command}{RGB}{41, 182, 0}
+\definecolor{comment}{RGB}{0, 182, 182}
+\definecolor{background}{RGB}{240, 240, 240}
+
+% COLORS FOR CODE in document:
+%\begin{minted}[frame=lines,framesep=2mm,baselinestretch=1.2,fontsize=\footnotesize,linenos]{js}
+%\end{minted}
+
+% IMAGES:
+\graphicspath{./images/} % define directory
+% \includegraphics[scale=1.5]{./images/random_image.png} % usage in document
+
+% TABLE:
+% \begin{center}
+%    \begin{small}
+%    \begin{tabular}{|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+%    \hline
+%    + & - & * & / & \% & ** & () \\
+%    \hline
+%    1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+%    \hline
+%    \end{tabular}
+%    \end{small}
+%\end{center}
+
+%\titlespacing*{\section}{0pt}{1.5cm}{0.2cm}
+%\titlespacing*{\subsection}{0pt}{0.2cm}{0.2cm}
+
+% colored verbatim BG:
+%\let\oldv\verbatim
+%\let\oldendv\endverbatim
+%\def\verbatim{\par\setbox0\vbox\bgroup\oldv}
+%\def\endverbatim{\oldendv\egroup\fboxsep0pt \noindent\colorbox[gray]{0.9}{\usebox0}\par}
+% colored Verbatim BG (supported colors: https://linuxhint.com/change-text-colors-latex/):
+\renewcommand{\FancyVerbFormatLine}[1]{\colorbox{background}{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TITLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{\textbf{Arch Linux}}
+\author{AISK}
+\date{January, 2022}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+%\clearpage % official blank page
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Flash USB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Flash USB}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Download}
+\begin{enumerate}
+    \item \textbf{Navigate to:}
+\newline \underline{\href{https://archlinux.org/download/}{https://archlinux.org/download/}}
+    \item \textbf{Verify Download:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{sha1sum} <\textcolor{file}{archlinux-YYYY.MM.DD-x86_64.iso}>
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Disk Preparation}
+\begin{enumerate}
+    \item \textbf{Create Partition Table}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{parted} [-a <optimal>] <\textcolor{block}{/dev/sdX}>
+\textcolor{root}{(parted)} \textcolor{command}{mktable} <gpt|msdos>
+\end{Verbatim}
+    \item \textbf{Print change:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{(p)rint} [free]
+\end{Verbatim}
+    \item \textbf{Quit parted:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{(q)uit}
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Flash ISO to USB}
+\begin{enumerate}
+    \item \textbf{Download ISO from:}
+    \newline \underline{\url{https://www.debian.org/distrib/}}
+    \item \textbf{Unmount any mounted FS on HARD DRIVE!}
+    \item \textbf{Flash to USB (/dev/sdX):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dd} if=<\textcolor{file}{./archlinux-YYYY.MM.DD-x86_64.iso}> of=<\textcolor{block}{/dev/sdX}> 
+[bs=4M | status=progress]
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Boot Live Installer}
+\subsection{Secure Boot}
+Make sure, that Secure Boot is Disabled!
+\begin{enumerate}
+    \item \textbf{During POST press Ket to Access BIOS/UEFI:}
+\newline \underline{\href{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}{BIOS/UEFI Menu Keys For All Vendors}}
+    \item \textbf{Disable Secure Boot}
+    \item \textbf{Poweroff/Restart}
+\end{enumerate}
+\subsection{Boot}
+\begin{enumerate}
+    \item \textbf{Plug in Flashed USB}
+    \item \textbf{During POST press Key to access Boot Menu:}
+\newline \underline{\href{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}{Boot Menu Keys For All Vendors}}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Pre-Installation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Pre-Installation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Check Disk for bad sectors}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Theory}
+\begin{itemize}
+    \item \textbf{Block:} group of sectors, every file must occupy at least 1 block. 0b file occupy whole block.
+    \begin{itemize}
+        \item \textbf{512b =} good for lot of small files. More blocks = more metadata.
+        \item \textbf{4096b =}  good for larger files, less metadata. Waste if there are small files.
+    \end{itemize}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Disk Info gathering}
+\label{disk_info_gathering}
+\begin{itemize}
+    \item \textbf{Find disks (block devices):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$}  \textcolor{command}{lsblk} [-ap | -apf]
+\textcolor{root}{root#}  \textcolor{command}{fdisk -l} [\textcolor{block}{/dev/sdX}]
+\textcolor{root}{root#}  \textcolor{command}{blkid}
+\end{Verbatim}
+    \item \textbf{Get raw disk info:}
+    \begin{itemize}
+        \item \textbf{Disk size in bytes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getsize64 <\textcolor{block}{/dev/sdX[Y]}>
+\end{Verbatim}        
+    \item \textbf{Disk block size in bytes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getbsz <\textcolor{block}{/dev/sdX[Y]}>
+\end{Verbatim}
+    \item \textbf{Check if disk is readonly (1 = ro, 0 = rw):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getro <\textcolor{block}{/dev/sdX[Y]}>
+\end{Verbatim}
+    \end{itemize}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Check Disk for bad sectors}
+\begin{enumerate}
+    \item \textbf{Unmount FS!}
+    \item \textbf{Check disk for bad blocks:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{badblocks} [-b 4096] [-w [-t 0xaa]] [-v] [-s] 
+<\textcolor{block}{/dev/sdX[Y]}> | \textcolor{command}{tee} -a <\textcolor{file}{OUTPUT_FILE}>
+\end{Verbatim}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Installation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Installation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Disk Partitioning}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{GPT UEFI}
+
+\begin{enumerate}
+
+    \item \textbf{Get info about disks:}
+\newline See section \underline{\textbf{\ref{disk_info_gathering}}}.
+
+    \item \textbf{Create Partition Table:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{parted} [-a <optimal>] <\textcolor{block}{/dev/sdX}>
+\textcolor{root}{(parted)} \textcolor{command}{mktable} <gpt|msdos>
+\end{Verbatim}
+
+    \item \textbf{Set Unit Size:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{unit} <mib>
+\end{Verbatim}
+
+    \item \textbf{Create Partitions}
+    \begin{enumerate}
+        \item \textbf{See partitions and free space:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{(p)rint} free 
+\end{Verbatim}        
+        \item \textbf{Partition - EFI (>= 300MB:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary 0 512
+\textcolor{root}{(parted)} \textcolor{command}{name} 1 efi
+\textcolor{root}{(parted)} \textcolor{command}{set} 1 boot on
+\textcolor{root}{(parted)} \textcolor{command}{set} 1 esp on
+\end{Verbatim}
+        \item \textbf{Partition - LVM}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary 512 100\%
+\textcolor{root}{(parted)} \textcolor{command}{name} 2 lvm
+\textcolor{root}{(parted)} \textcolor{command}{set} 2 lvm on
+\end{Verbatim}
+        \item \textbf{Quit parted:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{(q)uit}
+\end{Verbatim}
+    \end{enumerate}
+
+    \item \textbf{Create EFI Filesystem:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.vfat} <\textcolor{block}{/dev/sdX1}>
+\end{Verbatim}
+
+    \item \textbf{Encrypted LVM}
+    \begin{enumerate}
+        \item \textbf{Encrypt LVM partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat <\textcolor{block}{/dev/sdX2}>
+> YES
+> <PASSWORD>
+> <PASSWORD (VERIFY)>
+\end{Verbatim}
+        \item \textbf{Open Encrypted LVM partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <lvm>
+> <PASSWORD>
+\end{Verbatim}        
+    \end{enumerate}
+
+    \item \textbf{OPTIONAL LUKS stuff:}
+    \begin{itemize}
+        \item \textbf{Close LUKS:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} close <lvm>
+\end{Verbatim}
+\item \textbf{LUKS header:}
+        \begin{enumerate}
+            \item \textbf{See LUKS header:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX2}>
+\end{Verbatim}
+            \item \textbf{Make LUKS header backup:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX2}> 
+--header-backup-file <\textcolor{file}{FILE}>
+\end{Verbatim}
+            \item \textbf{Destroy LUKS header :}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX2}>
+\end{Verbatim}
+            \item \textbf{restore LUKS header:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX2}> 
+--header-backup-file <\textcolor{file}{FILE}>
+\end{Verbatim}
+        \end{enumerate}
+    \end{itemize}
+
+\item \textbf{LVM Partitions}
+    \begin{enumerate}
+        \item \textbf{Initialize disk/partition to be used by LVM:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} pvcreate <\textcolor{block}{/dev/mapper/<lvm>}>
+\end{Verbatim}
+        \item \textbf{Create volume group "vg0":}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{vgcreate} <vg0> <\textcolor{block}{/dev/mapper/<lvm>}>
+\end{Verbatim}        
+    \item \textbf{Logical Volume - SWAP (same as RAM size):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvcreate} -L 16G -n swap <vg0>
+\end{Verbatim}      
+    \item \textbf{Logical Volume - Root:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvcreate} -l 100\%FREE -n root <vg0>
+\end{Verbatim}    
+    \end{enumerate}
+
+\item \textbf{Create LVM Filesystems}
+    \begin{enumerate}
+        \item \textbf{SWAP filesystem:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkswap} <\textcolor{block}{/dev/mapper/vg0-swap}>
+\textcolor{root}{root#} \textcolor{command}{swapon} <\textcolor{block}{/dev/mapper/vg0-swap}>
+\end{Verbatim}           
+        \item \textbf{Root filesystem:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/mapper/vg0-root}>
+\end{Verbatim}   
+    \end{enumerate}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Mount Root FS}
+\begin{enumerate}
+    \item \textbf{Mount Root filesystem:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/vg0/root}> <\textcolor{dir}{/mnt/}>
+\end{Verbatim}
+    \item \textbf{Create EFI dir:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/efi/}>
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHECK IN FUTURE %
+\subsection{Install Arch}
+\begin{enumerate}
+    \item \textbf{Check Mirrors:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cat} <\textcolor{file}{/etc/pacman.d/mirrorlist}>
+\end{Verbatim}
+    \item \textbf{Download Arch}
+\newline This installs BASE packages, LINUX kernel and common LINUX-FIRMWARE for common hardware:
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux [linux-firmware]
+\end{Verbatim}
+\end{enumerate}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\href{https://wiki.archlinux.org/title/Installation_guide#Installation}{WIKI}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{References}
+\begin{itemize}
+    \item \textbf{Boot Procedure:}
+\newline \underline{\href{https://wiki.archlinux.org/title/Syslinux}{https://wiki.archlinux.org/title/Syslinux}}
+    \item \textbf{Partition Optimal:}
+\newline \underline{\href{https://rainbow.chard.org/2013/01/30/how-to-align-partitions-for-best-performance-using-parted/}{Partitioning}}
+    \item \textbf{Booted from UEFI:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ls /sys/firmware/efi/efivars}
+\end{Verbatim}
+\end{itemize}
+
+
+\end{document}
