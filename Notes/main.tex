@@ -211,12 +211,76 @@ Make sure, that Secure Boot is Disabled!
 \chapter{Installation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{ISO specific}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Remove pcspkr}
 \begin{itemize}
     \item \textbf{Remove pcspkr module:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{modprobe} -r pcspkr
 \end{Verbatim}
 \end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Connect to WiFi}
+\begin{enumerate}
+    \item \textbf{Enable WiFi:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{rfkill} unblock wlan
+\end{Verbatim}
+    \item \textbf{Start services:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{systemctl} start wpa\_supplicant.service dhcpcd.service
+\end{Verbatim}
+    \item \textbf{Configure WiFi:}
+\newline File (\textbf{\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+ctrl_interface=/run/wpa_supplicant
+update_config=1
+country=<2-LETTER-ISO-CODE>
+
+\textcolor{comment}{# WPA-PSK protected:}
+network=\{
+    ssid="<ESSID>"
+    scan_ssid=1 \textcolor{comment}{# Find hidden network}
+    key_mgmt=WPA-PSK
+    {psk="<PLAINTEXT-PASSWD>"}
+    \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
+    priority=1 \textcolor{comment}{# To which WiFi connect first}
+\}
+
+\textcolor{comment}{# WPA-EAP protected::}
+network=\{
+        ssid="<ESSID>"
+        scan_ssid=1 \textcolor{comment}{# Find hidden network}
+        key_mgmt=WPA-EAP
+        \textcolor{comment}{#eap=PEAP}
+        identity="<USERNAME>@<DOMAIN>"
+        password="<PLAINTEXT-PASSWD>"
+        \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
+        \textcolor{comment}{#ca_cert="/etc/cert/ca.pem"}
+        \textcolor{comment}{#phase1="peaplabel=0"}
+        phase2="auth=MSCHAPV2"
+        priority=2 \textcolor{comment}{# To which WiFi connect first}
+\}
+
+\textcolor{comment}{# Unprotected:}
+network=\{
+    ssid="<ESSID>"
+    scan_ssid=1 \textcolor{comment}{# Find hidden network}
+    key_mgmt=NONE
+    priority=3 \textcolor{comment}{# To which WiFi connect first}
+\}    
+\end{Verbatim}
+
+    
+    
+    \item \textbf{Connect to WiFi:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{wpa_supplicant} -B -D wext -i <wlan0> 
+-c <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
+\end{Verbatim}
+\end{enumerate}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Disk Partitioning}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -374,7 +438,8 @@ Make sure, that Secure Boot is Disabled!
     \item \textbf{Download Arch:}
 \newline This installs BASE packages, LINUX kernel and common LINUX-FIRMWARE for common hardware:
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux linux-firmware
+\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux linux-firmware 
+[intel-ucode|amd-ucode]
 \end{Verbatim}
 
     \item \textbf{Generate fstab:}
@@ -396,11 +461,19 @@ Make sure, that Secure Boot is Disabled!
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{chroot} <\textcolor{dir}{/mnt/}> \textcolor{file}{/bin/bash}
 \end{Verbatim}
+        \item \textbf{Set DNS for chrooted environment:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{echo} "nameserver 1.1.1.1" > \textcolor{file}{/etc/resolv.conf}
+\end{Verbatim}
     \end{enumerate}
 
 
     \item \textbf{Install packages:}
     \begin{itemize}
+        \item \textbf{Install VFAT fs support:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dosfstools
+\end{Verbatim}
         \item \textbf{Install LVM support:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S lvm2
@@ -415,7 +488,8 @@ Make sure, that Secure Boot is Disabled!
 \newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
-HOOKS=(base udev autodetect modconf block \textcolor{file}{lvm2} filesystems keyboard fsck)
+HOOKS=(base udev autodetect modconf block \textcolor{file}{encrypt} \textcolor{file}{lvm2} filesystems
+keyboard fsck)
 ...
 \end{Verbatim}
 
@@ -473,7 +547,7 @@ KEYMAP=us
 \end{Verbatim}
             \item \textbf{Install network packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{pacman} -S dhcpcd wpa_supplicant
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dhcpcd wpa_supplicant
 \end{Verbatim}   
     \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -490,7 +564,20 @@ KEYMAP=us
 \textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi
 --efi-directory=<\textcolor{dir}{/efi/}> --bootloader-id=GRUB
 \end{Verbatim}
-    \item \textbf{Make GRUB config file:}
+
+    \item \textbf{Find UUID of encrypted root fs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{blkid} | \textcolor{command}{grep} "<vg0-root>"
+\end{Verbatim}    
+
+    \item \textbf{Edit GRUB config for encryption:}
+\newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<vg0-root> root=</dev/mapper/vg0-root>"
+\end{Verbatim}
+
+
+    \item \textbf{Make/Update GRUB config file:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
 \end{Verbatim}
