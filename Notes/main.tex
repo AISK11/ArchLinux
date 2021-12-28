@@ -227,9 +227,14 @@ Make sure, that Secure Boot is Disabled!
 \textcolor{root}{(parted)} \textcolor{command}{mktable} <gpt|msdos>
 \end{Verbatim}
 
-    \item \textbf{Set Unit Size:}
+    \item \textbf{Set Unit Size (sectors):}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{(parted)} \textcolor{command}{unit} <mib>
+\textcolor{root}{(parted)} \textcolor{command}{unit} <s>
+\end{Verbatim}
+
+    \item \textbf{Allow Legacy MBR Header for disk:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{disk_set} pmbr_boot on
 \end{Verbatim}
 
     \item \textbf{Create Partitions}
@@ -238,18 +243,28 @@ Make sure, that Secure Boot is Disabled!
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{(parted)} \textcolor{command}{(p)rint} free 
 \end{Verbatim}        
-        \item \textbf{Partition - EFI (>= 300MB:}
+
+        \item \textbf{Partition - GRUB for legacy BIOS (cca 1MB):}
+\newline + scapegoat partition for optimal partition alignment.
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary 0 512
-\textcolor{root}{(parted)} \textcolor{command}{name} 1 efi
-\textcolor{root}{(parted)} \textcolor{command}{set} 1 boot on
-\textcolor{root}{(parted)} \textcolor{command}{set} 1 esp on
+\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary <34s> <2047s>
+> (i)gnore
+\textcolor{root}{(parted)} \textcolor{command}{name} 1 bios
+\textcolor{root}{(parted)} \textcolor{command}{set} 1 bios_grub on
+\end{Verbatim}
+
+        \item \textbf{Partition - EFI (>= 300MB -> 512MB):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary <2048s> <1050623s>
+\textcolor{root}{(parted)} \textcolor{command}{name} 2 efi
+\textcolor{root}{(parted)} \textcolor{command}{set} 2 boot on
+\textcolor{root}{(parted)} \textcolor{command}{set} 2 esp on
 \end{Verbatim}
         \item \textbf{Partition - LVM}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary 512 100\%
-\textcolor{root}{(parted)} \textcolor{command}{name} 2 lvm
-\textcolor{root}{(parted)} \textcolor{command}{set} 2 lvm on
+\textcolor{root}{(parted)} \textcolor{command}{mkpart} primary <1050624s> 100\%
+\textcolor{root}{(parted)} \textcolor{command}{name} 3 lvm
+\textcolor{root}{(parted)} \textcolor{command}{set} 3 lvm on
 \end{Verbatim}
         \item \textbf{Quit parted:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -259,21 +274,21 @@ Make sure, that Secure Boot is Disabled!
 
     \item \textbf{Create EFI Filesystem:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.vfat} <\textcolor{block}{/dev/sdX1}>
+\textcolor{root}{root#} \textcolor{command}{mkfs.vfat} <\textcolor{block}{/dev/sdX2}>
 \end{Verbatim}
 
     \item \textbf{Encrypted LVM}
     \begin{enumerate}
         \item \textbf{Encrypt LVM partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat <\textcolor{block}{/dev/sdX3}>
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
 \end{Verbatim}
         \item \textbf{Open Encrypted LVM partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <lvm>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <lvm>
 > <PASSWORD>
 \end{Verbatim}        
     \end{enumerate}
@@ -288,20 +303,20 @@ Make sure, that Secure Boot is Disabled!
         \begin{enumerate}
             \item \textbf{See LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX3}>
 \end{Verbatim}
             \item \textbf{Make LUKS header backup:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX2}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX3}> 
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
             \item \textbf{Destroy LUKS header :}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX3}>
 \end{Verbatim}
             \item \textbf{restore LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX2}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX3}> 
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
         \end{enumerate}
@@ -341,7 +356,8 @@ Make sure, that Secure Boot is Disabled!
     \end{enumerate}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Mount Root FS}
+\subsection{Mount FS}
+\label{mount_fs}
 \begin{enumerate}
     \item \textbf{Mount Root filesystem:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -351,25 +367,171 @@ Make sure, that Secure Boot is Disabled!
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/efi/}>
 \end{Verbatim}
+    \item \textbf{Mount EFI partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX2}> <\textcolor{dir}{/mnt/efi/}>
+\end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CHECK IN FUTURE %
-\subsection{Install Arch}
+\section{Install Arch}
 \begin{enumerate}
     \item \textbf{Check Mirrors:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cat} <\textcolor{file}{/etc/pacman.d/mirrorlist}>
+\textcolor{root}{root#} \textcolor{command}{cat} \textcolor{file}{/etc/pacman.d/mirrorlist}
 \end{Verbatim}
-    \item \textbf{Download Arch}
+
+    \item \textbf{Download Arch:}
 \newline This installs BASE packages, LINUX kernel and common LINUX-FIRMWARE for common hardware:
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux [linux-firmware]
+\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux linux-firmware
+\end{Verbatim}
+
+    \item \textbf{Generate fstab:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{genfstab} -U <\textcolor{dir}{/mnt/}> >> \textcolor{file}{/mnt/etc/fstab}
+\end{Verbatim}
+
+    \item \textbf{Chroot into arch:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{arch-chroot} \textcolor{dir}{/mnt/}
+\end{Verbatim}
+
+    \item \textbf{Install packages:}
+    \begin{itemize}
+        \item \textbf{Install LVM support:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S lvm2
+\end{Verbatim}
+        \item \textbf{Install vim:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vim
+\end{Verbatim}
+    \end{itemize}
+
+    \item \textbf{Add LVM support to mkinitcpio:}
+\newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+HOOKS=(base udev autodetect modconf block \textcolor{file}{lvm2} filesystems keyboard fsck)
+...
+\end{Verbatim}
+
+    \item \textbf{Recreate initramfs for LVM:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{mkinitcpio} -P
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Customize settings}
+\begin{enumerate}
+    \item \textbf{Set Time:}
+    \begin{enumerate}
+        \item \textbf{Select timezone:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> \textcolor{file}{/etc/localtime}
+\end{Verbatim}
+    \item \textbf{Update HW clock (generate: /etc/adjtime):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{hwclock} --systohc
+\end{Verbatim}
+    \end{enumerate}
+
+    \item \textbf{Set Locales:}
+    \begin{enumerate}
+        \item \textbf{Select locales:}
+\newline File (\textbf{\textcolor{file}{/etc/locale.gen}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+en_US.UTF-8 UTF-8
+...
+\end{Verbatim}
+        \item \textbf{Generate locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{locale-gen}
+\end{Verbatim}      
+        \item \textbf{Set language:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{touch} \textcolor{file}{/etc/locale.conf}
+\end{Verbatim}    
+File (\textbf{\textcolor{file}{/etc/locale.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+LANG=en_US.UTF-8
+\end{Verbatim}
+        \item \textbf{Set keyboard:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{touch} \textcolor{file}{/etc/vconsole.conf}
+\end{Verbatim}    
+File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+KEYMAP=us
+\end{Verbatim}
+        \end{enumerate}
+
+        \item \textbf{Set network:}
+        \begin{enumerate}
+            \item \textbf{Set hostname:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{touch} \textcolor{file}{/etc/hostname}
+\end{Verbatim}    
+File (\textbf{\textcolor{file}{/etc/hostname}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+<HOSTNAME>
+\end{Verbatim}
+            \item \textbf{Install network packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{pacman} -S dhcpcd wpa_supplicant
+\end{Verbatim}   
+        \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Install bootloader}
+\begin{enumerate}
+    \item \textbf{Download packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub
+\end{Verbatim}
+    \item \textbf{Make sure EFI partition is mounted!}
+\newline See section \underline{\textbf{\ref{mount_fs}}}.
+    \item \textbf{Install GRUB:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi
+--efi-directory=<\textcolor{dir}{/efi}> --bootloader-id=GRUB
+\end{Verbatim}
+    \item \textbf{Make GRUB config file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Finish installation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Root Password}
+\begin{enumerate}
+    \item \textbf{Create root password:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{passwd} root
+> <PASSWORD>
+> <PASSWORD-VERIFY>
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Finish installation}
+\begin{enumerate}
+    \item \textbf{Exit chroot:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{exit}
+\end{Verbatim}
+    \item \textbf{Umount disk partitions:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{umount} -R <\textcolor{dir}{/mnt/}>
+\end{Verbatim}
+    \item \textbf{Reboot:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{reboot}
 \end{Verbatim}
 \end{enumerate}
 
 
-
-
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \href{https://wiki.archlinux.org/title/Installation_guide#Installation}{WIKI}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -378,7 +540,7 @@ Make sure, that Secure Boot is Disabled!
 \chapter{References}
 \begin{itemize}
     \item \textbf{Boot Procedure:}
-\newline \underline{\href{https://wiki.archlinux.org/title/Syslinux}{https://wiki.archlinux.org/title/Syslinux}}
+\newline \underline{\href{https://wiki.archlinux.org/title/Arch\_boot\_process}{https://wiki.archlinux.org/title/Arch\_boot\_process}}
     \item \textbf{Partition Optimal:}
 \newline \underline{\href{https://rainbow.chard.org/2013/01/30/how-to-align-partitions-for-best-performance-using-parted/}{Partitioning}}
     \item \textbf{Booted from UEFI:}
