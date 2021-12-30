@@ -85,7 +85,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TITLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{\textbf{Artix Linux}}
+\title{\textbf{Arch Linux}}
 \author{AISK}
 \date{January, 2022}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -303,11 +303,6 @@ network=\{
 \textcolor{root}{cfdisk>} \textcolor{command}{t}
 \textcolor{root}{cfdisk>} \textcolor{command}{EFI System}
 \end{Verbatim}
-        \item \textbf{Create separate boot Partition (because of LUKS):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{cfdisk>} \textcolor{command}{n}
-\textcolor{root}{cfdisk>} \textcolor{command}{512MiB}
-\end{Verbatim}
         \item \textbf{Create Root Partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{n}
@@ -337,23 +332,18 @@ network=\{
 \textcolor{root}{root#} \textcolor{command}{mkfs.fat} [-F 32] [-n "EFI"] <\textcolor{block}{/dev/sdX1}>
 \end{Verbatim}
 
-        \item \textbf{Create EXT4 for boot:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} [-L "BOOT_GRUB"] <\textcolor{block}{/dev/sdX2}>
-\end{Verbatim}
-
         \item \textbf{Create Encrypted filesystem:}
         \begin{enumerate}
             \item \textbf{Encrypt root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} [--label "LUKS"] luksFormat <\textcolor{block}{/dev/sdX3}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} [--label "LUKS"] luksFormat <\textcolor{block}{/dev/sdX2}>
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
 \end{Verbatim}
             \item \textbf{Open Encrypted root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <luks_root>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <luks_root>
 > <PASSWORD>
 \end{Verbatim}
         \item \textbf{Create EXT4 for Root:}
@@ -373,20 +363,20 @@ network=\{
         \begin{enumerate}
             \item \textbf{See LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX3}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX2}>
 \end{Verbatim}
             \item \textbf{Make LUKS header backup:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX3}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX2}>
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
             \item \textbf{Destroy LUKS header :}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX3}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX2}>
 \end{Verbatim}
             \item \textbf{restore LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX3}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX2}> 
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
         \end{enumerate}
@@ -408,16 +398,7 @@ network=\{
 \end{Verbatim}
     \item \textbf{Mount boot partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX2}> <\textcolor{dir}{/mnt/boot/}>
-\end{Verbatim}
-
-    \item \textbf{Create EFI dir:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/boot/efi/}>
-\end{Verbatim}
-    \item \textbf{Mount EFI partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX1}> <\textcolor{dir}{/mnt/boot/efi/}>
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX1}> <\textcolor{dir}{/mnt/boot/}>
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -432,7 +413,6 @@ network=\{
 \newline This installs BASE packages, LINUX kernel and common LINUX-FIRMWARE for common hardware:
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux linux-firmware 
-[intel-ucode|amd-ucode]
 \end{Verbatim}
 
     \item \textbf{Generate fstab:}
@@ -473,7 +453,7 @@ network=\{
 \end{Verbatim}
     \end{itemize}
 
-    \item \textbf{Add LVM support to mkinitcpio:}
+    \item \textbf{Add encrypted support to mkinitcpio:}
 \newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
@@ -482,7 +462,7 @@ keyboard fsck)
 ...
 \end{Verbatim}
 
-    \item \textbf{Recreate initramfs for LVM:}
+    \item \textbf{Recreate initramfs with encrypted support:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} \textcolor{command}{mkinitcpio} -P
 \end{Verbatim}
@@ -536,41 +516,48 @@ KEYMAP=us
 <HOSTNAME>
 \end{Verbatim}
             \item \textbf{Install network packages:}
+            \begin{itemize}
+                \item \textbf{Install WiFi control:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dhcpcd wpa_supplicant
-\end{Verbatim}   
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S wpa_supplicant
+\end{Verbatim}
+                \item \textbf{Install DHCP client:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dhcpcd
+\end{Verbatim}
+            \end{itemize}
+
     \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Install bootloader}
 \begin{enumerate}
     \item \textbf{Download packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub [os-prober mtools]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub
 \end{Verbatim}
     \item \textbf{Make sure EFI partition is mounted!}
 \newline See section \underline{\textbf{\ref{mount_fs}}}.
     \item \textbf{Install GRUB:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi --boot-directory=<\textcolor{dir}{/boot/}>  
---efi-directory=<\textcolor{dir}{/boot/efi/}> --bootloader-id=GRUB_UEFI
+\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi [--boot-directory=<\textcolor{dir}{/boot/}>]
+--efi-directory=<\textcolor{dir}{/boot/}> --bootloader-id=<ArchLinux>
 \end{Verbatim}
 
-    \item \textbf{Find UUID of encrypted root fs:}
+    \item \textbf{Find UUID of encrypted luks fs:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{blkid} | \textcolor{command}{grep} "<cryptsetup>"
+\textcolor{root}{[root#]} \textcolor{command}{blkid} | \textcolor{command}{grep} "crypto_LUKS"
 \end{Verbatim}    
 
     \item \textbf{Edit GRUB config for encryption:}
 \newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<cryptroot> \char92 
-root=</dev/mapper/cryptroot>"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_root> \char92 
+root=</dev/mapper/luks_root>"
 \end{Verbatim}
 
     \item \textbf{Make/Update GRUB config file:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
-\textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/efi/EFI/GRUB_UEFI/grub.cfg}
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -602,63 +589,8 @@ root=</dev/mapper/cryptroot>"
 \end{Verbatim}
 \end{enumerate}
 
-\begin{Verbatim}[commandchars=\\\{\}]
-\underline{\href{https://linuxlink.timesys.com/docs/engineering/wiki/HOWTO_Install_GRUB2_with_EFI_support}{https://linuxlink.timesys.com/docs/engineering/wiki/HOWTO_Install_GRUB2_with_EFI_support}}
-\underline{\href{https://www.tecmint.com/arch-linux-installation-and-configuration-guide/}{https://www.tecmint.com/arch-linux-installation-and-configuration-guide/}}
-\end{Verbatim}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Installation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Easy Installation}
-\begin{Verbatim}[commandchars=\\\{\}]
-PARTITIONING:
-cfdisk:
-gpt
-/dev/sda1 * 2048 ?   512M
-/dev/sda2   ?    END REST
 
 
-mkfs.ext4 /dev/sda1
-mkfs.ext4 /dev/sda2
-
-mount /dev/sda2 /mnt
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
-
-pacstrap /mnt base linux linux-firmware vim
-
-genfstab -U /mnt >> /etc/fstab
-
-arch-chroot /mnt /bin/bash
-
-pacman -S grub
-
-grub-install /dev/sda
-grub-mkconfig -o /boot/grub/grub.cfg
-
-passwd root
-
-vim /etc/locale.gen
-
-locale-gen
-
-vim/etc/locale.conf
-LANG=en-US.UTF-8
-
-echo archlinux > /etc/hostname
-
-exit
-umount -R /mnt
-reboot
-
-
-\end{Verbatim}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\href{https://wiki.archlinux.org/title/Installation_guide#Installation}{WIKI}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -673,6 +605,10 @@ reboot
 \textcolor{root}{root#} \textcolor{command}{ls /sys/firmware/efi/efivars}
 \end{Verbatim}
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\href{https://wiki.archlinux.org/title/Installation_guide#Installation}{WIKI}
+
 
 
 \end{document}
