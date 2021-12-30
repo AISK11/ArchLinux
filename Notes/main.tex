@@ -296,12 +296,17 @@ network=\{
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cfdisk}  <\textcolor{block}{/dev/sdX}>
 \end{Verbatim}
-        \item \textbf{Create EFI Partition:}
+        \item \textbf{Create EFI Partition (max 512MiB):}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{n}
 \textcolor{root}{cfdisk>} \textcolor{command}{512MiB}
 \textcolor{root}{cfdisk>} \textcolor{command}{t}
 \textcolor{root}{cfdisk>} \textcolor{command}{EFI System}
+\end{Verbatim}
+        \item \textbf{Create separate boot Partition (because of LUKS):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{cfdisk>} \textcolor{command}{n}
+\textcolor{root}{cfdisk>} \textcolor{command}{512MiB}
 \end{Verbatim}
         \item \textbf{Create Root Partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -329,26 +334,31 @@ network=\{
     \begin{enumerate}
         \item \textbf{Create FAT32 for EFI:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.fat} [-F 32] [-n "efi"] <\textcolor{block}{/dev/sdX1}>
+\textcolor{root}{root#} \textcolor{command}{mkfs.fat} [-F 32] [-n "EFI"] <\textcolor{block}{/dev/sdX1}>
 \end{Verbatim}
 
-        \item \textbf{Encrypted root filesystem:}
+        \item \textbf{Create EXT4 for boot:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} [-L "BOOT_GRUB"] <\textcolor{block}{/dev/sdX2}>
+\end{Verbatim}
+
+        \item \textbf{Create Encrypted filesystem:}
         \begin{enumerate}
             \item \textbf{Encrypt root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} [--label "luks"] luksFormat <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} [--label "LUKS"] luksFormat <\textcolor{block}{/dev/sdX3}>
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
 \end{Verbatim}
             \item \textbf{Open Encrypted root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <luks_root>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <luks_root>
 > <PASSWORD>
 \end{Verbatim}
-        \item \textbf{Create Root filesystem:}
+        \item \textbf{Create EXT4 for Root:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} [-L "root"] <\textcolor{block}{/dev/mapper/luks_root}>
+\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} [-L "LUKS_ROOT"] <\textcolor{block}{/dev/mapper/luks_root}>
 \end{Verbatim}      
         \end{enumerate}
     \end{enumerate}
@@ -363,20 +373,20 @@ network=\{
         \begin{enumerate}
             \item \textbf{See LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX3}>
 \end{Verbatim}
             \item \textbf{Make LUKS header backup:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX2}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX3}> 
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
             \item \textbf{Destroy LUKS header :}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX3}>
 \end{Verbatim}
             \item \textbf{restore LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX2}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX3}> 
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
         \end{enumerate}
@@ -391,13 +401,23 @@ network=\{
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/mapper/luks_root}> <\textcolor{dir}{/mnt/}>
 \end{Verbatim}
+
+    \item \textbf{Create boot dir:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/boot/}>
+\end{Verbatim}
+    \item \textbf{Mount boot partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX2}> <\textcolor{dir}{/mnt/boot/}>
+\end{Verbatim}
+
     \item \textbf{Create EFI dir:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkdir} -p <\textcolor{dir}{/mnt/boot/EFI/}>
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/boot/efi/}>
 \end{Verbatim}
     \item \textbf{Mount EFI partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX1}> <\textcolor{dir}{/mnt/boot/EFI/}>
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX1}> <\textcolor{dir}{/mnt/boot/efi/}>
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -435,6 +455,11 @@ network=\{
 \textcolor{root}{root#} \textcolor{command}{chroot} <\textcolor{dir}{/mnt/}> \textcolor{file}{/bin/bash}
 \end{Verbatim}
     \end{enumerate}
+
+    \item \textbf{Set up DNS for chrooted environment:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{echo} "nameserver 1.1.1.1" > \textcolor{dir}{/etc/resolv.conf}
+\end{Verbatim}
 
     \item \textbf{Install packages:}
     \begin{itemize}
@@ -520,14 +545,14 @@ KEYMAP=us
 \begin{enumerate}
     \item \textbf{Download packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub  [os-prober mtools]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub [os-prober mtools]
 \end{Verbatim}
     \item \textbf{Make sure EFI partition is mounted!}
 \newline See section \underline{\textbf{\ref{mount_fs}}}.
     \item \textbf{Install GRUB:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi
---efi-directory=<\textcolor{dir}{/efi/}> --bootloader-id=GRUB_UEFI
+\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi --boot-directory=<\textcolor{dir}{/boot/}>  
+--efi-directory=<\textcolor{dir}{/boot/efi/}> --bootloader-id=GRUB_UEFI
 \end{Verbatim}
 
     \item \textbf{Find UUID of encrypted root fs:}
@@ -538,12 +563,14 @@ KEYMAP=us
     \item \textbf{Edit GRUB config for encryption:}
 \newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<cryptroot> root=</dev/mapper/cryptroot>"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<cryptroot> \char92 
+root=</dev/mapper/cryptroot>"
 \end{Verbatim}
 
     \item \textbf{Make/Update GRUB config file:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
+\textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/efi/EFI/GRUB_UEFI/grub.cfg}
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
