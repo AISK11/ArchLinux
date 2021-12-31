@@ -596,6 +596,35 @@ blacklist pcspkr
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Create SWAP}
+\underline{\href{https://chrisdown.name/2018/01/02/in-defence-of-swap.html}{https://chrisdown.name/2018/01/02/in-defence-of-swap.html}}
+\begin{enumerate}
+    \item \textbf{Allocate size for swap file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{fallocate} -l <2GB> \textcolor{file}{/swap}
+\end{Verbatim}
+        \item \textbf{Set permissions for swap file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chmod} 0600 \textcolor{file}{/swap}
+\end{Verbatim}
+    \item \textbf{Make swap file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkswap} \textcolor{file}{/swap}
+\end{Verbatim}
+    \item \textbf{Activate swap file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{swapon} \textcolor{file}{/swap}
+\end{Verbatim}
+    \item \textbf{Add swap file to fstab:}
+\newline File (\textbf{\textcolor{file}{/etc/fstab}}:)    
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+\textcolor{comment}{## Swap:}
+/swap   none    swap    defaults    0 0
+\end{Verbatim}
+
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Repository mirrors}
 To be added
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -608,6 +637,12 @@ To be added
 \section{Colors}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Update}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OpenRC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{OpenRC}
+Will be added
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
