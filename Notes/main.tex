@@ -451,8 +451,8 @@ network=\{
 \newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
-HOOKS=(base udev autodetect modconf block \textcolor{file}{encrypt} filesystems
-keyboard fsck)
+HOOKS=(base udev autodetect modconf block \textcolor{file}{keyboard} \textcolor{file}{keymap}
+\textcolor{file}{consolefont} \textcolor{file}{encrypt} filesystems fsck)
 ...
 \end{Verbatim}
 
@@ -500,7 +500,7 @@ LANG=en_US.UTF-8
 \begin{Verbatim}[commandchars=\\\{\}]
 KEYMAP=us
 \end{Verbatim}
-        \end{enumerate}
+    \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Network}
         \begin{enumerate}
@@ -625,12 +625,44 @@ blacklist pcspkr
 
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Repositories}
-To be added
+\section{Create user}
+\begin{enumerate}
+    \item \textbf{Set up privilege escalation:}
+    \begin{enumerate}
+        \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S doas
+\end{Verbatim}
+        \item \textbf{Create group for privilege escalation:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{groupadd} <doas>
+\end{Verbatim}
+        \item \textbf{Create privilege rules for \textit{doas} group:}
+\newline File (\textbf{\textcolor{file}{/etc/doas.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## <permit|deny> [nopass|persist] [USER]:[GROUP] [as <USER2>]}
+\textcolor{comment}{[cmd <COMMAND> [args <ARGUMENTS>]}
+permit [nopass]iperi :<doas>
+\end{Verbatim}
+    \end{enumerate}
+    
+    \item \textbf{Create user with home directory:}
+    \begin{enumerate}
+        \item \textbf{Create user with home directory:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{useradd} -m [-G <doas>] [-s <\textcolor{file}{/bin/bash}>] <USER>
+\end{Verbatim}
+        \item \textbf{Create password for this user:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{passwd} <USER>
+\end{Verbatim}
+    \end{enumerate}
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Package Manager %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Package Manager}
+\underline{\href{https://wiki.archlinux.org/title/Pacman/Rosetta}{https://wiki.archlinux.org/title/Pacman/Rosetta}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Settings}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -663,7 +695,8 @@ ILoveCandy
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Update PKG}
+\section{Pacman}
+\subsection{Update PKG}
 \begin{itemize}
     \item \textbf{Update system:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -675,7 +708,7 @@ ILoveCandy
 \end{Verbatim} 
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{List PKGs}
+\subsection{List PKGs}
 \begin{itemize}
     \item \textbf{List all installed PKGs:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -691,7 +724,7 @@ ILoveCandy
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Search PKG}
+\subsection{Search PKG}
 \begin{itemize}
     \item \textbf{Search packages that contains word in title/description:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -703,7 +736,7 @@ ILoveCandy
 \end{Verbatim} 
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Install PKG}
+\subsection{Install PKG}
 \begin{itemize}
     \item \textbf{Install specific package:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -723,7 +756,7 @@ ILoveCandy
 \end{Verbatim}    
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Remove PKG}
+\subsection{Remove PKG}
 \begin{itemize}
     \item \textbf{Remove specific package:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -838,12 +871,152 @@ set menu_color_highlight=black/white
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OpenRC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Local Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{OpenRC}
-Will be added
+\chapter{Local Settings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hostname and DNSDomainname}
+\begin{enumerate}
+    \item \textbf{Display hostname and dnsdomainname:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{hostname}
+\textcolor{user}{user\$} \textcolor{command}{dnsdomainname}
+\end{Verbatim}
+    \item \textbf{Change hostname:}
+\newline File (\textbf{\textcolor{file}{/etc/hostname}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+<HOSTNAME>
+\end{Verbatim}
+File (\textbf{\textcolor{file}{/etc/hosts}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+\textcolor{comment}{## IPv4 localhost:}
+127.0.0.1   localhost
+127.0.1.1   <HOSTNAME>
+#127.0.0.1  <HOSTNAME>.<DOMAIN-NAME> <HOSTNAME>
+\textcolor{comment}{## IPv6 localhost:}
+::1   localhost6
+::1   <HOSTNAME>
+#::1  <HOSTNAME>.<DOMAIN-NAME> <HOSTNAME>
+...
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Time and Date}
+\begin{enumerate}
+    \item \textbf{Show current timezone:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{timedatectl} -a
+\end{Verbatim}
+    \item \textbf{List available timezones:}
+    \newline Dir: (\textcolor{dir}{/usr/share/zoneinfo/}).
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{timedatectl} list-timezones
+\end{Verbatim}
+    \item \textbf{Change timezone:}
+    \begin{itemize}
+        \item \textbf{Timedatectl way:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{timedatectl} set-timezone <UTC|Europe/Copenhagen>
+\end{Verbatim}        
+        \item \textbf{Arch way:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> 
+\textcolor{file}{/etc/localtime}
+\end{Verbatim}
+    \end{itemize}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Locales and Keyboard}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Locales}
+    \begin{enumerate}
+        \item \textbf{View locales:}
+        \begin{itemize}
+            \item \textbf{View locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{localectl}
+\end{Verbatim}            
+            \item \textbf{View generated locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$}  \textcolor{command}{localectl} list-locales
+\end{Verbatim}
+        \end{itemize}
+    
+        \item \textbf{Generate locales to be used (uncomment them):}
+\newline File (\textbf{\textcolor{file}{/etc/locale.gen}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+en_US.UTF-8 UTF-8
+en_US ISO-8859-1
+...
+\end{Verbatim}
+        \item \textbf{Generate locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{locale-gen}
+\end{Verbatim}      
+        \item \textbf{Set locale:}
+\newline File (\textbf{\textcolor{file}{/etc/locale.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+LANG=en_US.UTF-8
+\textcolor{comment}{## First day in a week MON, not SUN:}
+#LC_TIME="en_GB.UTF-8"
+\textcolor{comment}{## Default paper size:}
+#LC_PAPER="en_GB.UTF-8"
+#LC_MEASUREMENT="en_GB.UTF-8"
+\end{Verbatim}
+        \item \textbf{OPTIONAL: export environment variable:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{export} LANG=en_US.UTF-8
+\end{Verbatim}    
+    \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CLI Keyboard}
+\begin{itemize}
+    \item \textbf{Language:}
+    \begin{enumerate}
+        \item \textbf{See available keyboards:}
+\newline Dir (\textbf{\textcolor{dir}{/usr/share/kbd/keymaps/[i386/]}}).
+        \item \textbf{Show current keyboard:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{localectl}
+\end{Verbatim}                
+        
+        \item \textbf{Set keyboard:}
+\newline File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+KEYMAP=us
+\end{Verbatim}    
+    \end{enumerate}
+    
+    \item \textbf{Font:}
+    \begin{enumerate}
+        \item \textbf{Show look of the font:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{showconsolefont}
+\end{Verbatim}  
+        \item \textbf{Set font:}
+        \begin{itemize}
+            \item \textbf{Temporary:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{setfont} <lat2-16>
+\end{Verbatim}                
+            \item \textbf{Permanently:}
+\newline File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+FONT=lat2-16
+\end{Verbatim}    
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Network %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Network}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Software}
@@ -851,11 +1024,26 @@ Will be added
 \section{Help}
 \begin{itemize}
     \item \textbf{Manuals:}
+    \begin{enumerate}
+        \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{pacman} -S man-db man-pages
 \end{Verbatim}
-\end{itemize}
+    \end{enumerate}
 
+    \item \textbf{TLDR:}
+    \begin{enumerate}
+        \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S tldr
+\end{Verbatim}
+        \item \textbf{Update it's cache:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{tldr} -u
+\end{Verbatim}
+    \end{enumerate}
+
+\end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -866,7 +1054,6 @@ Will be added
     \item \textbf{App list:}
 \newline \underline{\href{https://wiki.archlinux.org/title/List\_of\_applications}{https://wiki.archlinux.org/title/List\_of\_applications}}
 
-
     \item \textbf{Boot Procedure:}
 \newline \underline{\href{https://wiki.archlinux.org/title/Arch\_boot\_process}{https://wiki.archlinux.org/title/Arch\_boot\_process}}
     \item \textbf{Partition Optimal:}
@@ -876,7 +1063,6 @@ Will be added
 \textcolor{root}{root#} \textcolor{command}{ls /sys/firmware/efi/efivars}
 \end{Verbatim}
 \end{itemize}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \href{https://wiki.archlinux.org/title/General_recommendations}{WIKI}
 
