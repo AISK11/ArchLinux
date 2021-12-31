@@ -346,7 +346,8 @@ network=\{
 \end{Verbatim}
         \item \textbf{Create EXT4 for Root:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} [-L "LUKS_ROOT"] <\textcolor{block}{/dev/mapper/luks_root}>
+\textcolor{root}{root#} <\textcolor{command}{mkfs.ext4}|\textcolor{command}{mkfs.btrfs}> [-L "LUKS_ROOT"] 
+<\textcolor{block}{/dev/mapper/luks_root}>
 \end{Verbatim}      
         \end{enumerate}
     \end{enumerate}
@@ -452,7 +453,7 @@ network=\{
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
 HOOKS=(base udev autodetect modconf block \textcolor{file}{keyboard} \textcolor{file}{keymap}
-\textcolor{file}{consolefont} \textcolor{file}{encrypt} filesystems fsck)
+\textcolor{file}{consolefont} \textcolor{file}{numlock} \textcolor{file}{encrypt} filesystems fsck)
 ...
 \end{Verbatim}
 
@@ -1014,8 +1015,28 @@ FONT=lat2-16
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Network}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rename Interface}
+\begin{enumerate}
+    \item \textbf{Find interface name in the system:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{udevadm} info \textcolor{dir}{/sys/class/net/<INTERFACE>}
+\end{Verbatim}    
+\end{enumerate}
 
-
+\begin{itemize}
+    \item \textbf{Manually rename interfaces:}
+\newline File: (\textcolor{file}{\textbf{/etc/udev/rules.d/70-persistent-net.rules}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## eth0:}
+#SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \char092
+#ENV\{ID_NET_NAME_PATH\}="<enp1s0>", \char092
+#ATTR\{type\}=="1", KERNEL=="eth*", NAME="<eth0>"
+\textcolor{comment}{## wireless:}
+#SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \char092
+#ENV\{ID_NET_NAME_PATH\}=="<wlp0s20f3>", \char092
+#ATTR\{type\}=="1", KERNEL=="wlan*", NAME="<wlan0>"
+\end{Verbatim}
+\end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1044,6 +1065,14 @@ FONT=lat2-16
     \end{enumerate}
 
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% System Maintenance %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{System Maintenance}
+\underline{\href{https://wiki.archlinux.org/title/System\_maintenance}{https://wiki.archlinux.org/title/System\_maintenance}}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
