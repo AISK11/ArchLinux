@@ -763,12 +763,80 @@ Will be added
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{GRUB}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Configuration}
+\begin{enumerate}
+    \item \textbf{Basic GRUB settings:}
+\newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## Do not rename network interfaces and preserve default ethX and wlanX names:}
+GRUB_CMDLINE_LINUX="net.ifnames=0"
+\textcolor{comment}{## GRUB menu default option:}
+GRUB_DEFAULT=0
+\textcolor{comment}{## GRUB menu timeout:}
+GRUB_TIMEOUT=1
+\textcolor{comment}{## GRUB distributor:}
+GRUB_DISTRIBUTOR="Arch"
+\textcolor{comment}{## Disable recovery mode entry in GRUB menu:}
+GRUB_DISABLE_RECOVERY=true
+
+\textcolor{comment}{## GRUB BG image (*.jpg or *.png) - gfxterm only:}
+#GRUB_BACKGROUND="\textcolor{file}{/boot/grub/<image.png>}"
+
+\textcolor{comment}{## Theme - gfxterm only:}
+#GRUB_THEME="\textcolor{file}{/boot/grub/themes/<THEME>/theme.txt}"
+
+\textcolor{comment}{## Default Debian options:GRUB_CMDLINE_LINUX}
+GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+\end{Verbatim}
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Colors}
+\section{Menu Colors}
+\begin{center}
+    \begin{small}
+    \begin{tabular}{|p{4cm}|p{4cm}|}
+    \hline
+    \textbf{Color BG} & \textbf{Color BG + FG} \\
+    \hline
+    black & X \\
+    \hline
+    blue & light-blue \\
+    \hline
+    green & light-green \\
+    \hline
+    cyan & light-cyan \\
+    \hline
+    red & light-red \\
+    \hline
+    magenta & light-magenta \\
+    \hline
+    brown & yellow \\
+    \hline
+    light-gray & dark-gray  \\
+    \hline
+    \end{tabular}
+    \end{small}
+\end{center}
+\begin{enumerate}
+    \item \textbf{Edit customization file:}
+\newline File (\textbf{\textcolor{file}{/boot/grub/custom.cfg}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## <foreground>/<background>}
+set color_normal=white/black
+set color_highlight=black/white
+set menu_color_normal=white/black
+set menu_color_highlight=black/white
+\end{Verbatim}
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Update}
+\section{Update GRUB}
+\label{GRUB}
+\begin{enumerate}
+    \item \textbf{Update GRUB:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
+\end{Verbatim}
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OpenRC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
