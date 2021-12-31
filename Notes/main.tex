@@ -625,8 +625,140 @@ blacklist pcspkr
 
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Repository mirrors}
+\section{Repositories}
 To be added
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Package Manager %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Package Manager}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Settings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Select mirrors}
+\begin{itemize}
+    \item \textbf{Select Mirrors:}
+\newline File (\textbf{\textcolor{file}{/etc/pacman.d/mirrorlist}}).
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Configure pacman}
+\begin{itemize}
+    \item \textbf{Select Mirrors:}
+\newline File (\textbf{\textcolor{file}{/etc/pacman.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{### Ignore during update:}
+\textcolor{comment}{## Ignore package from being updated:}
+#IgnorePkg=<PKG> [PKG2]
+\textcolor{comment}{## Do not touch file when upgrading:}
+#NoUpgrade=</PATH/TO/FILE> [/PATH/TO/FILE2]
+
+\textcolor{comment}{###  Misc:}
+\textcolor{comment}{## Allow colors:}
+Color
+\textcolor{comment}{## Check for available disk space:}
+CheckSpace
+\textcolor{comment}{## Verbose info for download and update:}
+VerbosePkgLists
+\textcolor{comment}{## Easter egg:}
+ILoveCandy
+\end{Verbatim}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Update PKG}
+\begin{itemize}
+    \item \textbf{Update system:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Syu
+\end{Verbatim}
+    \item \textbf{Update system and do not use cache if used few minutes ago:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Syyu
+\end{Verbatim} 
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{List PKGs}
+\begin{itemize}
+    \item \textbf{List all installed PKGs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Q[q]
+\end{Verbatim}
+    \item \textbf{List specifically installed PKGs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Qe[q]
+\end{Verbatim}
+    \item \textbf{List unneeded dependencie PKGs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Qdt[q]
+\end{Verbatim}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Search PKG}
+\begin{itemize}
+    \item \textbf{Search packages that contains word in title/description:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Ss[q] <WORD>
+\end{Verbatim}
+    \item \textbf{Search installed packages that contains word in title/description:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Qs[q] <WORD>
+\end{Verbatim} 
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Install PKG}
+\begin{itemize}
+    \item \textbf{Install specific package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S <PKG> [PKG2]
+\end{Verbatim}
+    \item \textbf{Install specific package from different repository:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S <REPO>/<PKG>
+\end{Verbatim}
+    \item \textbf{Install packages matching regex:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S \$(pacman -Ssq "<REGEX>")
+\end{Verbatim}
+    \item \textbf{Install packages with similar pattern:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S <plasma-\{desktop,nm\}>
+\end{Verbatim}    
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Remove PKG}
+\begin{itemize}
+    \item \textbf{Remove specific package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -R <PKG>
+\end{Verbatim}
+    \item \textbf{Remove specific package with it's dependencies:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Rs <PKG>
+\end{Verbatim}
+    \item \textbf{Remove specific package with it's dependencies and system config files (not dotfiles):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Rns <PKG>
+\end{Verbatim}
+    \item \textbf{Remove old versions of installed packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -Sc[c]
+\end{Verbatim}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Repositories}
+Will be added
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{PKG Licenses}
+\begin{enumerate}
+    \item \textbf{Install package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S expac
+\end{Verbatim}    
+    \item \textbf{Query package to see its license:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{expac} [-Ss|-Qs] '\% - \%n' <REGEX>
+\end{Verbatim}       
+\end{enumerate}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -643,12 +775,26 @@ To be added
 \chapter{OpenRC}
 Will be added
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Software}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Help}
+\begin{itemize}
+    \item \textbf{Manuals:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S man-db man-pages
+\end{Verbatim}
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{References}
 \begin{itemize}
+    \item \textbf{System Maintenance:}
+\newline \underline{\href{https://wiki.archlinux.org/title/System\_maintenance}{https://wiki.archlinux.org/title/System\_maintenance}}
     \item \textbf{App list:}
 \newline \underline{\href{https://wiki.archlinux.org/title/List\_of\_applications}{https://wiki.archlinux.org/title/List\_of\_applications}}
 
