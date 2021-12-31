@@ -189,6 +189,10 @@ Make sure, that Secure Boot is Disabled!
 \textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getro <\textcolor{block}{/dev/sdX[Y]}>
 \end{Verbatim}
     \end{itemize}
+    \item \textbf{See partitions:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{parted} <\textcolor{block}{/dev/sdX}> (p)rint [free]
+\end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Check Disk for bad sectors}
@@ -318,12 +322,6 @@ network=\{
 \textcolor{root}{cfdisk>} \textcolor{command}{Q}
 \end{Verbatim}
     \end{enumerate}
-
-    \item \textbf{Print change:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{parted} <\textcolor{block}{/dev/sdX}> (p)rint [free]
-\textcolor{root}{root#} \textcolor{command}{fdisk} -l [\textcolor{block}{/dev/sdX}>]
-\end{Verbatim}
 
     \item \textbf{Create filesystems:}
     \begin{enumerate}
@@ -585,9 +583,13 @@ root=</dev/mapper/luks_root>"
 \end{Verbatim}
     \item \textbf{Reboot:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{reboot}
+\textcolor{root}{root#} \textcolor{command}{poweroff}
 \end{Verbatim}
 \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{GRUB}
 
 
 
@@ -607,7 +609,7 @@ root=</dev/mapper/luks_root>"
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\href{https://wiki.archlinux.org/title/Installation_guide#Installation}{WIKI}
+\href{https://wiki.archlinux.org/title/General_recommendations}{WIKI}
 
 
 
