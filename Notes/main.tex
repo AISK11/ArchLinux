@@ -623,7 +623,17 @@ blacklist pcspkr
 \textcolor{comment}{## Swap:}
 /swap   none    swap    defaults    0 0
 \end{Verbatim}
-
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Improve EXT4 performance}
+\begin{enumerate}
+    \item \textbf{Add parameters to ext4:}
+\newline File (\textbf{\textcolor{file}{/etc/fstab}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+UUID=<UUID> <MOUNT_POINT> <ext4> <rw,relatime>\textcolor{command}{,noatime,commit=60} <0> <1>
+...
+\end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Create user}
@@ -1037,6 +1047,199 @@ FONT=lat2-16
 #ATTR\{type\}=="1", KERNEL=="wlan*", NAME="<wlan0>"
 \end{Verbatim}
 \end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rfkill}
+\begin{enumerate}
+    \item \textbf{Block every RF device:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{rfkill} block all
+\end{Verbatim}  
+    \item \textbf{Unblock WiFi:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{rfkill} unblock wlan
+\end{Verbatim}  
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Interfaces}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Ethernet}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S wpa_supplicant iw wireless_tools
+\end{Verbatim} 
+    \item \textbf{Check carrier speed:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{ethtool} <eth0>
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Wireless}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S wpa_supplicant iw wireless_tools
+\end{Verbatim} 
+    \item \textbf{Do not run wpa\_supplciant service at start:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{systemctl} disable wpa_supplicant.service
+\end{Verbatim} 
+    \item \textbf{Scan for SSIDs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{iwlist} <wlan0> scan [| \textcolor{command}{grep} -i ssid]
+\end{Verbatim}
+
+    \item \textbf{WiFi config:}
+\newline File (\textbf{\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## Basic settings and language for zones:}
+ctrl_interface=/run/wpa_supplicant
+update_config=1
+country=<2-LETTER-ISO-CODE>
+
+\textcolor{comment}{## WPA-PSK protected:}
+network=\{
+    ssid="<ESSID>"
+    scan_ssid=1 \textcolor{comment}{# Find hidden network}
+    key_mgmt=WPA-PSK
+    psk="<PLAINTEXT-PASSWD>"
+    \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
+    priority=1 \textcolor{comment}{# To which WiFi connect first}
+\}
+
+\textcolor{comment}{## WPA-EAP protected::}
+network=\{
+        ssid="<ESSID>"
+        scan_ssid=1 \textcolor{comment}{# Find hidden network}
+        key_mgmt=WPA-EAP
+        \textcolor{comment}{#eap=PEAP}
+        identity="<USERNAME>@<DOMAIN>"
+        password="<PLAINTEXT-PASSWD>"
+        \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
+        \textcolor{comment}{#ca_cert="/etc/cert/ca.pem"}
+        \textcolor{comment}{#phase1="peaplabel=0"}
+        phase2="auth=MSCHAPV2"
+        priority=2 \textcolor{comment}{# To which WiFi connect first}
+\}
+
+\textcolor{comment}{## Unprotected:}
+network=\{
+    ssid="<ESSID>"
+    scan_ssid=1 \textcolor{comment}{# Find hidden network}
+    key_mgmt=NONE
+    priority=3 \textcolor{comment}{# To which WiFi connect first}
+\}
+\end{Verbatim}
+    \item \textbf{Connect to WiFi:}
+    \begin{enumerate}
+        \item \textbf{Bring everything down for restart:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dhcpcd} --release <wlan0>
+\textcolor{root}{root#} \textcolor{command}{ip} a flush <wlan0>
+\textcolor{root}{root#} \textcolor{command}{systemctl} stop dhcpcd.service
+\textcolor{root}{root#} \textcolor{command}{systemctl} stop wpa_supplicant.service
+\textcolor{root}{root#} \textcolor{command}{ip} l set <wlan0> down
+\end{Verbatim}        
+    \item \textbf{Start WiFi:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{rfkill} unblock wlan
+[\textcolor{root}{root#} \textcolor{command}{macchanger} -A <wlan0>]
+\textcolor{root}{root#} \textcolor{command}{rm} -rf \textcolor{file}{/var/lib/dhcpcd/*}
+\textcolor{root}{root#} \textcolor{command}{rm -f} \textcolor{file}{/run/wpa_supplicant/<wlan0>}
+\textcolor{root}{root#} \textcolor{command}{killall} -9 wpa_supplicant
+\textcolor{root}{root#} \textcolor{command}{ip} l set <wlan0> up
+\textcolor{root}{root#} \textcolor{command}{systemctl} start wpa_supplicant.service
+\textcolor{root}{root#} \textcolor{command}{systemctl} start dhcpcd.service
+\textcolor{root}{root#} \textcolor{command}{wpa_supplicant} -B -D wext -i <wlan0> 
+-c <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
+\textcolor{root}{root#} \textcolor{command}{dhcpcd} <wlan0>
+\end{Verbatim}
+    \end{enumerate}
+
+    \item \textbf{Check WiFi stats:}
+    \begin{itemize}
+        \item \textbf{Check state (and if connected WiFi interface:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{iw} dev
+\end{Verbatim}
+        \item \textbf{Check carrier speed:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{iwlist} <wlan0> bitrate
+\end{Verbatim}
+    \end{itemize}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{DHCP client}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S dhcpcd
+\end{Verbatim} 
+    \item \textbf{Do not run dhcpcd service at start:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{systemctl} disable dhcpcd.service
+\end{Verbatim} 
+    \item \textbf{Configure DHCP client:}
+File (\textbf{\textcolor{file}{/etc/dhcpcd.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## Send FQDN hostname to the DHCP server so it can be registered in DNS:}
+#hostname
+\textcolor{comment}{## Send only hostname to the DHCP server:}
+#hostname_short
+
+\textcolor{comment}{## Don't attempt to obtain IPv4:}
+#noipv4
+\textcolor{comment}{## Don't attempt to obtain IPv4LL}
+noipv4ll
+\textcolor{comment}{## Don't attempt to obtain IPv6:}
+#noipv6
+
+\textcolor{comment}{## Don't check if obtained IP address is taken by arp (increases speed):}
+noarp
+
+\textcolor{comment}{## Use MAC address in format xx:xx:xx and then is encoded as hex}
+\textcolor{comment}{## for interfaces whose MAC > 8 butes, clientid = "", and dhcpcd sends}
+\textcolor{comment}{## default clientid of HW family and HW address:}
+#clientid
+\textcolor{comment}{## OR use DHCP Unique Identifier (DUID):}
+#duid
+
+\textcolor{comment}{## Remove any pre-existing IPv4 addresses when adding IPv4 address:}
+noalias
+
+\textcolor{comment}{## Use MAC address when generating SLAAC address for the interface:}
+slaac hwaddr
+\textcolor{comment}{## OR generate Stable Private IPv6 Address based from the DUID:}
+#slaac private
+
+\textcolor{comment}{## Request default gateway (default):}
+gateway
+\textcolor{comment}{## Don't obtain default gateway:}
+#nogateway
+
+\textcolor{comment}{## https://linux.die.net/man/5/dhcpd-options}
+\textcolor{comment}{## Request DNS servers from a server:}
+#option domain_name_servers
+
+\textcolor{comment}{## Request domain-name for current network:}
+#option domain_name
+
+\textcolor{comment}{## A ServerID is required by RFC2131.}
+require dhcp_server_identifier
+
+\textcolor{comment}{## Do not send DHCP option 60 (Vendor class id) in default format:}
+\textcolor{comment}{## dhcpcd-<version>:<os>:<machine>:<platform> e.g. dhcpcd-5.5.6:NetBSD-6.99.5:i386:i386}
+\textcolor{comment}{## Send empty vendorclassid (or not at all):}
+vendorclassid ""
+\end{Verbatim} 
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{DNS}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NTP}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
