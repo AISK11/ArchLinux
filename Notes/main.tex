@@ -410,7 +410,7 @@ network=\{
     \item \textbf{Download Arch:}
 \newline This installs BASE packages, LINUX kernel and common LINUX-FIRMWARE for common hardware:
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux linux-firmware 
+\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux [linux-firmware] 
 \end{Verbatim}
 
     \item \textbf{Generate fstab:}
@@ -441,10 +441,6 @@ network=\{
 
     \item \textbf{Install packages:}
     \begin{itemize}
-        \item \textbf{Install VFAT fs support:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dosfstools
-\end{Verbatim}
         \item \textbf{Install vim:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vim
