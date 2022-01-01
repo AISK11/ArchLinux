@@ -655,6 +655,10 @@ UUID=<UUID> <MOUNT_POINT> <ext4> <rw,relatime>\textcolor{command}{,noatime,commi
 \textcolor{comment}{[cmd <COMMAND> [args <ARGUMENTS>]}
 permit [nopass]iperi :<doas>
 \end{Verbatim}
+    \item \textbf{Create symlink for apps that needs sudo:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ln} -sf \textcolor{file}{/usr/bin/doas} \textcolor{file}{/usr/bin/sudo}
+\end{Verbatim}
     \end{enumerate}
     
     \item \textbf{Create user with home directory:}
@@ -707,6 +711,10 @@ ILoveCandy
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Pacman}
+\begin{itemize}
+    \item \textbf{Packages:}
+\newline \underline{\href{https://archlinux.org/packages/}{https://archlinux.org/packages/}}
+\end{itemize}
 \subsection{Update PKG}
 \begin{itemize}
     \item \textbf{Update system:}
@@ -787,9 +795,6 @@ ILoveCandy
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Repositories}
-Will be added
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{PKG Licenses}
 \begin{enumerate}
     \item \textbf{Install package:}
@@ -801,7 +806,76 @@ Will be added
 \textcolor{root}{root#} \textcolor{command}{expac} [-Ss|-Qs] '\% - \%n' <REGEX>
 \end{Verbatim}       
 \end{enumerate}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{AUR}
+\underline{\href{https://aur.archlinux.org/}{https://aur.archlinux.org/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Manual Installation:}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Setting up}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S base-devel git
+\end{Verbatim}
+    \item \textbf{Change compilation variables:}
+\newline File (\textcolor{file}{/etc/makepkg.conf}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+MAKEFLAGS="-j\$(nproc)"
+...
+\end{Verbatim}
+    \item \textbf{Create directory for AUR packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/etc/AUR/}>
+\end{Verbatim}
+    \item \textbf{Transfer directory ownership:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chown} -R :doas <\textcolor{dir}{/etc/AUR/}>
+\end{Verbatim}
+    \item \textbf{Make directory writable for \textit{doas} group:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chmod} -R 0775 <\textcolor{dir}{/etc/AUR/}>
+\end{Verbatim}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Install package}
+\label{aur_install}
+\begin{enumerate}
+    \item \textbf{Find package in AUR repository:}
+\newline \underline{\href{https://aur.archlinux.org/}{https://aur.archlinux.org/}}
+    \item \textbf{Navigate to \textit{AUR} directory:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{/etc/AUR/}>
+\end{Verbatim}
+    \item \textbf{Clone AUR package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{git} clone <\underline{\href{https://aur.archlinux.org/coredns.git}{https://aur.archlinux.org/coredns.git}}>
+\end{Verbatim}
+    \item \textbf{Go to cloned directory:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{./coredns/}>
+\end{Verbatim}
+    \item \textbf{Check AUR package content:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{less} \textcolor{file}{./PKGBUILD}
+\end{Verbatim}
+    \item \textbf{Compile package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{makepkg} -si
+\end{Verbatim}
+    \item \textbf{If there was GPG key fault:}
+    \begin{enumerate}
+        \item \textbf{Import key:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{gpg} --recv-keys <KEY>
+\end{Verbatim}
+        \item \textbf{Compile again:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{makepkg} -si
+\end{Verbatim}
+    \end{enumerate}
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1235,6 +1309,18 @@ vendorclassid ""
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{DNS}
+\underline{\href{https://dns.sb/doh/}{https://dns.sb/doh/}}
+
+\begin{enumerate}
+    \item \textbf{Install:}
+    \begin{itemize}
+        \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/dnsproxy-adguard.git}{https://aur.archlinux.org/dnsproxy-adguard.git}}
+        \item \textbf{See \underline{\ref{aur_install}}.}
+    \end{itemize}
+
+
+
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{NTP}
