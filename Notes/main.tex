@@ -761,19 +761,19 @@ ILoveCandy
 \begin{itemize}
     \item \textbf{Install specific package:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S <PKG> [PKG2]
+\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S <PKG> [PKG2]
 \end{Verbatim}
     \item \textbf{Install specific package from different repository:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S <REPO>/<PKG>
+\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S <REPO>/<PKG>
 \end{Verbatim}
     \item \textbf{Install packages matching regex:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S \$(pacman -Ssq "<REGEX>")
+\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S \$(pacman -Ssq "<REGEX>")
 \end{Verbatim}
     \item \textbf{Install packages with similar pattern:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S <plasma-\{desktop,nm\}>
+\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S <plasma-\{desktop,nm\}>
 \end{Verbatim}    
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -852,11 +852,11 @@ MAKEFLAGS="-j\$(nproc)"
 \end{Verbatim}
     \item \textbf{Clone AUR package:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{git} clone <\underline{\href{https://aur.archlinux.org/coredns.git}{https://aur.archlinux.org/coredns.git}}>
+\textcolor{user}{user\$} \textcolor{command}{git} clone <\underline{\href{https://aur.archlinux.org/bvi.git}{https://aur.archlinux.org/bvi.git}}>
 \end{Verbatim}
     \item \textbf{Go to cloned directory:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{./coredns/}>
+\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{./bvi/}>
 \end{Verbatim}
     \item \textbf{Check AUR package content:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -1113,11 +1113,11 @@ FONT=lat2-16
     \item \textbf{Manually rename interfaces:}
 \newline File: (\textcolor{file}{\textbf{/etc/udev/rules.d/70-persistent-net.rules}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## eth0:}
+\textcolor{comment}{## ethernet (rename enp1s0 to eth0):}
 #SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \char092
 #ENV\{ID_NET_NAME_PATH\}="<enp1s0>", \char092
 #ATTR\{type\}=="1", KERNEL=="eth*", NAME="<eth0>"
-\textcolor{comment}{## wireless:}
+\textcolor{comment}{## wireless (rename wlp0s20f3 to wlan0):}
 #SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \char092
 #ENV\{ID_NET_NAME_PATH\}=="<wlp0s20f3>", \char092
 #ATTR\{type\}=="1", KERNEL=="wlan*", NAME="<wlan0>"
@@ -1258,41 +1258,62 @@ network=\{
     \item \textbf{Configure DHCP client:}
 File (\textbf{\textcolor{file}{/etc/dhcpcd.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{#################}
+\textcolor{comment}{### Anonymity ###}
+\textcolor{comment}{#################}
 \textcolor{comment}{## Send FQDN hostname to the DHCP server so it can be registered in DNS:}
 #hostname
 \textcolor{comment}{## Send only hostname to the DHCP server:}
 #hostname_short
+\textcolor{comment}{## Do not send DHCP option 60 (Vendor class id) in default format:}
+\textcolor{comment}{## dhcpcd-<version>:<os>:<machine>:<platform>} 
+\textcolor{comment}{## (e.g. dhcpcd-5.5.6:NetBSD-6.99.5:i386:i386)}
+\textcolor{comment}{## Send empty vendorclassid (or not at all):}
+vendorclassid ""
 
+\textcolor{comment}{#################}
+\textcolor{comment}{### IPv4/IPv6 ###}
+\textcolor{comment}{#################}
 \textcolor{comment}{## Don't attempt to obtain IPv4:}
 #noipv4
 \textcolor{comment}{## Don't attempt to obtain IPv4LL}
 noipv4ll
 \textcolor{comment}{## Don't attempt to obtain IPv6:}
 #noipv6
-
 \textcolor{comment}{## Don't check if obtained IP address is taken by arp (increases speed):}
 noarp
 
+\textcolor{comment}{#####################}
+\textcolor{comment}{### IPv4 settings ###}
+\textcolor{comment}{#####################}
 \textcolor{comment}{## Use MAC address in format xx:xx:xx and then is encoded as hex}
 \textcolor{comment}{## for interfaces whose MAC > 8 butes, clientid = "", and dhcpcd sends}
 \textcolor{comment}{## default clientid of HW family and HW address:}
 #clientid
 \textcolor{comment}{## OR use DHCP Unique Identifier (DUID):}
 #duid
-
 \textcolor{comment}{## Remove any pre-existing IPv4 addresses when adding IPv4 address:}
 noalias
 
+\textcolor{comment}{#####################}
+\textcolor{comment}{### IPv6 settings ###}
+\textcolor{comment}{#####################}
 \textcolor{comment}{## Use MAC address when generating SLAAC address for the interface:}
 slaac hwaddr
 \textcolor{comment}{## OR generate Stable Private IPv6 Address based from the DUID:}
 #slaac private
 
+\textcolor{comment}{#######################}
+\textcolor{comment}{### Default Gateway ###}
+\textcolor{comment}{#######################}
 \textcolor{comment}{## Request default gateway (default):}
 gateway
 \textcolor{comment}{## Don't obtain default gateway:}
 #nogateway
 
+\textcolor{comment}{###########}
+\textcolor{comment}{### DNS ###}
+\textcolor{comment}{###########}
 \textcolor{comment}{## https://linux.die.net/man/5/dhcpd-options}
 \textcolor{comment}{## Request DNS servers from a server:}
 #option domain_name_servers
@@ -1301,14 +1322,11 @@ option domain_name
 \textcolor{comment}{## Do not write to /etc/resolv.conf:}
 nohook resolv.conf
 
+\textcolor{comment}{################}
+\textcolor{comment}{### Required ###}
+\textcolor{comment}{################}
 \textcolor{comment}{## A ServerID is required by RFC2131.}
 require dhcp_server_identifier
-
-\textcolor{comment}{## Do not send DHCP option 60 (Vendor class id) in default format:}
-\textcolor{comment}{## dhcpcd-<version>:<os>:<machine>:<platform>} 
-\textcolor{comment}{## (e.g. dhcpcd-5.5.6:NetBSD-6.99.5:i386:i386)}
-\textcolor{comment}{## Send empty vendorclassid (or not at all):}
-vendorclassid ""
 \end{Verbatim} 
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1381,12 +1399,133 @@ dnsproxy-adguard -l <127.0.0.1> -p 53
 \textbf{Not needed!}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Vim and Zsh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Vim and Zsh}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Texteditor and Shell %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Texteditor and Shell}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Texteditor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Vim}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S vim
+\end{Verbatim}
+    \item \textbf{Replace vi:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/bin/vim}> <\textcolor{file}{/usr/bin/vi}>
+\end{Verbatim}
+    \item \textbf{Set vim as default editor:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{export} EDITOR=vim
+\end{Verbatim}
+    \item \textbf{Configure vim:}
+File (\textbf{\textcolor{file}{\~/.vimrc}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"       SOUND        "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Turn off all sound:}
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"      BACKUPS       "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Turn backup off:}
+set nobackup
+set nowb
+set noswapfile
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"   TAB and SPACES   "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Preserve indentation on new line:}
+set autoindent
+\textcolor{comment}{"" Do not replace tabs with spaces:}
+set expandtab
+\textcolor{comment}{"" Tab = 4 chars:}
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+\textcolor{comment}{"" For specific file types set different tab space:}
+\textcolor{comment}{autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2}
+\textcolor{comment}{autocmd FileType css setlocal tabstop=2 shiftwidth=2 softtabstop=2}
+
+\textcolor{comment}{"""""""""""""""""""""""}
+\textcolor{comment}{"     STATUSLINE      "}
+\textcolor{comment}{"""""""""""""""""""""""}
+\textcolor{comment}{"" Always show the status line:}
+set laststatus=2
+\textcolor{comment}{"" Statusline:}
+set statusline=\%F\char92 \%p\%\%\char92 [\%l:\%c]\char92 \%M\char92 \%R\char92 \%Y\char92 \%y
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"      SCROLLING     "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Start scrolling, N lines before reach end:}
+set scrolloff=4
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"       SEARCH       "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Highlight search results:}
+set hlsearch
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"    LINE NUMBERS    "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Number lines:}
+set number
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{" PROGRAMMING SYNTAX "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Enable syntax highlighting:}
+syntax on
+\textcolor{comment}{"" Highlight trailing whitespace:}
+:highlight ExtraWhitespace ctermbg=red guibg=red
+:match ExtraWhitespace /\char92s\char92+\$/
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{" HIGHLIGHT BRACKETS "}
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"" Show other bracket:}
+"set showmatch
+
+\textcolor{comment}{""""""""""""""""""""""}
+\textcolor{comment}{"    COLOR THEME     "}
+\textcolor{comment}{""""""""""""""""""""""}
+"colorscheme murphy
+\end{Verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bvi}
+\begin{enumerate}
+    \item \textbf{Install:}
+    \begin{itemize}
+        \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/bvi.git}{https://aur.archlinux.org/bvi.git}}
+        \item \textbf{See \underline{\ref{aur_install}}.}
+    \end{itemize}
+    \item \textbf{Configure:}
+\newline File (\textbf{\textcolor{file}{\~/.bvirc}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{"" http://bvi.sourceforge.net/set.html}
+\textcolor{comment}{"" Enable edit:}
+set memmove
+
+\textcolor{comment}{"" Show status message bar at the bottom:}
+set showmode
+\end{Verbatim}
+\end{enumerate}
+
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Software}
