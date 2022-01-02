@@ -113,6 +113,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{USB Preparation}
 \begin{enumerate}
+    \item \textbf{Unmount FS!}
     \item \textbf{Create Partition Table}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> mktable gpt
@@ -125,7 +126,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Flash ISO to USB}
 \begin{enumerate}
-    \item \textbf{Unmount any mounted FS on HARD DRIVE!}
+    \item \textbf{Unmount FS!}
     \item \textbf{Flash to USB (/dev/sdX):}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{dd} if=<\textcolor{file}{./archlinux-YYYY.MM.DD-x86_64.iso}> of=<\textcolor{block}{/dev/sdX}> 
@@ -642,7 +643,7 @@ UUID=<UUID> <MOUNT_POINT> <ext4> <rw>\textcolor{command}{,noatime,commit=60} <0>
     \begin{enumerate}
         \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S doas
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S doas
 \end{Verbatim}
         \item \textbf{Create group for privilege escalation:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -709,6 +710,10 @@ VerbosePkgLists
 \textcolor{comment}{## Easter egg:}
 ILoveCandy
 ...
+\textcolor{comment}{## Allow multilib:}
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+...
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -761,19 +766,19 @@ ILoveCandy
 \begin{itemize}
     \item \textbf{Install specific package:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S <PKG> [PKG2]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S <PKG> [PKG2]
 \end{Verbatim}
     \item \textbf{Install specific package from different repository:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S <REPO>/<PKG>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S <REPO>/<PKG>
 \end{Verbatim}
     \item \textbf{Install packages matching regex:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S \$(pacman -Ssq "<REGEX>")
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S \$(pacman -Ssq "<REGEX>")
 \end{Verbatim}
     \item \textbf{Install packages with similar pattern:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} [--need] -S <plasma-\{desktop,nm\}>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S <plasma-\{desktop,nm\}>
 \end{Verbatim}    
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -781,19 +786,19 @@ ILoveCandy
 \begin{itemize}
     \item \textbf{Remove specific package:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -R <PKG>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -R <PKG>
 \end{Verbatim}
     \item \textbf{Remove specific package with it's dependencies:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Rs <PKG>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Rs <PKG>
 \end{Verbatim}
     \item \textbf{Remove specific package with it's dependencies and system config files (not dotfiles):}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Rns <PKG>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Rns <PKG>
 \end{Verbatim}
     \item \textbf{Remove old versions of installed packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Sc[c]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Sc[c]
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -801,7 +806,7 @@ ILoveCandy
 \begin{enumerate}
     \item \textbf{Install package:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S expac
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S expac
 \end{Verbatim}    
     \item \textbf{Query package to see its license:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -818,7 +823,7 @@ ILoveCandy
 \begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S base-devel git
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S base-devel git
 \end{Verbatim}
     \item \textbf{Change compilation variables:}
 \newline File (\textcolor{file}{/etc/makepkg.conf}):
@@ -1154,7 +1159,7 @@ FONT=lat2-16
 \begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S wpa_supplicant iw wireless_tools
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S wpa_supplicant iw wireless_tools
 \end{Verbatim} 
     \item \textbf{Do not run wpa\_supplciant service at start:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -1249,7 +1254,7 @@ network=\{
 \begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S dhcpcd
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dhcpcd
 \end{Verbatim} 
     \item \textbf{Do not run dhcpcd service at start:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -1410,7 +1415,7 @@ dnsproxy-adguard -l <127.0.0.1> -p 53
 \begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S vim
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vim
 \end{Verbatim}
     \item \textbf{Replace vi:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -1520,10 +1525,43 @@ set memmove
 set showmode
 \end{Verbatim}
 \end{enumerate}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Zsh (WIP)}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S zsh [zsh-autosuggestions] 
+[zsh-syntax-highlighting]
+\end{Verbatim}    
+    \item \textbf{Configure:}
+\newline File (\textbf{\textcolor{file}{\~/.zshrc}}):
+\begin{Verbatim}[commandchars=\\\{\}]
 
-
+\end{Verbatim}
+    \item \textbf{Set ZSH as default shell:}
+    \begin{itemize}
+        \item \textbf{User change:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{chsh} -s \textcolor{file}{/bin/zsh}
+\end{Verbatim}
+        \item \textbf{Root change:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{usermod} -s \textcolor{file}{/bin/zsh} <USER>
+\end{Verbatim}
+    \end{itemize}
 \end{enumerate}
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Xorg}
+\begin{enumerate}
+    \item \textbf{Install:}
+
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1536,7 +1574,7 @@ set showmode
     \begin{enumerate}
         \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S man-db man-pages
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S man-db man-pages
 \end{Verbatim}
     \end{enumerate}
 
@@ -1544,7 +1582,7 @@ set showmode
     \begin{enumerate}
         \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S tldr
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S tldr
 \end{Verbatim}
         \item \textbf{Update it's cache:}
 \begin{Verbatim}[commandchars=\\\{\}]
