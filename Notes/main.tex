@@ -1297,6 +1297,8 @@ gateway
 
 \textcolor{comment}{## Request domain-name for current network:}
 #option domain_name
+\textcolor{comment}{## Do not write to /etc/resolv.conf:}
+nohook resolv.conf
 
 \textcolor{comment}{## A ServerID is required by RFC2131.}
 require dhcp_server_identifier
@@ -1308,8 +1310,52 @@ vendorclassid ""
 \end{Verbatim} 
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{DNS}
-\underline{\href{https://dns.sb/doh/}{https://dns.sb/doh/}}
+\section{DNS (WIP!!!)}
+ToDo:
+\begin{itemize}
+    \item /etc/resolv.conf
+    \item DNS over HTTPS \underline{\href{https://dns.sb/doh/}{https://dns.sb/doh/}}
+    \item DNSSEC \underline{\href{https://wiki.archlinux.org/title/DNSSEC}{https://wiki.archlinux.org/title/DNSSEC}}
+
+\end{itemize}
+
+
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{pacman} -S unbound [expat]
+\end{Verbatim}
+    \item \textbf{Configure:}
+\newline File (\textcolor{file}{\textbf{/etc/unbound/unbound.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+server:
+    \textcolor{comment}{## Listen on loopback interface [on port 443]:}
+    interface: 127.0.0.1[@443]
+    interface: ::1[@443]
+\end{Verbatim}
+
+    \item \textbf{Configure DNS server list:}
+\newline File: (\textbf{\textcolor{file}{/etc/resolv.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## Uncensored DNS - Denmark - Unicast}
+#nameserver 89.233.43.71
+\textcolor{comment}{## CZ.NIC}
+#nameserver 193.17.47.1
+#nameserver 185.43.135.1
+\textcolor{comment}{## Quad9}
+#nameserver 1.1.1.1
+#nameserver 1.0.0.1
+
+\textcolor{comment}{## Use unbound as DNS resolver:}
+nameserver 127.0.0.1
+nameserver ::1
+\textcolor{comment}{## See https://man7.org/linux/man-pages/man5/resolv.conf.5.html}
+options trust-ad
+\end{Verbatim}
+
+\end{enumerate}
+
+
 
 \begin{enumerate}
     \item \textbf{Install:}
@@ -1317,14 +1363,22 @@ vendorclassid ""
         \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/dnsproxy-adguard.git}{https://aur.archlinux.org/dnsproxy-adguard.git}}
         \item \textbf{See \underline{\ref{aur_install}}.}
     \end{itemize}
+    \item \textbf{Create SystemD service:}
 
-
+    \item \textbf{Run:}
+\begin{Verbatim}[commandchars=\\\{\}]
+dnsproxy-adguard -l <127.0.0.1> -p 53 
+-u <https://doh.dns.sb/dns-query> -b 185.222.222.222:53
+\end{Verbatim} 
 
 \end{enumerate}
 
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{NTP}
-
+Not needed!
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
