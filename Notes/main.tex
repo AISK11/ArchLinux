@@ -344,8 +344,8 @@ network=\{
 \end{Verbatim}
         \item \textbf{Name partitions:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 1 BIOS
-\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 2 UEFI
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 1 GRUB_BIOS
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 2 ESP
 \textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 3 LUKS
 \end{Verbatim}
     \end{enumerate}
@@ -357,12 +357,11 @@ network=\{
             \item \textbf{EFI partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 32 <\textcolor{block}{/dev/sdX2}>
-\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX2}> <UEFI>
+\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX2}> <ESP>
 \end{Verbatim}                
             \item \textbf{Encrypted partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat --type luks1 [--label "LUKS"] 
-<\textcolor{block}{/dev/sdX3}>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat --type luks1 <\textcolor{block}{/dev/sdX3}>
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
@@ -463,7 +462,9 @@ network=\{
     
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{GPT BIOS/UEFI + Encrypted LVM}
+\subsection{GPT BIOS/UEFI + Encrypted LVM (WIP!)}
+THIS SECTION IS WORK IN PROGRESS!!!
+
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat [--label "LUKS"] 
 
@@ -788,10 +789,14 @@ blacklist pcspkr
 \section{Improve EXT4 performance}
 \begin{enumerate}
     \item \textbf{Add parameters to ext4:}
-\newline File (\textbf{\textcolor{file}{/etc/fstab}}):
+    \begin{itemize}
+        \item Do not update atime for files (applies also nodiratime).
+        \item Change journal commiting from default 5 seconds to 60.
+    \end{itemize}
+File (\textbf{\textcolor{file}{/etc/fstab}}):
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
-UUID=<UUID> <MOUNT_POINT> <ext4> <rw>\textcolor{command}{,noatime,commit=60} <0> <1>
+UUID=<UUID> <MOUNT_POINT> <ext4> <defaults>\textcolor{command}{,noatime,commit=60} <FSCK>
 ...
 \end{Verbatim}
 \end{enumerate}
@@ -1047,6 +1052,7 @@ MAKEFLAGS="-j\$(nproc)"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{GRUB}
+\underline{\href{https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt}{Linux kernel parameters}}
 \section{Configuration}
 \begin{enumerate}
     \item \textbf{Basic GRUB settings:}
@@ -1063,12 +1069,13 @@ GRUB_TIMEOUT=1
 GRUB_DISTRIBUTOR="Arch"
 \textcolor{comment}{## Disable recovery mode entry in GRUB menu:}
 GRUB_DISABLE_RECOVERY=true
-
+\textcolor{comment}{## Default GRUB Linux parameters:}
 GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
 
 \textcolor{comment}{## Encrypted GRUB on /boot/:}
 GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
 root=</dev/vg0/root> cryptkey=rootfs:/root/.luks/key"
+\textcolor{comment}{## Enable encrypted GRUB:}
 GRUB_ENABLE_CRYPTODISK=y
 
 \textcolor{comment}{## Preload both GPT and MBR modules so they are not missed:}
@@ -1197,7 +1204,7 @@ File (\textbf{\textcolor{file}{/etc/hosts}}):
 \end{Verbatim}            
             \item \textbf{View generated locales:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$}  \textcolor{command}{localectl} list-locales
+\textcolor{user}{user\$} \textcolor{command}{localectl} list-locales
 \end{Verbatim}
         \end{itemize}
     
@@ -1501,67 +1508,20 @@ require dhcp_server_identifier
 \end{Verbatim} 
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{DNS (WIP!!!)}
-ToDo:
-\begin{itemize}
-    \item /etc/resolv.conf
-    \item DNS over HTTPS \underline{\href{https://dns.sb/doh/}{https://dns.sb/doh/}}
-    \item DNSSEC \underline{\href{https://wiki.archlinux.org/title/DNSSEC}{https://wiki.archlinux.org/title/DNSSEC}}
-
-\end{itemize}
-
-
+\section{DNS}
 \begin{enumerate}
-    \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S unbound [expat]
-\end{Verbatim}
-    \item \textbf{Configure:}
-\newline File (\textcolor{file}{\textbf{/etc/unbound/unbound.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-server:
-    \textcolor{comment}{## Listen on loopback interface [on port 443]:}
-    interface: 127.0.0.1[@443]
-    interface: ::1[@443]
-\end{Verbatim}
-
     \item \textbf{Configure DNS server list:}
 \newline File: (\textbf{\textcolor{file}{/etc/resolv.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## Uncensored DNS - Denmark - Unicast}
+\textcolor{comment}{## Uncensored DNS - Denmark - Unicast:}
 #nameserver 89.233.43.71
-\textcolor{comment}{## CZ.NIC}
+\textcolor{comment}{## CZ.NIC:}
 #nameserver 193.17.47.1
 #nameserver 185.43.135.1
-\textcolor{comment}{## Quad9}
+\textcolor{comment}{## Quad9:}
 #nameserver 1.1.1.1
 #nameserver 1.0.0.1
-
-\textcolor{comment}{## Use unbound as DNS resolver:}
-nameserver 127.0.0.1
-nameserver ::1
-\textcolor{comment}{## See https://man7.org/linux/man-pages/man5/resolv.conf.5.html}
-options trust-ad
 \end{Verbatim}
-
-\end{enumerate}
-
-
-
-\begin{enumerate}
-    \item \textbf{Install:}
-    \begin{itemize}
-        \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/dnsproxy-adguard.git}{https://aur.archlinux.org/dnsproxy-adguard.git}}
-        \item \textbf{See \underline{\ref{aur_install}}.}
-    \end{itemize}
-    \item \textbf{Create SystemD service:}
-
-    \item \textbf{Run:}
-\begin{Verbatim}[commandchars=\\\{\}]
-dnsproxy-adguard -l <127.0.0.1> -p 53 
--u <https://doh.dns.sb/dns-query> -b 185.222.222.222:53
-\end{Verbatim} 
-
 \end{enumerate}
 
 
@@ -1658,8 +1618,8 @@ set number
 \textcolor{comment}{"" Enable syntax highlighting:}
 syntax on
 \textcolor{comment}{"" Highlight trailing whitespace:}
-:highlight ExtraWhitespace ctermbg=red guibg=red
-:match ExtraWhitespace /\char92s\char92+\$/
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\char92s\char92+\$/
 
 \textcolor{comment}{""""""""""""""""""""""}
 \textcolor{comment}{" HIGHLIGHT BRACKETS "}
@@ -1672,39 +1632,29 @@ syntax on
 \textcolor{comment}{""""""""""""""""""""""}
 "colorscheme murphy
 \end{Verbatim}
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bvi}
 \begin{enumerate}
     \item \textbf{Install:}
     \begin{itemize}
-        \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/bvi.git}{https://aur.archlinux.org/bvi.git}}
+        \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/packages/bvi/}{https://aur.archlinux.org/packages/bvi/}}
         \item \textbf{See \underline{\ref{aur_install}}.}
     \end{itemize}
     \item \textbf{Configure:}
 \newline File (\textbf{\textcolor{file}{\~/.bvirc}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{"" http://bvi.sourceforge.net/set.html}
-\textcolor{comment}{"" Enable edit:}
-set memmove
-
-\textcolor{comment}{"" Show status message bar at the bottom:}
-set showmode
-\end{Verbatim}
-\end{enumerate}
+\newline See (\underline{\href{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.bvirc}{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.bvirc}})
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Zsh (WIP)}
+\section{Zsh}
 \begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S zsh [zsh-completions] 
-[zsh-syntax-highlighting]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S zsh zsh-syntax-highlighting
 \end{Verbatim}    
     \item \textbf{Configure:}
 \newline File (\textbf{\textcolor{file}{\~/.zshrc}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-
-\end{Verbatim}
+\newline See \underline{\href{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.zshrc}{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.zshrc}}
     \item \textbf{Set ZSH as default shell:}
     \begin{itemize}
         \item \textbf{User change:}
@@ -1757,6 +1707,24 @@ set showmode
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% System Hardening %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{System Hardening}
+\underline{\url{https://wiki.archlinux.org/title/Security}}
+\begin{itemize}
+    \item \textbf{Hardened kernel}
+    \item \textbf{SELinux}
+    \item \textbf{USB Guard}
+    \item \textbf{DNS over HTTPS}
+    \item \textbf{no MOTD}
+    \item \textbf{Black Arch repo}
+    \item \textbf{Firewall}
+    \item \textbf{Proxy}
+    \item \textbf{Honeypot}
+    \item \textbf{System logging + monitoring}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Software}
@@ -1807,12 +1775,39 @@ efibootmgr --create --disk /dev/sda --part 1 --label test
 --loader /EFI/opensuse/grubx64.efi    
 \end{Verbatim}
     
+    
+        \item \textbf{Configure DNS server list:}
+\newline File: (\textbf{\textcolor{file}{/etc/resolv.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## Uncensored DNS - Denmark - Unicast}
+#nameserver 89.233.43.71
+\textcolor{comment}{## CZ.NIC}
+#nameserver 193.17.47.1
+#nameserver 185.43.135.1
+\textcolor{comment}{## Quad9}
+#nameserver 1.1.1.1
+#nameserver 1.0.0.1
+
+\textcolor{comment}{## Use unbound as DNS resolver:}
+nameserver 127.0.0.1
+nameserver ::1
+\textcolor{comment}{## See https://man7.org/linux/man-pages/man5/resolv.conf.5.html}
+options trust-ad
+\end{Verbatim}
+    
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{References}
+\section{Misc}
+\begin{itemize}
+    \item \textbf{Color palettes:}
+\newline \underline{\href{https://designs.ai/colors/color-wheel}{https://designs.ai/colors/color-wheel}}
+\end{itemize}
+
+
 \begin{itemize}
     \item \textbf{System Maintenance:}
 \newline \underline{\href{https://wiki.archlinux.org/title/System\_maintenance}{https://wiki.archlinux.org/title/System\_maintenance}}
