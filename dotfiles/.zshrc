@@ -1,3 +1,16 @@
+##############################################
+## File:           ${HOME}/.zshrc           ##
+## Dependencies:   zsh                      ##
+##                 zsh-syntax-highlighting  ##
+## Created:        2022-01-03               ##
+## Updated:        2022-01-03               ##
+## Author:         AISK11                   ##
+##############################################
+
+
+####################
+##     CLEAR      ##
+####################
 ## Security clear:
 clear
 
@@ -170,6 +183,7 @@ export LESS='-R --use-color -Dd+r$Du+b'
 
 ## Aliases:
 alias mtr='mtr -r'
+
 
 #####################
 ## ALIAS FUNCTIONS ##
