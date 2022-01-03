@@ -159,10 +159,11 @@ Make sure, that Secure Boot is Disabled!
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Theory}
 \begin{itemize}
-    \item \textbf{Block:} group of sectors, every file must occupy at least 1 block. 0b file occupy whole block.
+    \item \textbf{Sector:} smallest unit size on disk. Usually 512 bytes, but some hard disks have 4096.
+    \item \textbf{Block:} Allocation size the FS uses. Cannot be smaller than size of the sector. Can be group of sectors (4096b: 8 x 512b sectors).
     \begin{itemize}
         \item \textbf{512b =} good for lot of small files. More blocks = more metadata.
-        \item \textbf{4096b =}  good for larger files, less metadata. Waste if there are small files.
+        \item \textbf{4096b =}  good for larger files, less metadata. Waste if there are mostly small files.
     \end{itemize}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,6 +174,7 @@ Make sure, that Secure Boot is Disabled!
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{user}{user\$} \textcolor{command}{lsblk} [-ap | -apf]
 \textcolor{root}{root#} \textcolor{command}{fdisk -l} [\textcolor{block}{/dev/sdX}]
+\textcolor{root}{root#} \textcolor{command}{gdisk -l} <\textcolor{block}{/dev/sdX}>
 \textcolor{root}{root#} \textcolor{command}{blkid}
 \end{Verbatim}
     \item \textbf{Get raw disk info:}
@@ -272,43 +274,61 @@ network=\{
 \}    
 \end{Verbatim}
 
-    
-    
     \item \textbf{Connect to WiFi:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{wpa_supplicant} -B -D wext -i <wlan0> 
 -c <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
 \end{Verbatim}
 \end{enumerate}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Disk Partitioning}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{GPT UEFI}
+\subsection{GPT + BIOS + UEFI + Encrypted LVM}
+\begin{itemize}
+    \item \textbf{Disk Layout:}
+\begin{Verbatim}[commandchars=\\\{\}]
++-----------+------------+---------------+------------+-----------+
+| PARTITION |    SIZE    |  FILESYSTEM   | MOUNTPOINT |   FLAGS   |
++-----------+------------+---------------+------------+-----------+
+| \textcolor{block}{/dev/sdX1} |      1 MiB |         FAT32 |       NONE | bios_grub |
++-----------+------------+---------------+------------+-----------+
+| \textcolor{block}{/dev/sdX2} |    512 MiB |         FAT32 |    \textcolor{dir}{/efi}    | boot, esp |
++-----------+------------+---------------+------------+-----------+
+| \textcolor{block}{/dev/sdX3} |  100\% FREE | crypto_LUKS 1 |
++-----------+------------+---------------+-----------+
+\end{Verbatim}
+
+\end{itemize}
 \begin{enumerate}
     \item \textbf{Get info about disks:}
 \newline See section \underline{\textbf{\ref{disk_info_gathering}}}.
 
-    \item \textbf{Create GPT Partition Table}
+    \item \textbf{Create GPT Partition Table:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> mktable gpt
 \end{Verbatim}
 
-    \item \textbf{Create Paritions:}
+    \item \textbf{Create partitions:}
     \begin{enumerate}
         \item \textbf{Enter cfdisk:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cfdisk}  <\textcolor{block}{/dev/sdX}>
+\textcolor{root}{root#} \textcolor{command}{cfdisk} <\textcolor{block}{/dev/sdX}>
 \end{Verbatim}
-        \item \textbf{Create EFI Partition (max 512MiB):}
+        \item \textbf{BIOS partition - store 2nd stage of BIOS bootloader (1 MiB):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{cfdisk>} \textcolor{command}{n}
+\textcolor{root}{cfdisk>} \textcolor{command}{1MiB}
+\textcolor{root}{cfdisk>} \textcolor{command}{t}
+\textcolor{root}{cfdisk>} \textcolor{command}{BIOS boot}
+\end{Verbatim}
+        \item \textbf{EFI partition (max 512 MiB):}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{n}
 \textcolor{root}{cfdisk>} \textcolor{command}{512MiB}
 \textcolor{root}{cfdisk>} \textcolor{command}{t}
 \textcolor{root}{cfdisk>} \textcolor{command}{EFI System}
 \end{Verbatim}
-        \item \textbf{Create Root Partition:}
+        \item \textbf{Encrypted partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{n}
 \textcolor{root}{cfdisk>} \textcolor{command}{ } (Enter)
@@ -322,42 +342,47 @@ network=\{
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{Q}
 \end{Verbatim}
-    \end{enumerate}
-
-    \item \textbf{Create filesystems:}
-    \begin{enumerate}
-        \item \textbf{Create FAT32 for EFI:}
+        \item \textbf{Name partitions:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.fat} [-F 32] [-n "EFI"] <\textcolor{block}{/dev/sdX1}>
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 1 BIOS
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 2 UEFI
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 3 LUKS
 \end{Verbatim}
-
-        \item \textbf{Create Encrypted filesystem:}
+    \end{enumerate}
+    
+    \item \textbf{Format Partitions:}
         \begin{enumerate}
-            \item \textbf{Encrypt root partition:}
+            \item \textbf{BIOS partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} [--label "LUKS"] luksFormat <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 12 <\textcolor{block}{/dev/sdX1}>
+\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX1}> <BIOS>
+\end{Verbatim}            
+            \item \textbf{EFI partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 32 <\textcolor{block}{/dev/sdX2}>
+\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX2}> <UEFI>
+\end{Verbatim}                
+            \item \textbf{Encrypted partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat --type luks1 [--label "LUKS"] 
+<\textcolor{block}{/dev/sdX3}>
+sudo cryptsetup config /dev/sdb1 --label YOURLABEL
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
 \end{Verbatim}
-            \item \textbf{Open Encrypted root partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <luks_root>
-> <PASSWORD>
-\end{Verbatim}
-        \item \textbf{Create EXT4 for Root:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} <\textcolor{command}{mkfs.ext4}|\textcolor{command}{mkfs.btrfs}> [-L "LUKS_ROOT"] 
-<\textcolor{block}{/dev/mapper/luks_root}>
-\end{Verbatim}      
         \end{enumerate}
-    \end{enumerate}
 
     \item \textbf{OPTIONAL LUKS stuff:}
     \begin{itemize}
+        \item \textbf{Open LUKS:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <luks>
+> <PASSWORD>
+\end{Verbatim}
         \item \textbf{Close LUKS:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} close <luks_root>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} close <luks>
 \end{Verbatim}
 \item \textbf{LUKS header:}
         \begin{enumerate}
@@ -382,6 +407,64 @@ network=\{
         \end{enumerate}
     \end{itemize}
 
+    \item \textbf{Create LVM partition:}
+    \begin{enumerate}
+        \item \textbf{Open Encrypted partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <luks_lvm>
+> <PASSWORD>
+\end{Verbatim}
+        \item \textbf{Create Physical Volume to be used by LVM Volume Group:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} pvcreate <\textcolor{block}{/dev/mapper/luks_lvm}>
+\end{Verbatim}
+        \item \textbf{Create LVM Volume Group \textit{vg0}:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} vgcreate <vg0> <\textcolor{block}{/dev/mapper/luks_lvm}>
+\end{Verbatim}
+        \item \textbf{Create Logical Volumes:}
+            \begin{enumerate}
+                \item \textbf{Boot partition (512 MiB):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} lvcreate -L 512MiB -n boot <vg0>
+\end{Verbatim}
+                \item \textbf{Root partition (rest of the disk):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} lvcreate -l 100\%FREE -n root <vg0>
+\end{Verbatim}
+            \end{enumerate}
+            
+    \item \textbf{Show LVM stuff:}
+    \begin{itemize}
+        \item \textbf{Physical Volumes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} pvdisplay
+\end{Verbatim}            
+        \item \textbf{Volume Groups:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} vgdisplay [vg0]
+\end{Verbatim}         
+        \item \textbf{Logical Volumes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lvm} lvdisplay
+\end{Verbatim}       
+        \end{itemize}
+    \end{enumerate}
+
+    \item \textbf{Format LVM volumes:}
+    \begin{enumerate}
+        \item \textbf{Boot Partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/vg0/boot}>
+\textcolor{root}{root#} \textcolor{command}{e2label} <\textcolor{block}{/dev/vg0/boot}> <LVM_BOOT>
+\end{Verbatim}        
+        \item \textbf{Root Partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/vg0/root}>
+\textcolor{root}{root#} \textcolor{command}{e2label} <\textcolor{block}{/dev/vg0/root}> <LVM_ROOT>
+\end{Verbatim}  
+    \end{enumerate}
+    
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mount FS}
@@ -389,16 +472,27 @@ network=\{
 \begin{enumerate}
     \item \textbf{Mount Root filesystem:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/mapper/luks_root}> <\textcolor{dir}{/mnt/}>
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/vg0/root}> <\textcolor{dir}{/mnt/}>
 \end{Verbatim}
 
     \item \textbf{Create boot dir:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/boot/}>
 \end{Verbatim}
+
     \item \textbf{Mount boot partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX1}> <\textcolor{dir}{/mnt/boot/}>
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/vg0/boot}> <\textcolor{dir}{/mnt/boot/}>
+\end{Verbatim}
+
+    \item \textbf{Create efi dir:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/efi/}>
+\end{Verbatim}
+
+    \item \textbf{Mount efi partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX2}> <\textcolor{dir}{/mnt/efi/}>
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -443,6 +537,10 @@ network=\{
 
     \item \textbf{Install packages:}
     \begin{itemize}
+        \item \textbf{Install LVM support:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S lvm2
+\end{Verbatim}
         \item \textbf{Install vim:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vim
@@ -454,7 +552,7 @@ network=\{
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
 HOOKS=(base udev autodetect modconf block \textcolor{file}{keyboard} \textcolor{file}{keymap}
-\textcolor{file}{consolefont} \textcolor{file}{numlock} \textcolor{file}{encrypt} filesystems fsck)
+\textcolor{file}{consolefont} \textcolor{file}{encrypt} \textcolor{file}{lvm2} filesystems fsck)
 ...
 \end{Verbatim}
 
@@ -470,7 +568,8 @@ HOOKS=(base udev autodetect modconf block \textcolor{file}{keyboard} \textcolor{
 \begin{enumerate}
     \item \textbf{Select timezone:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> \textcolor{file}{/etc/localtime}
+\textcolor{root}{[root#]} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> 
+\textcolor{file}{/etc/localtime}
 \end{Verbatim}
         \item \textbf{Update HW clock (generate: /etc/adjtime):}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -531,13 +630,6 @@ KEYMAP=us
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub
 \end{Verbatim}
-    \item \textbf{Make sure EFI partition is mounted!}
-\newline See section \underline{\textbf{\ref{mount_fs}}}.
-    \item \textbf{Install GRUB:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi [--boot-directory=<\textcolor{dir}{/boot/}>]
---efi-directory=<\textcolor{dir}{/boot/}> --bootloader-id=<ArchLinux> [--removable]
-\end{Verbatim}
 
     \item \textbf{Find UUID of encrypted luks fs:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -547,14 +639,77 @@ KEYMAP=us
     \item \textbf{Edit GRUB config for encryption:}
 \newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_root> \char92 
-root=</dev/mapper/luks_root>"
+...
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
+root=</dev/vg0/root>"
+...
+GRUB_ENABLE_CRYPTODISK=y
+...
+\end{Verbatim}
+
+    \item \textbf{Make sure EFI partition is mounted!}
+\newline See section \underline{\textbf{\ref{mount_fs}}}.
+
+    \item \textbf{Install GRUB for UEFI:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi --efi-directory=<\textcolor{dir}{/efi/}> 
+[--bootloader-id=<Arch_UEFI>] --recheck [--removable]
+\end{Verbatim}
+
+    \item \textbf{Make sure BOOT partition is mounted!}
+\newline See section \underline{\textbf{\ref{mount_fs}}}.
+
+    \item \textbf{Install GRUB for BIOS:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=i386-pc [--boot-directory=<\textcolor{dir}{/boot/}>] 
+[--bootloader-id=<Arch_BIOS>] --recheck <\textcolor{block}{/dev/sdX}>
 \end{Verbatim}
 
     \item \textbf{Make/Update GRUB config file:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
 \end{Verbatim}
+
+    \item \textbf{Avoid entering password twice:}
+    \begin{enumerate}
+        \item \textbf{Create LUKS key:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{mkdir} <\textcolor{dir}{/root/.luks/}>
+\textcolor{root}{[root#]} \textcolor{command}{dd} bs=512 count=4 if=<\textcolor{block}{/dev/random}> of=<\textcolor{file}{/root/.luks/key}>
+iflag=fullblock
+\textcolor{root}{[root#]} \textcolor{command}{chmod} 0000 <\textcolor{file}{/root/.luks/key}>
+\textcolor{root}{[root#]} \textcolor{command}{cryptsetup} -v luksAddKey <\textcolor{block}{/dev/sdX3}> <\textcolor{file}{/root/.luks/key}>
+\end{Verbatim}
+    \item \textbf{Add LUKS key to initramfs image:}
+\newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+FILES=(/root/.luks/key)
+...
+\end{Verbatim}
+    \item \textbf{Recreate initramfs image:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{mkinitcpio} -P
+\end{Verbatim}
+    \item \textbf{Set initramfs files privileges:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{chmod} 0600 \textcolor{file}{/boot/initramfs-linux*}
+\end{Verbatim}
+    \item \textbf{Add GRUB parameter to unlock LUKS using encrypt hook:}
+\newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
+root=</dev/vg0/root> \textcolor{file}{cryptkey=rootfs:/root/.luks/key}"
+...
+GRUB_ENABLE_CRYPTODISK=y
+...
+\end{Verbatim}
+    \item \textbf{Make/Update GRUB config file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
+\end{Verbatim}
+    \end{enumerate}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Finish installation}
@@ -622,7 +777,7 @@ blacklist pcspkr
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
 \textcolor{comment}{## Swap:}
-/swap   none    swap    defaults    0 0
+/swap   none    swap    sw    0 0
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -903,6 +1058,9 @@ GRUB_TIMEOUT=1
 GRUB_DISTRIBUTOR="Arch"
 \textcolor{comment}{## Disable recovery mode entry in GRUB menu:}
 GRUB_DISABLE_RECOVERY=true
+
+\textcolor{comment}{## Preload both GPT and MBR modules so they are not missed:}
+GRUB_PRELOAD_MODULES="part_gpt part_msdos"
 
 \textcolor{comment}{## GRUB BG image (*.jpg or *.png) - gfxterm only:}
 #GRUB_BACKGROUND="\textcolor{file}{/boot/grub/<image.png>}"
@@ -1637,6 +1795,12 @@ set showmode
     \item \textbf{FS:} ext4 -> btrfs
     \item \textbf{Encryption:} encrypted boot partition
     \item \textbf{Virtualization:} use XEN
+    \begin{itemize}
+        \item 1MiB BIOS
+        \item 512MiB ESP
+        \item LUKS
+        \item \underline{\url{https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system}}
+    \end{itemize}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1656,6 +1820,7 @@ set showmode
     \item \textbf{Booted from UEFI:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{ls /sys/firmware/efi/efivars}
+bootctl status
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
