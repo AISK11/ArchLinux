@@ -1,0 +1,23 @@
+##############################################################
+## File:           ${HOME}/.bvirc                           ##
+## Dependencies:   https://aur.archlinux.org/packages/bvi/  ##
+## Created:        2022-01-03                               ##
+## Updated:        2022-01-03                               ##
+## Author:         AISK11                                   ##
+##############################################################
+
+
+#############
+##  DOCS   ##
+#############
+"" http://bvi.sourceforge.net/set.html
+
+
+#############
+## OPTIONS ##
+#############
+"" Enable edit:
+set memmove
+
+"" Show status message bar at the bottom:
+set showmode
