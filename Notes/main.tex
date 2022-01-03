@@ -1048,7 +1048,8 @@ MAKEFLAGS="-j\$(nproc)"
     \item \textbf{Basic GRUB settings:}
 \newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## Do not rename network interfaces and preserve default ethX and wlanX names:}
+\textcolor{comment}{## Do not rename network interfaces and preserve}
+\textcolor{comment}{## default ethX and wlanX names:}
 GRUB_CMDLINE_LINUX="net.ifnames=0"
 \textcolor{comment}{## GRUB menu default option:}
 GRUB_DEFAULT=0
@@ -1059,6 +1060,13 @@ GRUB_DISTRIBUTOR="Arch"
 \textcolor{comment}{## Disable recovery mode entry in GRUB menu:}
 GRUB_DISABLE_RECOVERY=true
 
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
+
+\textcolor{comment}{## Encrypted GRUB on /boot/:}
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
+root=</dev/vg0/root> cryptkey=rootfs:/root/.luks/key"
+GRUB_ENABLE_CRYPTODISK=y
+
 \textcolor{comment}{## Preload both GPT and MBR modules so they are not missed:}
 GRUB_PRELOAD_MODULES="part_gpt part_msdos"
 
@@ -1067,10 +1075,6 @@ GRUB_PRELOAD_MODULES="part_gpt part_msdos"
 
 \textcolor{comment}{## Theme - gfxterm only:}
 #GRUB_THEME="\textcolor{file}{/boot/grub/themes/<THEME>/theme.txt}"
-
-\textcolor{comment}{## Default Debian options:GRUB_CMDLINE_LINUX}
-GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
-GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1792,15 +1796,7 @@ set showmode
     \item \textbf{Init system:} SystemD -> runit/OpenRC
     \item \textbf{X11 implementation:} Xorg -> Wayland
     \item \textbf{GPU driver:} Nvidia -> Nouveau
-    \item \textbf{FS:} ext4 -> btrfs
-    \item \textbf{Encryption:} encrypted boot partition
     \item \textbf{Virtualization:} use XEN
-    \begin{itemize}
-        \item 1MiB BIOS
-        \item 512MiB ESP
-        \item LUKS
-        \item \underline{\url{https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system}}
-    \end{itemize}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
