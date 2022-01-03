@@ -3,7 +3,7 @@
 ## Dependencies:   zsh                      ##
 ##                 zsh-syntax-highlighting  ##
 ## Created:        2022-01-03               ##
-## Updated:        2022-01-03               ##
+## Updated:        2022-01-04               ##
 ## Author:         AISK11                   ##
 ##############################################
 
@@ -16,15 +16,8 @@ clear
 
 
 ####################
-##     ENABLE     ##
+##     COLORS     ##
 ####################
-### Enable autocompletion (with supressed alias, using zsh style):
-autoload -Uz compinit
-zstyle ':completion:*' menu select
-zmodload zsh/complist
-compinit
-_comp_options+=(globdots)
-
 ### Enable colors (with supressed alias):
 autoload -U colors && colors
 
@@ -45,30 +38,23 @@ YELLOW="#ffd369"
 COLOR1=${YELLOW}
 COLOR2=${BLUE}
 
-## Command prompt:
+### Command prompt:
 ## HH:MM:SS user@fullHostName $(pwd) privState
 #export PS1="$HOUR%D{:%M:%S} %n@%M %~ %# "
 export PS1="%F{${COLOR1}}${HOUR}%D{:%M:%S} %F{${COLOR2}}%n%F{${COLOR1}}@%F{${COLOR2}}%M %F{${COLOR1}}%~ %F{$COLOR2}%# %f"
 
 
 ####################
-##    OPTIONS     ##
+##   COMPLETION   ##
 ####################
-### CHANGE DIRECTORIES:
-## DONT auto cd to dir when non-exec file specified:
-setopt AUTO_CD
-## When cd, push directory to the directory stack:
-setopt AUTO_PUSHD
-## Ignore multiple copies of the same dir on the stack:
-setopt PUSHD_IGNORE_DUPS
-## Pushd with no arguments ack like pushd ${HOME}:
-setopt PUSHD_TO_HOME
-## Do not print directory (cd -):
-setopt CD_SILENT
-## Do not print directroy stack after pushd or popd:
-setopt PUSHD_SILENT
+### Enable autocompletion (with supressed alias, using zsh style):
+autoload -Uz compinit
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+compinit
+_comp_options+=(globdots)
 
-### COMPLETION:
+### COMPLETION OPTIONS:
 ## When completion is performed, move cursor to the end of the world:
 setopt ALWAYS_TO_END
 ## Do not autolist options on 1st tab:
@@ -80,13 +66,10 @@ setopt GLOB_COMPLETE
 ## DONT append first menu result after first tab:
 setopt no_MENU_COMPLETE
 
-### GLOBBING:
-## Also treat '^', '#' and '~' as globbing:
-setopt EXTENDED_GLOB
-## Do not match dotfiles:
-setopt no_GLOB_DOTS
 
-### HISTORY:
+####################
+##    HISTORY     ##
+####################
 ## Append to history file rather then overwrite it, good with multiple zsh sessions:
 setopt APPEND_HISTORY
 ## Timestamp for history commands in history file:
@@ -105,24 +88,19 @@ export HISTFILE="${HOME}/.zsh_history"
 export HISTSIZE=2000
 export SAVEHIST=${HISTSIZE}
 
-### ZLE:
-## Use zsh line editor (default in interactive shells):
-setopt ZLE
-## Use vi-like contorlling:
-setopt VI
-
-### Keys:
-## Time in 0.0X of second for another key to be pressed when reading bound multi-char sequences:
-export KEYTIMEOUT=1
-
-### Path:
-## Add direcotries to access it's commands:
-export PATH="${PATH}"
-
 
 ####################
 ##      KEYS      ##
 ####################
+### OPTIONS:
+## Use Zsh Line Editor (default in interactive shells):
+setopt ZLE
+## Use vi-like controlling:
+setopt VI
+## Time in 0.0X of second for another key to be pressed when reading bound multi-char sequences:
+export KEYTIMEOUT=1
+
+### Map keys:
 ## Create a zkbd compatible hash:
 typeset -g -A key
 
@@ -162,6 +140,41 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
     add-zle-hook-widget -Uz zle-line-init   zle_application_mode_start
     add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
 fi
+
+
+####################
+##    CURSORS     ##
+####################
+
+
+
+####################
+##    GLOBBING    ##
+####################
+## Also treat '^', '#' and '~' as globbing:
+setopt EXTENDED_GLOB
+## Do not match dotfiles:
+setopt no_GLOB_DOTS
+### Path:
+## Add direcotries to access it's commands:
+export PATH="${PATH}"
+
+
+#########################
+## CHANGE DIRECTORIES  ##
+#########################
+## DONT auto cd to dir when non-exec file specified:
+setopt AUTO_CD
+## When cd, push directory to the directory stack:
+setopt AUTO_PUSHD
+## Ignore multiple copies of the same dir on the stack:
+setopt PUSHD_IGNORE_DUPS
+## Pushd with no arguments ack like pushd ${HOME}:
+setopt PUSHD_TO_HOME
+## Do not print directory (cd -):
+setopt CD_SILENT
+## Do not print directroy stack after pushd or popd:
+setopt PUSHD_SILENT
 
 
 ####################
@@ -213,8 +226,8 @@ ipv4_forward_no()
 ##      Xorg       ##
 #####################
 if [[ -z ${DISPLAY} ]] && [[ $(tty) == "/dev/tty1" ]]; then
-    source /etc/progile
-    startx
+    source /etc/profile
+    #startx
 fi
 
 
