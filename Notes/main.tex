@@ -283,19 +283,19 @@ network=\{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Disk Partitioning}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{GPT + BIOS + UEFI + Encrypted LVM}
+\subsection{GPT BIOS/UEFI + Encrypted LVM w boot}
 \begin{itemize}
     \item \textbf{Disk Layout:}
 \begin{Verbatim}[commandchars=\\\{\}]
 +-----------+------------+---------------+------------+-----------+
 | PARTITION |    SIZE    |  FILESYSTEM   | MOUNTPOINT |   FLAGS   |
 +-----------+------------+---------------+------------+-----------+
-| \textcolor{block}{/dev/sdX1} |      1 MiB |         FAT32 |       NONE | bios_grub |
+| \textcolor{block}{/dev/sdX1} |      1 MiB |          NONE |       NONE | bios_grub |
 +-----------+------------+---------------+------------+-----------+
-| \textcolor{block}{/dev/sdX2} |    512 MiB |         FAT32 |    \textcolor{dir}{/efi}    | boot, esp |
+| \textcolor{block}{/dev/sdX2} |    512 MiB |         FAT32 |       \textcolor{dir}{/efi} | boot, esp |
 +-----------+------------+---------------+------------+-----------+
-| \textcolor{block}{/dev/sdX3} |  100\% FREE | crypto_LUKS 1 |
-+-----------+------------+---------------+-----------+
+| \textcolor{block}{/dev/sdX3} |  100\% FREE | crypto_LUKS 1 |       NONE |      NONE |
++-----------+------------+---------------+------------+-----------+
 \end{Verbatim}
 
 \end{itemize}
@@ -353,10 +353,7 @@ network=\{
     \item \textbf{Format Partitions:}
         \begin{enumerate}
             \item \textbf{BIOS partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 12 <\textcolor{block}{/dev/sdX1}>
-\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX1}> <BIOS>
-\end{Verbatim}            
+\newline There is no filesystem.         
             \item \textbf{EFI partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 32 <\textcolor{block}{/dev/sdX2}>
@@ -366,7 +363,6 @@ network=\{
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat --type luks1 [--label "LUKS"] 
 <\textcolor{block}{/dev/sdX3}>
-sudo cryptsetup config /dev/sdb1 --label YOURLABEL
 > YES
 > <PASSWORD>
 > <PASSWORD (VERIFY)>
@@ -466,6 +462,14 @@ sudo cryptsetup config /dev/sdb1 --label YOURLABEL
     \end{enumerate}
     
 \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{GPT BIOS/UEFI + Encrypted LVM}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat [--label "LUKS"] 
+
+sudo cryptsetup config /dev/sdb1 --label YOURLABEL
+\end{Verbatim}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mount FS}
 \label{mount_fs}
@@ -1693,7 +1697,7 @@ set showmode
 \begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S zsh [zsh-autosuggestions] 
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S zsh [zsh-completions] 
 [zsh-syntax-highlighting]
 \end{Verbatim}    
     \item \textbf{Configure:}
@@ -1797,6 +1801,12 @@ set showmode
     \item \textbf{X11 implementation:} Xorg -> Wayland
     \item \textbf{GPU driver:} Nvidia -> Nouveau
     \item \textbf{Virtualization:} use XEN
+    \item \textbf{UEFI entries}
+\begin{Verbatim}[commandchars=\\\{\}]
+efibootmgr --create --disk /dev/sda --part 1 --label test 
+--loader /EFI/opensuse/grubx64.efi    
+\end{Verbatim}
+    
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
