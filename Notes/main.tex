@@ -1552,86 +1552,8 @@ require dhcp_server_identifier
 \textcolor{user}{user\$} \textcolor{command}{export} EDITOR=vim
 \end{Verbatim}
     \item \textbf{Configure vim:}
-File (\textbf{\textcolor{file}{\~/.vimrc}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"       SOUND        "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Turn off all sound:}
-set noerrorbells
-set novisualbell
-set t_vb=
-set tm=500
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"      BACKUPS       "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Turn backup off:}
-set nobackup
-set nowb
-set noswapfile
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"   TAB and SPACES   "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Preserve indentation on new line:}
-set autoindent
-\textcolor{comment}{"" Do not replace tabs with spaces:}
-set expandtab
-\textcolor{comment}{"" Tab = 4 chars:}
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-\textcolor{comment}{"" For specific file types set different tab space:}
-\textcolor{comment}{autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2}
-\textcolor{comment}{autocmd FileType css setlocal tabstop=2 shiftwidth=2 softtabstop=2}
-
-\textcolor{comment}{"""""""""""""""""""""""}
-\textcolor{comment}{"     STATUSLINE      "}
-\textcolor{comment}{"""""""""""""""""""""""}
-\textcolor{comment}{"" Always show the status line:}
-set laststatus=2
-\textcolor{comment}{"" Statusline:}
-set statusline=\%F\char92 \%p\%\%\char92 [\%l:\%c]\char92 \%M\char92 \%R\char92 \%Y\char92 \%y
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"      SCROLLING     "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Start scrolling, N lines before reach end:}
-set scrolloff=4
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"       SEARCH       "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Highlight search results:}
-set hlsearch
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"    LINE NUMBERS    "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Number lines:}
-set number
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{" PROGRAMMING SYNTAX "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Enable syntax highlighting:}
-syntax on
-\textcolor{comment}{"" Highlight trailing whitespace:}
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\char92s\char92+\$/
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{" HIGHLIGHT BRACKETS "}
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"" Show other bracket:}
-"set showmatch
-
-\textcolor{comment}{""""""""""""""""""""""}
-\textcolor{comment}{"    COLOR THEME     "}
-\textcolor{comment}{""""""""""""""""""""""}
-"colorscheme murphy
-\end{Verbatim}
+\newline File (\textbf{\textcolor{file}{\~/.vimrc}}):
+\newline See (\underline{\href{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.vimrc}{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.vimrc}})
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bvi}
