@@ -1,11 +1,12 @@
-##############################################
-## File:           ${HOME}/.zshrc           ##
-## Dependencies:   zsh                      ##
-##                 zsh-syntax-highlighting  ##
-## Created:        2022-01-03               ##
-## Updated:        2022-01-04               ##
-## Author:         AISK11                   ##
-##############################################
+######################################################
+## File:           ${HOME}/.zshrc                   ##
+## Dependencies:   zsh                              ##
+##                 zsh-syntax-highlighting          ##
+##                 zsh-completions (recommended)    ##
+## Created:        2022-01-03                       ##
+## Updated:        2022-01-04                       ##
+## Author:         AISK11                           ##
+######################################################
 
 
 ####################
