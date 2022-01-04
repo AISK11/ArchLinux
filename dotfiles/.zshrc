@@ -27,11 +27,9 @@ autoload -U colors && colors
 ####################
 ## COMMAND PROMPT ##
 ####################
-## Add leading zero to hours for command prompt:
-HOUR="%D{%K}"
-if [[ ${HOUR} != "^0" ]]; then
-    HOUR="0${HOUR}"
-fi
+## Get time in format HH:MM:SS:
+DATE_TIME=$(date '+%H:%M:%S')
+
 
 ## Define colors:
 BLUE="#2c43b8"
@@ -43,7 +41,7 @@ COLOR2=${BLUE}
 ### Command prompt:
 ## HH:MM:SS user@fullHostName $(pwd) privState
 #export PS1="$HOUR%D{:%M:%S} %n@%M %~ %# "
-export PS1="%F{${COLOR1}}${HOUR}%D{:%M:%S} %F{${COLOR2}}%n%F{${COLOR1}}@%F{${COLOR2}}%M %F{${COLOR1}}%~ %F{$COLOR2}%# %f"
+export PS1="%F{${COLOR1}}${DATE_TIME} %F{${COLOR2}}%n%F{${COLOR1}}@%F{${COLOR2}}%M %F{${COLOR1}}%~ %F{$COLOR2}%# %f"
 
 
 ####################
