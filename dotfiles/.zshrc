@@ -1,12 +1,13 @@
-######################################################
-## File:           ${HOME}/.zshrc                   ##
-## Dependencies:   zsh                              ##
-##                 zsh-syntax-highlighting          ##
-##                 zsh-completions (recommended)    ##
-## Created:        2022-01-03                       ##
-## Updated:        2022-01-04                       ##
-## Author:         AISK11                           ##
-######################################################
+##########################################################
+## File:           ${HOME}/.zshrc                       ##
+## Dependencies:   zsh                                  ##
+##                 zsh-syntax-highlighting              ##
+##                 zsh-completions (recommended)        ##
+##                 zsh-autosuggestions (recommended)    ##
+## Created:        2022-01-03                           ##
+## Updated:        2022-01-04                           ##
+## Author:         AISK11                               ##
+##########################################################
 
 
 ####################
@@ -160,6 +161,9 @@ setopt no_GLOB_DOTS
 ## Add direcotries to access it's commands:
 export PATH="${PATH}"
 
+## Support commands with '#' (comment) at the end:
+setopt interactivecomments
+
 
 #########################
 ## CHANGE DIRECTORIES  ##
@@ -233,6 +237,14 @@ fi
 
 
 #########################
+##  Autosuggestions   ##
+#########################
+## Autosuggest commands from the history:
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+
+#########################
 ## Syntax highlighting ##
 #########################
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
