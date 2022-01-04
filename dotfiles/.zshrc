@@ -30,7 +30,6 @@ autoload -U colors && colors
 ## Get time in format HH:MM:SS:
 DATE_TIME=$(date '+%H:%M:%S')
 
-
 ## Define colors:
 BLUE="#2c43b8"
 YELLOW="#ffd369"
