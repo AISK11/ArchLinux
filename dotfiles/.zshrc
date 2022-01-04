@@ -149,7 +149,6 @@ fi
 ####################
 
 
-
 ####################
 ##    GLOBBING    ##
 ####################
@@ -237,7 +236,7 @@ fi
 
 
 #########################
-##  Autosuggestions   ##
+##   Autosuggestions   ##
 #########################
 ## Autosuggest commands from the history:
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
