@@ -1,8 +1,9 @@
 """"""""""""""""""""""""""""""""""""""
 "" File:           ${HOME}/.vimrc   ""
+"" Linux distro:   Arch Linux       ""
 "" Dependencies:   vim              ""
 "" Created:        2022-01-04       ""
-"" Updated:        2022-01-04       ""
+"" Updated:        2022-01-05       ""
 "" Author:         AISK11           ""
 """"""""""""""""""""""""""""""""""""""
 
