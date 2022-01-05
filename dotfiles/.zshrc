@@ -3,8 +3,8 @@
 ## Linux distro:   Arch Linux                           ##
 ## Dependencies:   zsh                                  ##
 ##                 zsh-syntax-highlighting              ##
+##                 zsh-autosuggestions                  ##
 ##                 zsh-completions (recommended)        ##
-##                 zsh-autosuggestions (recommended)    ##
 ## Created:        2022-01-03                           ##
 ## Updated:        2022-01-05                           ##
 ## Author:         AISK11                               ##
