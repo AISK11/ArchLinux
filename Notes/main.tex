@@ -801,6 +801,33 @@ UUID=<UUID> <MOUNT_POINT> <ext4> <defaults>\textcolor{command}{,noatime,commit=6
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Install microcode}
+\begin{enumerate}
+    \item \textbf{Install microcode:}
+    \begin{itemize}
+        \item \textbf{Intel CPU:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S intel-ucode
+\end{Verbatim}        
+        \item \textbf{AMD CPU:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S amd-ucode
+\end{Verbatim}             
+    \end{itemize}
+    \item \textbf{Reconfigure GRUB to apply change:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{grub-mkconfig} -o <\textcolor{file}{/boot/grub/grub.cfg}>
+\end{Verbatim}    
+    \item \textbf{Reboot:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{reboot}
+\end{Verbatim}       
+    \item \textbf{Verify, that microcode is working:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dmesg} | \textcolor{command}{grep} "microcode"
+\end{Verbatim}   
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Create user}
 \begin{enumerate}
     \item \textbf{Set up privilege escalation:}
