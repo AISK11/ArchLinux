@@ -1,11 +1,12 @@
 ##########################################################
 ## File:           ${HOME}/.zshrc                       ##
+## Linux distro:   Arch Linux                           ##
 ## Dependencies:   zsh                                  ##
 ##                 zsh-syntax-highlighting              ##
 ##                 zsh-completions (recommended)        ##
 ##                 zsh-autosuggestions (recommended)    ##
 ## Created:        2022-01-03                           ##
-## Updated:        2022-01-04                           ##
+## Updated:        2022-01-05                           ##
 ## Author:         AISK11                               ##
 ##########################################################
 
@@ -95,7 +96,7 @@ export SAVEHIST=${HISTSIZE}
 ## Use Zsh Line Editor (default in interactive shells):
 setopt ZLE
 ## Use vi-like controlling:
-setopt VI
+bindkey -v
 ## Time in 0.0X of second for another key to be pressed when reading bound multi-char sequences:
 export KEYTIMEOUT=1
 
@@ -129,6 +130,20 @@ key[PageDown]="${terminfo[knp]}"
 [[ -n "${key[Shift-Tab]}"   ]] && bindkey -- "${key[Shift-Tab]}"    reverse-menu-complete
 [[ -n "${key[PageUp]}"      ]] && bindkey -- "${key[PageUp]}"       beginning-of-buffer-or-history
 [[ -n "${key[PageDown]}"    ]] && bindkey -- "${key[PageDown]}"     end-of-buffer-or-history
+
+## Setup keys also for VI mode:
+[[ -n "${key[Backspace]}"   ]] && bindkey -M vicmd "${key[Backspace]}"  backward-delete-char
+[[ -n "${key[Insert]}"      ]] && bindkey -M vicmd "${key[Insert]}"     overwrite-mode
+[[ -n "${key[Up]}"          ]] && bindkey -M vicmd "${key[Up]}"         up-line-or-history
+[[ -n "${key[Down]}"        ]] && bindkey -M vicmd "${key[Down]}"       down-line-or-history
+[[ -n "${key[Left]}"        ]] && bindkey -M vicmd "${key[Left]}"       backward-char
+[[ -n "${key[Right]}"       ]] && bindkey -M vicmd "${key[Right]}"      forward-char
+[[ -n "${key[Home]}"        ]] && bindkey -M vicmd "${key[Home]}"       beginning-of-line
+[[ -n "${key[End]}"         ]] && bindkey -M vicmd "${key[End]}"        end-of-line
+[[ -n "${key[Delete]}"      ]] && bindkey -M vicmd "${key[Delete]}"     delete-char
+[[ -n "${key[Shift-Tab]}"   ]] && bindkey -M vicmd "${key[Shift-Tab]}"  reverse-menu-complete
+[[ -n "${key[PageUp]}"      ]] && bindkey -M vicmd "${key[PageUp]}"     beginning-of-buffer-or-history
+[[ -n "${key[PageDown]}"    ]] && bindkey -M vicmd "${key[PageDown]}"   end-of-buffer-or-history
 
 ## Make sure that terminal is in application mode, when zle is active,
 ## otherwise $terminfo values are invalid.
