@@ -1079,34 +1079,65 @@ MAKEFLAGS="-j\$(nproc)"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{GRUB}
-\underline{\href{https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt}{Linux kernel parameters}}
-\section{Configuration}
+\section{Docs}
+\begin{itemize}
+    \item \underline{\href{https://www.gnu.org/software/grub/manual/grub/html_node/Simple-configuration.html}{GRUB simple config doc}}
+    \item \underline{\href{https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt}{Linux kernel parameters}}
+\end{itemize}
+\section{Configuration (WiP)}
 \begin{enumerate}
     \item \textbf{Basic GRUB settings:}
 \newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## Do not rename network interfaces and preserve}
-\textcolor{comment}{## default ethX and wlanX names:}
-GRUB_CMDLINE_LINUX="net.ifnames=0"
-\textcolor{comment}{## GRUB menu default option:}
-GRUB_DEFAULT=0
-\textcolor{comment}{## GRUB menu timeout:}
+\textcolor{comment}{#########################}
+\textcolor{comment}{##  GRUB MENU ENTRIES  ##}
+\textcolor{comment}{#########################}
+\textcolor{comment}{## GRUB menu timeout (-1 = infinite, 0 = skipped):}
 GRUB_TIMEOUT=1
-\textcolor{comment}{## GRUB distributor:}
-GRUB_DISTRIBUTOR="Arch"
+\textcolor{comment}{## Show menu (\textit{hidden} and \textit{countdown} waits with hidden menu):}
+GRUB_TIMEOUT_STYLE=menu
+\textcolor{comment}{## GRUB menu default option (0 = 1st option):}
+GRUB_DEFAULT=0
 \textcolor{comment}{## Disable recovery mode entry in GRUB menu:}
 GRUB_DISABLE_RECOVERY=true
-\textcolor{comment}{## Default GRUB Linux parameters:}
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
+\textcolor{comment}{## Show Menu only when Shift key is held down during GRUB's start-up,}
+\textcolor{comment}{## requires executable file /etc/grub.d/31_hold_shift:}
+GRUB_FORCE_HIDDEN_MENU="true"
 
-\textcolor{comment}{## Encrypted GRUB on /boot/:}
+\textcolor{comment}{#########################}
+\textcolor{comment}{##     ENCRYPTION      ##}
+\textcolor{comment}{#########################}
+\textcolor{comment}{## Decrypt root partition on LVM + use key used for /boot decrypt:}
 GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
-root=</dev/vg0/root> cryptkey=rootfs:/root/.luks/key"
-\textcolor{comment}{## Enable encrypted GRUB:}
+root=</dev/vg0/root> cryptkey=rootfs:</root/.luks/key">
+\textcolor{comment}{## Enable encrypted GRUB (/boot partition):}
 GRUB_ENABLE_CRYPTODISK=y
-
-\textcolor{comment}{## Preload both GPT and MBR modules so they are not missed:}
+\textcolor{comment}{## Preload both GPT and MBR modules,}
+\textcolor{comment}{## (prompt for password may not be shown without this):}
 GRUB_PRELOAD_MODULES="part_gpt part_msdos"
+
+load keymap!!!
+
+\textcolor{comment}{#########################}
+\textcolor{comment}{##        OTHER        ##}
+\textcolor{comment}{#########################}
+\textcolor{comment}{## GRUB distributor:}
+GRUB_DISTRIBUTOR="Arch"
+\textcolor{comment}{## Disable most log messages;}
+\textcolor{comment}{## Print only messages with smaller loglevel then specified;}
+\textcolor{comment}{## default ethX and wlanX names:}
+GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 net.ifnames=0 "
+
+\textcolor{comment}{#########################}
+\textcolor{comment}{##       VISUAL        ##}
+\textcolor{comment}{#########################}
+font
+colors
+background
+theme
+resolution
+
+
 
 \textcolor{comment}{## GRUB BG image (*.jpg or *.png) - gfxterm only:}
 #GRUB_BACKGROUND="\textcolor{file}{/boot/grub/<image.png>}"
@@ -1623,12 +1654,44 @@ zsh-autosuggestions [zsh-completions]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Xorg}
-\begin{enumerate}
-    \item \textbf{Install:}
-
-\end{enumerate}
-
+\chapter{Xorg WIP}
+\underline{\url{https://wiki.archlinux.org/title/Hardware_video_acceleration}}
+\underline{\url{https://wiki.archlinux.org/title/Intel_graphics}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Drivers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Detect devices:}
+\begin{itemize}
+    \item \textbf{Find GPUs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{lspci} -v | \textcolor{command}{grep} -A 1 "VGA"
+\end{Verbatim}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Intel}
+    \begin{itemize}
+        \item \textbf{Open source:}
+\begin{itemize}
+        \item \textbf{Intel GPU (open-source):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S xf86-video-intel
+\end{Verbatim}
+        \item \textbf{OpenGL support:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S mesa [lib32-mesa]
+\end{Verbatim}
+        \item \textbf{Vulkan support:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vulkan-icd-loader lib32-vulkan-icd-loader 
+vulkan-intel [lib32-vulkan-intel]
+\end{Verbatim}
+    \end{itemize}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Nvidia}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{AMD/ATI}
+Cannot test at the the time.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% i3-gaps %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
