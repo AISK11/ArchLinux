@@ -223,7 +223,44 @@ Make sure, that Secure Boot is Disabled!
 \end{Verbatim}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Connect to WiFi}
+\subsection{Connect to Internet}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Ethernet:}
+\begin{enumerate}
+    \item \textbf{Connect to internet:}
+    \begin{itemize}
+        \item \textbf{DHCP:}
+ \begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dhcpcd} <ethX>
+\end{Verbatim}       
+        \item \textbf{Static IPv4:}
+        \begin{enumerate}
+            \item \textbf{Turn down interface:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} l set <ethX> down
+\end{Verbatim}
+            \item \textbf{Assign static IP address:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} a add <IPv4_ADDRESS>/<SUBNET_MASK> dev <ethX>
+\end{Verbatim}
+            \item \textbf{Set default gateway:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} r add default via <GAEWAY_IPv4>
+\end{Verbatim}
+            \item \textbf{Set DNS:}
+\newline File (\textbf{\textcolor{file}{/etc/resolv.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+nameserver 1.1.1.1
+\end{Verbatim}
+            \item \textbf{Turn up interface:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} l set <ethX> up
+\end{Verbatim}
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{WiFi:}
 \begin{enumerate}
     \item \textbf{Enable WiFi:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -749,7 +786,7 @@ GRUB_ENABLE_CRYPTODISK=y
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Post-Installation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Disable pcspkr}
+\section{Disable pcspkr module}
 \begin{enumerate}
     \item \textbf{Blacklist pcspkr module:}
 \newline File (\textbf{\textcolor{file}{/etc/modprobe.d/blacklist.conf}}):
@@ -758,7 +795,7 @@ blacklist pcspkr
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Install microcode}
+\section{Install CPU microcode}
 \begin{enumerate}
     \item \textbf{Install microcode:}
     \begin{itemize}
@@ -785,7 +822,7 @@ blacklist pcspkr
 \end{Verbatim}   
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Create SWAP}
+\section{Create SWAP file}
 \underline{\href{https://chrisdown.name/2018/01/02/in-defence-of-swap.html}{https://chrisdown.name/2018/01/02/in-defence-of-swap.html}}
 \begin{enumerate}
     \item \textbf{Allocate size for swap file:}
@@ -828,7 +865,7 @@ UUID=<UUID> <MOUNT_POINT> <ext4> <defaults>\textcolor{command}{,noatime,commit=6
 \end{Verbatim}
 \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Create user}
+\section{Create admin group (doas)}
 \begin{enumerate}
     \item \textbf{Set up privilege escalation:}
     \begin{enumerate}
@@ -852,12 +889,20 @@ permit [nopass] :<doas>
 \textcolor{root}{root#} \textcolor{command}{ln} -sf \textcolor{file}{/usr/bin/doas} \textcolor{file}{/usr/bin/sudo}
 \end{Verbatim}
     \end{enumerate}
-    
+
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Create admin user (doas)}
+\begin{enumerate}
     \item \textbf{Create user with home directory:}
     \begin{enumerate}
         \item \textbf{Create user with home directory:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{useradd} -m [-G <doas>] [-s <\textcolor{file}{/bin/bash}>] <USER>
+\textcolor{root}{root#} \textcolor{command}{useradd} -m [-s <\textcolor{file}{/bin/bash}>] <USER>
+\end{Verbatim}
+        \item \textbf{Add user to admin \textit{doas} group:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{usermod} -aG <doas> <USER>
 \end{Verbatim}
         \item \textbf{Create password for this user:}
 \begin{Verbatim}[commandchars=\\\{\}]
