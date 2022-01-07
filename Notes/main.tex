@@ -311,6 +311,11 @@ network=\{
 \}    
 \end{Verbatim}
 
+    \item \textbf{Change WiFi file permissions:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chmod} 0600 -c <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
+\end{Verbatim}
+
     \item \textbf{Connect to WiFi:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{wpa_supplicant} -B -D wext -i <wlan0> 
@@ -1219,17 +1224,7 @@ GRUB_GFXMODE=1920x1080x32
     \end{tabular}
     \end{small}
 \end{center}
-\begin{enumerate}
-    \item \textbf{Edit customization file:}
-\newline File (\textbf{\textcolor{file}{/boot/grub/custom.cfg}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## <foreground>/<background>}
-set color_normal=white/black
-set color_highlight=black/white
-set menu_color_normal=white/black
-set menu_color_highlight=black/white
-\end{Verbatim}
-\end{enumerate}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Update GRUB}
 \label{GRUB}
