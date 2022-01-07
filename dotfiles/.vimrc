@@ -3,7 +3,7 @@
 "" Linux distro:   Arch Linux       ""
 "" Dependencies:   vim              ""
 "" Created:        2022-01-04       ""
-"" Updated:        2022-01-05       ""
+"" Updated:        2022-01-07       ""
 "" Author:         AISK11           ""
 """"""""""""""""""""""""""""""""""""""
 
@@ -38,8 +38,8 @@ set noswapfile
 """"""""""""""""""""
 "" Preserve indentation on new line:
 set autoindent
-"" Do not replace tabs with spaces:
-set expandtab
+"" If set, replaces tabs with spaces:
+"set expandtab
 "" Tab = 4 chars:
 set tabstop=4
 set shiftwidth=4
@@ -95,4 +95,3 @@ syntax on
 """"""""""""""""""""""
 "" When inserted bracket, briefly jump to matching one (is is on the screen):
 "set showmatch
-
