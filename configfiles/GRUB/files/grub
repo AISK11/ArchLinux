@@ -59,9 +59,10 @@ GRUB_FONT="/usr/share/grub/unicode.pf2"
 ## GRUB menu colors (FOREGROUND/BACKGROUND)"
 GRUB_COLOR_NORMAL="blue/black"
 GRUB_COLOR_HIGHLIGHT="black/blue"
-## Use graphics framebuffer in GRUB but revert back to text
-## before kernel is loaded (to prevent possible issues):
-GRUB_GFXPAYLOAD_LINUX=text
+## Use graphics framebuffer in GRUB;
+## keep = pass framebuffer to kernel (TTY resolution);
+## text = use if there are problems:
+GRUB_GFXPAYLOAD_LINUX=keep
 ## Select resolution:
 GRUB_GFXMODE=1920x1080x32
 ## Select image as a background:
