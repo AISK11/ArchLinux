@@ -1,2 +1,2 @@
-all: files install
+make: files install
 	bash ./install/install.sh
