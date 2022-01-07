@@ -7,8 +7,8 @@ if [[ $(whoami) != "root" ]]; then
 fi
 
 ## Get UUID of root device and replace '<UUID>' string in local grub file
-SED_TEMP_VARIABLE=$(blkid | grep "/dev/mapper/vg0-root" | egrep -o "UUID=\".*\"" | cut -d '"' -f 2)
-sed -i "s/<UUID>/${SED_TEMP_VARIABLE}/g" ./files/grub
+SED_TEMP_VARIABLE=$(blkid | egrep 'TYPE="crypto_LUKS".*PARTLABEL="LUKS"' | egrep -o "UUID=\".*\"" | cut -d '"' -f 2)
+sed -i "s/<LUKS_UUID>/${SED_TEMP_VARIABLE}/g" ./files/grub
 
 ## Copy local files to their destinations and set file permissions:
 cp ./files/grub			/etc/default/grub
