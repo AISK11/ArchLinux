@@ -61,5 +61,7 @@ GRUB_FONT="</usr/share/grub/unicode.pf2>"
 ## GRUB menu colors (FOREGROUND/BACKGROUND)"
 GRUB_COLOR_NORMAL="blue/black"
 GRUB_COLOR_HIGHLIGHT="black/blue"
+## Select image as a background:
+#GRUB_BACKGROUND="/boot/grub/<IMAGE.png>"
 
-# TO DO: background, theme, resolution
+# TO DO: theme, resolution
