@@ -22,7 +22,7 @@ GRUB_DEFAULT=0
 GRUB_DISABLE_SUBMENU=y
 ## Disable recovery mode entry in GRUB menu:
 GRUB_DISABLE_RECOVERY="true"
-## Show Menu only when Shift key is held down during GRUB’s start-up,
+## Show Menu only when Shift key is held down during GRUB start-up,
 ## requires executable file /etc/grub.d/31_hold_shift:
 GRUB_FORCE_HIDDEN_MENU="true"
 
