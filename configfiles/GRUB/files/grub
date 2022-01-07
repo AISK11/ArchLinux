@@ -29,7 +29,7 @@ GRUB_FORCE_HIDDEN_MENU="true"
 ##     ENCRYPTION      ##
 #########################
 ## Decrypt root partition on LVM + use key used for /boot decrypt:
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=4f833c66-4e12-4118-8d89-f5f5d17a23fd:luks_lvm root=/dev/vg0/root cryptkey=rootfs:/root/.luks/key"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:luks_lvm root=/dev/vg0/root cryptkey=rootfs:/root/.luks/key"
 ## Enable encrypted GRUB (/boot partition):
 GRUB_ENABLE_CRYPTODISK=y
 ## Preload both GPT and MBR modules,
