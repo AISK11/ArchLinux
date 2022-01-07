@@ -38,8 +38,6 @@ GRUB_ENABLE_CRYPTODISK=y
 ## (prompt for password may not be shown without this):
 GRUB_PRELOAD_MODULES="part_gpt part_msdos"
 
-#TO DO: load keymap!
-
 
 #########################
 ##        OTHER        ##
