@@ -18,6 +18,8 @@ GRUB_TIMEOUT=1
 GRUB_TIMEOUT_STYLE=menu
 ## GRUB menu default option (0 = 1st option):
 GRUB_DEFAULT=0
+## Disable submenus and instead show all options on main menu:
+GRUB_DISABLE_SUBMENU=y
 ## Disable recovery mode entry in GRUB menu:
 GRUB_DISABLE_RECOVERY="true"
 ## Show Menu only when Shift key is held down during GRUB’s start-up,
@@ -53,6 +55,11 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 net.ifnames=0"
 #########################
 ##       VISUAL        ##
 #########################
+## GRUB font (.pf2),
+## find available fonts with $(pacman -Ql grub | grep pf2):
+GRUB_FONT="</usr/share/grub/unicode.pf2>"
+## GRUB menu colors (FOREGROUND/BACKGROUND)"
+GRUB_COLOR_NORMAL="blue/black"
+GRUB_COLOR_HIGHLIGHT="black/blue"
 
-# TO DO: font, colors, background, theme, resolution
-
+# TO DO: background, theme, resolution
