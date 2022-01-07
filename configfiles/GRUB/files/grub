@@ -57,7 +57,7 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 net.ifnames=0"
 #########################
 ## GRUB font (.pf2),
 ## find available fonts with $(pacman -Ql grub | grep pf2):
-GRUB_FONT="</usr/share/grub/unicode.pf2>"
+GRUB_FONT="/usr/share/grub/unicode.pf2"
 ## GRUB menu colors (FOREGROUND/BACKGROUND)"
 GRUB_COLOR_NORMAL="blue/black"
 GRUB_COLOR_HIGHLIGHT="black/blue"
