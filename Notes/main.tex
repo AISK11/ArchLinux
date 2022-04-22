@@ -1,174 +1,244 @@
-\documentclass[10pt, a4paper, onecolumn, openany]{book} % openany make chapter start whenever, DELETE in OFFICIAL
+\documentclass[10pt, a4paper, onecolumn, oneside, titlepage, openany]{book}
 
-% PACKAGES:
-% Font Encoding
-\usepackage[utf8]{inputenc}     % Use UTF-8
-\usepackage[T1]{fontenc}        % T1 font encoding (latin characters)
-% Header
-\usepackage{fancyhdr}           % fancy page header options
-\usepackage{titlesec}           % used to have \thechapter in same line as \chaptertitlename
-% MISC
-\usepackage{hyperref}           % \url{}
-\usepackage{xurl}
-\usepackage{graphicx}           % images
-\usepackage{xcolor}            % colors
-\usepackage{fancyvrb}          % colors in Verbatin, header: \begin{Verbatim}[commandchars=\\\{\}]
+\usepackage[T1]{fontenc}    %% TeX text extended - most European characters
+\usepackage[utf8]{inputenc} %% UTF-8 support
+\usepackage{menukeys}       %% keyboads keys, menu + includes '\definecolor'
 
-% DECORATIVE LINES + CHAPTER IN SAME LINE:
-\renewcommand{\headrulewidth}{2pt}  % Top decorative line
-\renewcommand{\footrulewidth}{2pt}  % Bottom decorative line
-\pagestyle{fancy}                   % better header for normal pages, not only chapter ones
-\fancyhf{}                          % clear header and adjust as wanted:
-    \chead{\leftmark}               % header
-    \cfoot{Page \thepage}           % footer
-\fancypagestyle{plain}{
-\fancyhf{} 
-    \chead{\leftmark}       % header
-    \cfoot{Page \thepage}   % footer
+\usepackage{hyperref}       %% URL and reference support
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,         %% \ref{}
+    filecolor=magenta,      %% \href{run:./file.txt}{File.txt}
+    urlcolor=cyan,          %% \href{http://www.overleaf.com}{Link}
+    pdfpagemode=FullScreen,
+    pdftitle={Linux Artix}
 }
-\renewcommand{\chaptername}{}       % change word chapter to {}
-\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter.}{1em}{} % Chapter in same line as chapter name
 
-% SIZES OF SECTIONS:
-\titleformat*{\section}{\LARGE\bfseries}
-\titleformat*{\subsection}{\Large\bfseries}
-\titleformat*{\subsubsection}{\large\bfseries}
+\usepackage{titlesec}       %% chapter formatting (N. CHAPTER-NAME)
+\renewcommand{\chaptername}{}
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter.}{1em}{}
 
-% DISABLE huge space after (paragraph indent) section name before text starts:
-\setlength{\parindent}{0pt}
+\usepackage{fancyhdr}       %% decorative lines
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\pagestyle{fancy}
+\fancyhf{}
+    \chead{\leftmark}
+    \cfoot{\thepage}
+\fancypagestyle{plain}{
+\fancyhf{}
+    \chead{\leftmark}
+    \cfoot{\thepage}
+}
 
-% COLOR EXAMPLES:
-% \definecolor{MyColor}{RGB}{219, 48, 122}  % define
-% \textcolor{MyColor}{Some random text}     % usage in document
+%% table formatting
+\usepackage[format=hang,font=small,labelfont=bf]{caption} %% bold table caption
+\setlength{\arrayrulewidth}{0.5mm}                        %% border
+\setlength{\tabcolsep}{18pt}                              %% space from border (X axis)
+\renewcommand{\arraystretch}{1.5}                         %% space from border (Y axis)
+
+%% colors
+\definecolor{bg}{RGB}{240, 240, 240}
 \definecolor{root}{RGB}{222, 0, 0}
-\definecolor{user}{RGB}{0, 150, 00}
+\definecolor{user}{RGB}{0, 150, 0}
+\definecolor{command}{RGB}{41, 182, 0}
+\definecolor{block}{RGB}{255, 80, 0}
 \definecolor{dir}{RGB}{0, 100, 200}
 \definecolor{file}{RGB}{77, 187, 101}
-\definecolor{block}{RGB}{255, 80, 0}
-\definecolor{command}{RGB}{41, 182, 0}
 \definecolor{comment}{RGB}{0, 182, 182}
-\definecolor{background}{RGB}{240, 240, 240}
 
-% COLORS FOR CODE in document:
-%\begin{minted}[frame=lines,framesep=2mm,baselinestretch=1.2,fontsize=\footnotesize,linenos]{js}
-%\end{minted}
-
-% IMAGES:
-\graphicspath{./images/} % define directory
-% \includegraphics[scale=1.5]{./images/random_image.png} % usage in document
-
-% TABLE:
-% \begin{center}
-%    \begin{small}
-%    \begin{tabular}{|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
-%    \hline
-%    + & - & * & / & \% & ** & () \\
-%    \hline
-%    1 & 2 & 3 & 4 & 5 & 6 & 7 \\
-%    \hline
-%    \end{tabular}
-%    \end{small}
-%\end{center}
-
-%\titlespacing*{\section}{0pt}{1.5cm}{0.2cm}
-%\titlespacing*{\subsection}{0pt}{0.2cm}{0.2cm}
-
-% colored verbatim BG:
-%\let\oldv\verbatim
-%\let\oldendv\endverbatim
-%\def\verbatim{\par\setbox0\vbox\bgroup\oldv}
-%\def\endverbatim{\oldendv\egroup\fboxsep0pt \noindent\colorbox[gray]{0.9}{\usebox0}\par}
-% colored Verbatim BG (supported colors: https://linuxhint.com/change-text-colors-latex/):
-\renewcommand{\FancyVerbFormatLine}[1]{\colorbox{background}{#1}}
+%% code formatting
+\usepackage{fancyvrb}
+\renewcommand{\FancyVerbFormatLine}[1]{\colorbox{bg}{#1}}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TITLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{\textbf{Arch Linux}}
-\author{AISK}
-\date{January, 2022}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\title{\textbf{Linux Artix}}
+\author{AISK11}
+\date{March 2022}
+
 \begin{document}
 \maketitle
-%\clearpage % official blank page
 \tableofcontents
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Flash USB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Flash USB}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Download Arch ISO}
+
+\chapter{System Info}
+%\section{System Hardware}
+\begin{table}[!ht]
+\centering
+\begin{tabular}{|c|c|}
+    \hline
+    \textbf{Hardware} & \textbf{Value} \\
+    \hline
+    CPU architecture & amd64\\
+    CPU vendor & intel\\
+    Motherboard & UEFI\\
+    Hard Drive & NVMe\\
+    WiFi & iwlwifi\\
+    GPU & Intel + Nvidia\\
+    \hline
+\end{tabular}
+\caption{System hardware overview.}
+\label{table:1}
+\end{table}
+
+%\section{System Software}
+\begin{table}[!ht]
+\centering
+\begin{tabular}{|c|c|}
+    \hline
+    \textbf{Software} & \textbf{Value} \\
+    \hline
+    RAID & -\\
+    LVM & -\\
+    Encryption & LUKS\\
+    Root filesystem & btrfs\\
+    SWAP & 4GB (file)\\
+    Bootloader & rEFInd\\
+    Kernel & linux (artix)\\
+    Initramfs & dracut\\
+    Init & dinit\\
+    Shell & zsh\\
+    Virtualization & ?\\
+    \hline
+\end{tabular}
+\caption{System software overview.}
+\label{table:2}
+\end{table}
+
+%\section{Display Software}
+\begin{table}[!ht]
+\centering
+\begin{tabular}{|c|c|}
+    \hline
+    \textbf{Software} & \textbf{Value} \\
+    \hline
+    Display server & Xorg\\
+    Window manager & bspwm\\
+    Desktop environment & -\\
+    Terminal emulator & rxvt-unicode\\
+    \hline
+\end{tabular}
+\caption{Display software overview.}
+\label{table:3}
+\end{table}
+
+
+\chapter{Download and Boot}
+\section{Download Artix ISO}
 \begin{enumerate}
-    \item \textbf{Download Arch ISO from:}
-\newline \underline{\href{https://archlinux.org/download/}{https://archlinux.org/download/}}
-    \item \textbf{Verify Download:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{sha1sum} <\textcolor{file}{archlinux-YYYY.MM.DD-x86_64.iso}>
-\end{Verbatim}
+    \item \textbf{Download Artix ISO}
+    \begin{itemize}
+        \item \textbf{Artix download page:}
+\newline \url{https://artixlinux.org/download.php}
+        \item \textbf{Select install file:}
+\newline \menu[,]{Official ISO images, base, artix-base-dinit-<YYYYMMDD>-x86\_64.iso}
+    \end{itemize}
+    \item \textbf{Verify download: @TODO}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{USB Preparation}
 \begin{enumerate}
-    \item \textbf{Unmount FS!}
-    \item \textbf{Create Partition Table}
+    \item \textbf{Unmount USB FS!}
+    \item \textbf{Flash image to USB:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> mktable gpt
-\end{Verbatim}
-    \item \textbf{Print change:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{parted} <\textcolor{block}{/dev/sdX}> (p)rint [free]
+\textcolor{root}{root#} \textcolor{command}{dd} if=<\textcolor{file}{./artix-base-runit-<YYYYMMDD>-x86_64.iso>.iso}> of=<\textcolor{block}{/dev/sdX}>
+[bs=4M] [conv=fsync] [status=progress] && \textcolor{command}{sync}
 \end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Flash ISO to USB}
+
+\section{Boot USB}
+\subsection{Disable Secure Boot}
 \begin{enumerate}
-    \item \textbf{Unmount FS!}
-    \item \textbf{Flash to USB (/dev/sdX):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{dd} if=<\textcolor{file}{./archlinux-YYYY.MM.DD-x86_64.iso}> of=<\textcolor{block}{/dev/sdX}> 
-[bs=4M | status=progress]
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Boot Live Installer}
-\subsection{Secure Boot}
-Make sure, that Secure Boot is Disabled!
-\begin{enumerate}
-    \item \textbf{During POST press Key to access BIOS/UEFI:}
-\newline \underline{\href{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}{BIOS/UEFI Menu Keys For All Vendors}}
-    \item \textbf{Disable Secure Boot}
-    \item \textbf{Poweroff/Restart}
+    \item \textbf{During POST press key to access BIOS/UEFI:}
+\newline \href{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}
+    \item \textbf{Disable Secure Boot.}
+    \item \textbf{Poweroff/Restart.}
 \end{enumerate}
 \subsection{Boot}
 \begin{enumerate}
-    \item \textbf{Plug in Flashed USB}
-    \item \textbf{During POST press Key to access Boot Menu:}
-\newline \underline{\href{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}{Boot Menu Keys For All Vendors}}
-    \item \textbf{Select USB entry.}
+    \item \textbf{Plug in flashed USB.}
+    \item \textbf{During POST press key to access Boot Menu:}
+\newline \href{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}{https://techofide.com/blogs/boot-menu-option-keys-for-all-computers-and-laptops-updated-list-2021-techofide/}
+    \item \textbf{Select USB entry (UEFI).}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Pre-Installation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \chapter{Pre-Installation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Check Disk for bad sectors}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Login}
+\begin{itemize}
+    \item \textbf{Login to live environment:}
+\begin{Verbatim}[commandchars=\\\{\}]
+> artix
+> artix
+\end{Verbatim}
+    \item \textbf{Access root:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{sudo} passwd root
+> <NEW_ROOT_PASSWORD>
+> <NEW_ROOT_PASSWORD (VERIFY)>
+\textcolor{user}{user\$} \textcolor{command}{su} -
+\end{Verbatim}
+\end{itemize}
+
+\section{Disable pcspkr Module}
+\begin{enumerate}
+    \item \textbf{See if pcspkr is active:}  
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lsmod} | \textcolor{command}{grep} -i pcspkr
+\end{Verbatim}
+    \item \textbf{Disable pcspkr module:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{modprobe} -r pcspkr
+\end{Verbatim}
+\end{enumerate}
+
+\section{Verify UEFI}
+\begin{itemize}
+    \item \textbf{UEFI is used if following directory exists:}
+\newline \textbf{\textcolor{dir}{/sys/firmware/efi/}}
+    \item \textbf{Verify via kernel:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dmesg} | \textcolor{command}{grep} -i efi
+\end{Verbatim}
+\end{itemize}
+
+\section{Connect To The Internet}
+\begin{enumerate}
+    \item \textbf{Connect to the internet:}
+\newline See section: \underline{\textbf{\ref{network}}}.
+\end{enumerate}
+
+\section{Time Sync}
+\begin{enumerate}
+    \item \textbf{Synchronize time:}
+\newline See section: \underline{\textbf{\ref{datetime}}}.
+\end{enumerate}
+
+\section{Install Additional Software}
+\begin{enumerate}
+    \item \textbf{Synchronize database:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Syy
+\end{Verbatim}
+    \item \textbf{Install parted:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] parted
+\end{Verbatim}
+\end{enumerate}
+
+\section{Check Disk Sectors}
 \subsection{Theory}
 \begin{itemize}
-    \item \textbf{Sector:} smallest unit size on disk. Usually 512 bytes, but some hard disks have 4096.
-    \item \textbf{Block:} Allocation size the FS uses. Cannot be smaller than size of the sector. Can be group of sectors (4096b: 8 x 512b sectors).
+    \item \textbf{Sector:} smallest unit size on disk. 512 or 4096 bytes (Advanced Format). 4096 Advanced Format disks have usually 512-byte conversion firmware.
+    \item \textbf{Block:} allocation size the FS uses. Cannot be smaller than size of the sector. Can be group of sectors (4096b: 8 x 512b sectors).
     \begin{itemize}
         \item \textbf{512b =} good for lot of small files. More blocks = more metadata.
         \item \textbf{4096b =}  good for larger files, less metadata. Waste if there are mostly small files.
     \end{itemize}
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Disk Info gathering}
-\label{disk_info_gathering}
+\subsection{Disk Information}
 \begin{itemize}
     \item \textbf{Find disks (block devices):}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -179,13 +249,17 @@ Make sure, that Secure Boot is Disabled!
 \end{Verbatim}
     \item \textbf{Get raw disk info:}
     \begin{itemize}
+        \item \textbf{Get disk physical sector size:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getpbsz <\textcolor{block}{/dev/sdX[Y]}>
+\end{Verbatim}
+        \item \textbf{Get disk logical sector size (usually 512):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getss <\textcolor{block}{/dev/sdX[Y]}>
+\end{Verbatim}
         \item \textbf{Disk size in bytes:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getsize64 <\textcolor{block}{/dev/sdX[Y]}>
-\end{Verbatim}        
-    \item \textbf{Disk block size in bytes:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{blockdev} [-v] --getbsz <\textcolor{block}{/dev/sdX[Y]}>
 \end{Verbatim}
     \item \textbf{Check if disk is readonly (1 = ro, 0 = rw):}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -194,875 +268,992 @@ Make sure, that Secure Boot is Disabled!
     \end{itemize}
     \item \textbf{See partitions:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{parted} <\textcolor{block}{/dev/sdX}> (p)rint [free]
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> (p)rint [free]
 \end{Verbatim}
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Check Disk for bad sectors}
+\subsection{Check Disk For Bad Sectors}
 \begin{enumerate}
     \item \textbf{Unmount FS!}
     \item \textbf{Check disk for bad blocks:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{badblocks} [-b 4096] [-w [-t 0xaa]] [-v] [-s] 
+\textcolor{root}{root#} \textcolor{command}{badblocks} [-b 4096] [-w [-t 0xaa]] [-v] [-s]
 <\textcolor{block}{/dev/sdX[Y]}> | \textcolor{command}{tee} -a <\textcolor{file}{OUTPUT_FILE}>
 \end{Verbatim}
 \end{enumerate}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Installation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Installation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{ISO specific}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Remove pcspkr}
-\begin{itemize}
-    \item \textbf{Remove pcspkr module:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{modprobe} -r pcspkr
-\end{Verbatim}
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Connect to Internet}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Ethernet:}
-\begin{enumerate}
-    \item \textbf{Connect to internet:}
-    \begin{itemize}
-        \item \textbf{DHCP:}
- \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{dhcpcd} <ethX>
-\end{Verbatim}       
-        \item \textbf{Static IPv4:}
-        \begin{enumerate}
-            \item \textbf{Turn down interface:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ip} l set <ethX> down
-\end{Verbatim}
-            \item \textbf{Assign static IP address:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ip} a add <IPv4_ADDRESS>/<SUBNET_MASK> dev <ethX>
-\end{Verbatim}
-            \item \textbf{Set default gateway:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ip} r add default via <GAEWAY_IPv4>
-\end{Verbatim}
-            \item \textbf{Set DNS:}
-\newline File (\textbf{\textcolor{file}{/etc/resolv.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-nameserver 1.1.1.1
-\end{Verbatim}
-            \item \textbf{Turn up interface:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ip} l set <ethX> up
-\end{Verbatim}
-        \end{enumerate}
-    \end{itemize}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{WiFi:}
-\begin{enumerate}
-    \item \textbf{Enable WiFi:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{rfkill} unblock wlan
-\end{Verbatim}
-    \item \textbf{Start services:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{systemctl} start wpa\_supplicant.service dhcpcd.service
-\end{Verbatim}
-    \item \textbf{Configure WiFi:}
-\newline File (\textbf{\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-ctrl_interface=/run/wpa_supplicant
-update_config=1
-country=<2-LETTER-ISO-CODE>
-
-\textcolor{comment}{# WPA-PSK protected:}
-network=\{
-    ssid="<ESSID>"
-    scan_ssid=1 \textcolor{comment}{# Find hidden network}
-    key_mgmt=WPA-PSK
-    {psk="<PLAINTEXT-PASSWD>"}
-    \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
-    priority=1 \textcolor{comment}{# To which WiFi connect first}
-\}
-
-\textcolor{comment}{# WPA-EAP protected::}
-network=\{
-        ssid="<ESSID>"
-        scan_ssid=1 \textcolor{comment}{# Find hidden network}
-        key_mgmt=WPA-EAP
-        \textcolor{comment}{#eap=PEAP}
-        identity="<USERNAME>@<DOMAIN>"
-        password="<PLAINTEXT-PASSWD>"
-        \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
-        \textcolor{comment}{#ca_cert="/etc/cert/ca.pem"}
-        \textcolor{comment}{#phase1="peaplabel=0"}
-        phase2="auth=MSCHAPV2"
-        priority=2 \textcolor{comment}{# To which WiFi connect first}
-\}
-
-\textcolor{comment}{# Unprotected:}
-network=\{
-    ssid="<ESSID>"
-    scan_ssid=1 \textcolor{comment}{# Find hidden network}
-    key_mgmt=NONE
-    priority=3 \textcolor{comment}{# To which WiFi connect first}
-\}    
-\end{Verbatim}
-
-    \item \textbf{Connect to WiFi:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{wpa_supplicant} -B -D wext -i <wlan0> 
--c <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Disk Partitioning}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{GPT BIOS/UEFI + Encrypted LVM w boot}
-\begin{itemize}
-    \item \textbf{Disk Layout:}
-\begin{Verbatim}[commandchars=\\\{\}]
-+-----------+------------+---------------+------------+-----------+
-| PARTITION |    SIZE    |  FILESYSTEM   | MOUNTPOINT |   FLAGS   |
-+-----------+------------+---------------+------------+-----------+
-| \textcolor{block}{/dev/sdX1} |      1 MiB |          NONE |       NONE | bios_grub |
-+-----------+------------+---------------+------------+-----------+
-| \textcolor{block}{/dev/sdX2} |    512 MiB |         FAT32 |       \textcolor{dir}{/efi} | boot, esp |
-+-----------+------------+---------------+------------+-----------+
-| \textcolor{block}{/dev/sdX3} |  100\% FREE | crypto_LUKS 1 |       NONE |      NONE |
-+-----------+------------+---------------+------------+-----------+
-\end{Verbatim}
-
-\end{itemize}
+\begin{figure}[ht]
+    \begin{center}
+        \includegraphics[width=40mm]{./src/img/gpt1.png}
+        \includegraphics[width=75mm]{./src/img/gpt2.png}
+        \caption{GPT Partition Table.}
+        \label{fig:1}
+    \end{center}
+\end{figure}
+\subsection{Partition Table}
 \begin{enumerate}
-    \item \textbf{Get info about disks:}
-\newline See section \underline{\textbf{\ref{disk_info_gathering}}}.
-
-    \item \textbf{Create GPT Partition Table:}
+    \item \textbf{Unmount FS from disk on which linux will be installed!}
+    \item \textbf{Create GPT partition table:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> mktable gpt
 \end{Verbatim}
-
-    \item \textbf{Create partitions:}
-    \begin{enumerate}
-        \item \textbf{Enter cfdisk:}
+\end{enumerate}
+\subsection{Basic Partitions}
+\begin{enumerate}
+    \item \textbf{Enter cfdisk:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cfdisk} <\textcolor{block}{/dev/sdX}>
 \end{Verbatim}
-        \item \textbf{BIOS partition - store 2nd stage of BIOS bootloader (1 MiB):}
+    \item \textbf{Create EFI partition (recommended 550 MiB):}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{n}
-\textcolor{root}{cfdisk>} \textcolor{command}{1MiB}
-\textcolor{root}{cfdisk>} \textcolor{command}{t}
-\textcolor{root}{cfdisk>} \textcolor{command}{BIOS boot}
-\end{Verbatim}
-        \item \textbf{EFI partition (max 512 MiB):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{cfdisk>} \textcolor{command}{n}
-\textcolor{root}{cfdisk>} \textcolor{command}{512MiB}
+\textcolor{root}{cfdisk>} \textcolor{command}{550MiB}
 \textcolor{root}{cfdisk>} \textcolor{command}{t}
 \textcolor{root}{cfdisk>} \textcolor{command}{EFI System}
 \end{Verbatim}
-        \item \textbf{Encrypted partition:}
+    \item \textbf{Create encrypted partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{n}
-\textcolor{root}{cfdisk>} \textcolor{command}{ } (Enter)
-\end{Verbatim}        
-        \item \textbf{Write Changes:}
+\textcolor{root}{cfdisk>} \textcolor{command}{} (Enter)
+\end{Verbatim}
+    \item \textbf{Write changes:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{W}
 \textcolor{root}{cfdisk>} \textcolor{command}{yes}
 \end{Verbatim}
-        \item \textbf{Quit cfdisk:}
+    \item \textbf{Quit cfdisk:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{cfdisk>} \textcolor{command}{Q}
 \end{Verbatim}
-        \item \textbf{Name partitions:}
+    \item \textbf{Name partitions:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 1 GRUB_BIOS
-\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 2 ESP
-\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 3 LUKS
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 1 ESP
+\textcolor{root}{root#} \textcolor{command}{parted} -s <\textcolor{block}{/dev/sdX}> name 2 LUKS
+\end{Verbatim}
+    \item \textbf{Format partitions:}
+    \begin{enumerate}
+        \item \textbf{ESP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 32 <\textcolor{block}{/dev/sdX1}>
+\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX1}> <ESP>
+\end{Verbatim}
+        \item \textbf{LUKS:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat --label <LUKS> <\textcolor{block}{/dev/sdX2}>
+> YES
+> <NEW_LUKS_PASSWORD>
+> <NEW_LUKS_PASSWORD (VERIFY)>
 \end{Verbatim}
     \end{enumerate}
-    
-    \item \textbf{Format Partitions:}
-        \begin{enumerate}
-            \item \textbf{BIOS partition:}
-\newline There is no filesystem.         
-            \item \textbf{EFI partition:}
+\end{enumerate}
+    \subsection{(Advanced LUKS Stuff)}
+\begin{itemize}
+    \item \textbf{Open LUKS:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.fat} -F 32 <\textcolor{block}{/dev/sdX2}>
-\textcolor{root}{root#} \textcolor{command}{fatlabel} <\textcolor{block}{/dev/sdX2}> <ESP>
-\end{Verbatim}                
-            \item \textbf{Encrypted partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat --type luks1 <\textcolor{block}{/dev/sdX3}>
-> YES
-> <PASSWORD>
-> <PASSWORD (VERIFY)>
-\end{Verbatim}
-        \end{enumerate}
-
-    \item \textbf{OPTIONAL LUKS stuff:}
-    \begin{itemize}
-        \item \textbf{Open LUKS:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <luks>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <luks>
 > <PASSWORD>
 \end{Verbatim}
-        \item \textbf{Close LUKS:}
+    \item \textbf{Close LUKS:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} close <luks>
 \end{Verbatim}
-\item \textbf{LUKS header:}
-        \begin{enumerate}
-            \item \textbf{See LUKS header:}
+    \item \textbf{LUKS header:}
+    \begin{enumerate}
+        \item \textbf{See LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} luksDump <\textcolor{block}{/dev/sdX2}>
 \end{Verbatim}
-            \item \textbf{Make LUKS header backup:}
+        \item \textbf{Make LUKS header backup:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderBackup <\textcolor{block}{/dev/sdX2}>
 --header-backup-file <\textcolor{file}{FILE}>
 \end{Verbatim}
-            \item \textbf{Destroy LUKS header :}
+        \item \textbf{Destroy LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{cryptsetup} luksErase <\textcolor{block}{/dev/sdX2}>
+> YES
 \end{Verbatim}
-            \item \textbf{restore LUKS header:}
+        \item \textbf{Restore LUKS header:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX2}> 
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksHeaderRestore <\textcolor{block}{/dev/sdX2}>
 --header-backup-file <\textcolor{file}{FILE}>
+> YES
 \end{Verbatim}
-        \end{enumerate}
-    \end{itemize}
-
-    \item \textbf{Create LVM partition:}
-    \begin{enumerate}
-        \item \textbf{Open Encrypted partition:}
+    \end{enumerate}
+    \item \textbf{Passwords}
+    \begin{itemize}
+        \item \textbf{Change password:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX3}> <luks_lvm>
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksChangeKey <\textcolor{block}{/dev/sdX2}>
+> <OLD_PASSWORD>
+> <NEW_PASSWORD>
+> <NEW_PASSWORD (VERIFY)>
+\end{Verbatim}
+    \end{itemize}
+\end{itemize}
+\subsection{Encrypted Partition}
+\begin{figure}[ht]
+    \begin{center}
+        \includegraphics[width=75mm]{./src/img/btrfs.png}
+        \caption{Btrfs structure.}
+        \label{fig:2}
+    \end{center}
+\end{figure}
+\begin{enumerate}
+    \item \textbf{Open encrypted partition:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{cryptsetup} open --type luks <\textcolor{block}{/dev/sdX2}> <luks-root>
 > <PASSWORD>
 \end{Verbatim}
-        \item \textbf{Create Physical Volume to be used by LVM Volume Group:}
+    \item \textbf{Format root partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} pvcreate <\textcolor{block}{/dev/mapper/luks_lvm}>
+\textcolor{root}{root#} \textcolor{command}{mkfs.btrfs} <\textcolor{block}{/dev/mapper/luks-root}>
+\textcolor{root}{root#} \textcolor{command}{btrfs} filesystem label <\textcolor{block}{/dev/mapper/luks-root}> <LUKS-ROOT>
 \end{Verbatim}
-        \item \textbf{Create LVM Volume Group \textit{vg0}:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} vgcreate <vg0> <\textcolor{block}{/dev/mapper/luks_lvm}>
-\end{Verbatim}
-        \item \textbf{Create Logical Volumes:}
-            \begin{enumerate}
-                \item \textbf{Boot partition (512 MiB):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} lvcreate -L 512MiB -n boot <vg0>
-\end{Verbatim}
-                \item \textbf{Root partition (rest of the disk):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} lvcreate -l 100\%FREE -n root <vg0>
-\end{Verbatim}
-            \end{enumerate}
-            
-    \item \textbf{Show LVM stuff:}
-    \begin{itemize}
-        \item \textbf{Physical Volumes:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} pvdisplay
-\end{Verbatim}            
-        \item \textbf{Volume Groups:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} vgdisplay [vg0]
-\end{Verbatim}         
-        \item \textbf{Logical Volumes:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{lvm} lvdisplay
-\end{Verbatim}       
-        \end{itemize}
-    \end{enumerate}
-
-    \item \textbf{Format LVM volumes:}
-    \begin{enumerate}
-        \item \textbf{Boot Partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/vg0/boot}>
-\textcolor{root}{root#} \textcolor{command}{e2label} <\textcolor{block}{/dev/vg0/boot}> <LVM_BOOT>
-\end{Verbatim}        
-        \item \textbf{Root Partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkfs.ext4} <\textcolor{block}{/dev/vg0/root}>
-\textcolor{root}{root#} \textcolor{command}{e2label} <\textcolor{block}{/dev/vg0/root}> <LVM_ROOT>
-\end{Verbatim}  
-    \end{enumerate}
-    
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{GPT BIOS/UEFI + Encrypted LVM (WIP!)}
-THIS SECTION IS WORK IN PROGRESS!!!
 
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cryptsetup} luksFormat [--label "LUKS"] 
-
-sudo cryptsetup config /dev/sdb1 --label YOURLABEL
-\end{Verbatim}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Mount FS}
-\label{mount_fs}
+\section{Base Artix Installation}
 \begin{enumerate}
-    \item \textbf{Mount Root filesystem:}
+    \item \textbf{Create mount directory:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/vg0/root}> <\textcolor{dir}{/mnt/}>
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/artix/}>
 \end{Verbatim}
-
-    \item \textbf{Create boot dir:}
+    \item \textbf{Mount Artix:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/boot/}>
+\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/mapper/luks-root}> <\textcolor{dir}{/mnt/artix/}>
 \end{Verbatim}
+    \item \textbf{Install packages to new directory:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{basestrap} <\textcolor{dir}{/mnt/artix/}> base
+\end{Verbatim}
+\end{enumerate}
 
+\section{Chroot}
+\begin{enumerate}
+    \item \textbf{Mount all filesystems:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mount} -t proc \textcolor{dir}{/proc/} <\textcolor{dir}{/mnt/artix/proc/}>
+\textcolor{root}{root#} \textcolor{command}{mount} --rbind \textcolor{dir}{/sys/} <\textcolor{dir}{/mnt/artix/sys/}>
+\textcolor{root}{root#} \textcolor{command}{mount} --make-rslave <\textcolor{dir}{/mnt/artix/sys/}>
+\textcolor{root}{root#} \textcolor{command}{mount} --rbind \textcolor{dir}{/dev/} <\textcolor{dir}{/mnt/artix/dev/}>
+\textcolor{root}{root#} \textcolor{command}{mount} --make-rslave <\textcolor{dir}{/mnt/artix/dev/}>
+\textcolor{root}{root#} \textcolor{command}{mount} --bind \textcolor{dir}{/run/} <\textcolor{dir}{/mnt/artix/run/}>
+\textcolor{root}{root#} \textcolor{command}{mount} --make-slave <\textcolor{dir}{/mnt/artix/run/}>
+\end{Verbatim}
+    \item \textbf{Chroot:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chroot} <\textcolor{dir}{/mnt/artix/}> \textcolor{file}{/bin/bash}
+\textcolor{root}{root#} \textcolor{command}{source} \textcolor{file}{/etc/profile}
+\textcolor{root}{root#} \textcolor{command}{export} PS1="(chroot) \$\{PS1\}"
+\end{Verbatim}
     \item \textbf{Mount boot partition:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/vg0/boot}> <\textcolor{dir}{/mnt/boot/}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX1}> \textcolor{dir}{/boot/}
 \end{Verbatim}
-
-    \item \textbf{Create efi dir:}
+    \item \textbf{Add DNS server:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/mnt/efi/}>
-\end{Verbatim}
-
-    \item \textbf{Mount efi partition:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} <\textcolor{block}{/dev/sdX2}> <\textcolor{dir}{/mnt/efi/}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{echo} "nameserver 1.1.1.1" > \textcolor{file}{/etc/resolv.conf}
 \end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Install Arch}
+
+\section{Pacman Configuration}
 \begin{enumerate}
-    \item \textbf{Check Mirrors:}
+    \item \textbf{Add additional Arch packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{cat} \textcolor{file}{/etc/pacman.d/mirrorlist}
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] artix-archlinux-support
 \end{Verbatim}
+    \item \textbf{Pacman configuration:}
+\newline File (\textbf{\textcolor{file}{/etc/pacman.conf}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/artix/pacman.conf}
+    \item \textbf{Synchronize new repos [and update]:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Syy[u]
+\end{Verbatim}
+\end{enumerate}
 
-    \item \textbf{Download Arch:}
-\newline This installs BASE packages, LINUX kernel and common LINUX-FIRMWARE for common hardware:
+\section{Additional Packages}
+\begin{itemize}
+    \item \textbf{Text editor:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacstrap} <\textcolor{dir}{/mnt/}> base linux [linux-firmware] 
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] vim
 \end{Verbatim}
+    \item \textbf{Git:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] git
+\end{Verbatim}
+    \item \textbf{Partitioning}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] parted
+\end{Verbatim}
+    \item \textbf{Filesystems:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] dosfstools cryptsetup 
+btrfs-progs
+\end{Verbatim}
+    \item \textbf{Bootloader:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] refind
+\end{Verbatim}
+     \item \textbf{Initramfs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Rns mkinitcpio
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] dracut
+\end{Verbatim}
+    \item \textbf{Microcode:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] intel-ucode
+\end{Verbatim}
+    \item \textbf{Kernel and drivers:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] linux linux-firmware
+\end{Verbatim}
+    \item \textbf{Init:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] dinit elogind elogind-dinit
+\end{Verbatim}
+    \item \textbf{Networking:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] ethtool wpa_supplicant
+[iw] dhcpcd
+\end{Verbatim}
+\end{itemize}
 
-    \item \textbf{Generate fstab:}
+\section{SWAP File}
+\begin{enumerate}
+    \item \textbf{Allocate space on COW filesystem:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{genfstab} -U <\textcolor{dir}{/mnt/}> >> \textcolor{file}{/mnt/etc/fstab}
+\textcolor{root}{(chroot) root#} \textcolor{command}{truncate} -s 0 <\textcolor{file}{/swap}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{chattr} +C <\textcolor{file}{/swap}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{fallocate} -l 2G <\textcolor{file}{/swap}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{chmod} 0600 <\textcolor{file}{/swap}>
 \end{Verbatim}
+    \item \textbf{Make SWAP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{mkswap} <\textcolor{file}{/swap}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{swapon} <\textcolor{file}{/swap}>
+\end{Verbatim}
+\end{enumerate}
 
-    \item \textbf{Chroot into arch:}
-    \begin{enumerate}
-        \item \textbf{Mount filesystems:}
+\section{Fstab and Crypttab}
+\subsection{Fstab}
+\begin{enumerate}
+    \item \textbf{Find UUIDs for block devices:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mount} -t proc \textcolor{dir}{/proc/} <\textcolor{dir}{/mnt/proc/}>
-\textcolor{root}{root#} \textcolor{command}{mount} --rbind \textcolor{dir}{/sys/} <\textcolor{dir}{/mnt/sys/}>
-\textcolor{root}{root#} \textcolor{command}{mount} --make-rslave <\textcolor{dir}{/mnt/sys/}>
-\textcolor{root}{root#} \textcolor{command}{mount} --rbind \textcolor{dir}{/dev/} <\textcolor{dir}{/mnt/dev/}>
-\textcolor{root}{root#} \textcolor{command}{mount} --make-rslave <\textcolor{dir}{/mnt/dev/}>
+\textcolor{root}{(chroot) root#} \textcolor{command}{blkid}
 \end{Verbatim}
-        \item \textbf{Chroot to root filesystem:}
+    \item \textbf{Configure fstab:}
+\newline File (\textbf{\textcolor{file}{/etc/fstab}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{chroot} <\textcolor{dir}{/mnt/}> \textcolor{file}{/bin/bash}
+\textcolor{comment}{## <partition>  <mount>   <fs>  <options>        <dump> <pass>}
+LABEL=ESP       /boot/    vfat  umask=0077       0 1
+LABEL=LUKS-ROOT /         btrfs defaults,noatime 0 0
+/swap           none      swap  defaults         0 0
 \end{Verbatim}
-    \end{enumerate}
+\end{enumerate}
+\subsection{Crypttab}
+\begin{enumerate}
+    \item \textbf{Add root filesystem partition to crypttab:}
+\newline File (\textbf{\textcolor{file}{/etc/crypttab}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## </dev/mapper/name> <device>              <password>  <options>}
+luks-root             UUID=<UUID_/dev/sdX2> none        luks
+\end{Verbatim}
+\end{enumerate}
 
-    \item \textbf{Set up DNS for chrooted environment:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{echo} "nameserver 1.1.1.1" > \textcolor{dir}{/etc/resolv.conf}
-\end{Verbatim}
+\section{Local Settings}
+\begin{enumerate}
+    \item \textbf{Configure local settings:}
+\newline See section: \underline{\textbf{\ref{local_settings}}}.
+\end{enumerate}
 
-    \item \textbf{Install packages:}
+\section{Boot}
+\subsection{ESP File Structure}
+\begin{enumerate}
+    \item \textbf{Create directories for entries:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{mkdir} -p <\textcolor{dir}{/boot/EFI/BOOT/}> <\textcolor{dir}{/boot/EFI/artix/}>
+\end{Verbatim}
+    \item \textbf{Remove auto-generated initramfs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{rm} \textcolor{file}{/boot/init*}
+\end{Verbatim}
+    \item \textbf{Move microcode to correct directory:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{mv} \textcolor{file}{/boot/intel-ucode.img} <\textcolor{dir}{/boot/EFI/artix/}>
+\end{Verbatim}
+    \item \textbf{Move kernel to linux directory:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{mv} \textcolor{file}{/boot/vmlinuz-linux} <\textcolor{dir}{/boot/EFI/artix/}>
+\end{Verbatim}
+\end{enumerate}
+\subsection{Initramfs}
+\begin{enumerate}
+    \item \textbf{Add numlock module to dracut modules directory:}
+\newline \url{https://github.com/AISK11/Artix/tree/main/configs/dracut/50numlock}
+\newline (Original author: \url{https://github.com/FivEawE/dracut-numlock})
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{git} clone https://www.github.com/aisk11/artix
+\textcolor{root}{(chroot) root#} \textcolor{command}{cp} -r <\textcolor{dir}{./artix/configs/dracut/50numlock/}>
+\textcolor{dir}{/usr/lib/dracut/modules.d/}
+\end{Verbatim}
+    \item \textbf{Find kernel version:}
     \begin{itemize}
-        \item \textbf{Install LVM support:}
+        \item \textbf{Kernel version in boot:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S lvm2
+\textcolor{root}{(chroot) root#} \textcolor{command}{file} <\textcolor{file}{/boot/EFI/artix/vmlinuz-linux}>
 \end{Verbatim}
-        \item \textbf{Install vim:}
+        \item \textbf{Available kernels:}
+\newline \textbf{\textcolor{dir}{/lib/modules/}}
+    \end{itemize}
+    \item \textbf{Generate initramfs:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vim
+\textcolor{root}{(chroot) root#} \textcolor{command}{dracut} -f <\textcolor{file}{/boot/EFI/artix/initramfs-linux.img}>
+--kver <5.16.16-artix1-1> -H
+\end{Verbatim}
+\end{enumerate}
+\subsection{Bootloader}
+\begin{enumerate}
+    \item \textbf{Copy rEFInd to ESP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{cp} \textcolor{file}{/usr/share/refind/refind_x64.efi} <\textcolor{dir}{/boot/EFI/BOOT/}>
+\end{Verbatim}
+    \item \textbf{Copy rEFInd to fallback:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{cp} <\textcolor{file}{/boot/EFI/BOOT/refind_x64.efi}> <\textcolor{file}{/boot/EFI/BOOT/BOOTX64.EFI}>
+\end{Verbatim}
+    \item \textbf{Copy default rEFInd icons and fonts:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{cp} -r \textcolor{dir}{/usr/share/refind/icons/} \textcolor{dir}{/usr/share/refind/fonts/}
+<\textcolor{dir}{/boot/EFI/BOOT/}>
+\end{Verbatim}
+    \item \textbf{Copy rEFInd config file:}
+    \begin{itemize}
+        \item \textbf{Github:}
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/refind/refind.conf}
+        \item \textbf{Default rEFInd file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{(chroot) root#} \textcolor{command}{cp} \textcolor{file}{/usr/share/refind/refind.conf-sample}
+<\textcolor{file}{/boot/EFI/BOOT/refind.conf}>
 \end{Verbatim}
     \end{itemize}
+    \item \textbf{Add manual entry to refind config file:}
+\newline File (\textbf{\textcolor{file}{/boot/EFI/BOOT/refind.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+scanfor manual,internal,external,optical
 
-    \item \textbf{Add encrypted support to mkinitcpio:}
-\newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-HOOKS=(base udev autodetect modconf block \textcolor{file}{keyboard} \textcolor{file}{keymap}
-\textcolor{file}{consolefont} \textcolor{file}{encrypt} \textcolor{file}{lvm2} filesystems fsck)
-...
+menuentry "Artix" \{
+    #volume  "ESP"
+    icon    /EFI/BOOT/themes/refind-theme/icons/128-48/os_artix.png
+    loader  /EFI/artix/vmlinuz-linux
+    options "initrd=/EFI/artix/intel-ucode.img \char92
+    initrd=/EFI/artix/initramfs-linux.img rw root=/dev/mapper/luks-root quiet"
+    submenuentry "Debug" \{
+        options "initrd=/EFI/artix/intel-ucode.img \char92
+        initrd=/EFI/artix/initramfs-linux.img rw root=/dev/mapper/luks-root \char92
+        rd.debug"
+    \}
+    #disabled
+\}
 \end{Verbatim}
-
-    \item \textbf{Recreate initramfs with encrypted support:}
+    \item \textbf{Create efibootmgr entry for rEFInd:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{mkinitcpio} -P
+\textcolor{root}{(chroot) root#} \textcolor{command}{efibootmgr} -c -d <\textcolor{block}{/dev/sdX}> -p 1
+-l <\textcolor{file}{/EFI/BOOT/refind_x64.efi}> -L <"rEFInd"> -v
 \end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Customize settings}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Time}
-\begin{enumerate}
-    \item \textbf{Select timezone:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> 
-\textcolor{file}{/etc/localtime}
-\end{Verbatim}
-        \item \textbf{Update HW clock (generate: /etc/adjtime):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{hwclock} --systohc
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Locales}
+    \item \textbf{Apply rEFInd theme:}
     \begin{enumerate}
-        \item \textbf{Select locales:}
-\newline File (\textbf{\textcolor{file}{/etc/locale.gen}}):
+        \item \textbf{Create directory for themes:}
 \begin{Verbatim}[commandchars=\\\{\}]
-...
-en_US.UTF-8 UTF-8
-en_US ISO-8859-1
-...
+\textcolor{root}{(chroot) root#} \textcolor{command}{mkdir} <\textcolor{dir}{/boot/EFI/BOOT/themes/}>
 \end{Verbatim}
-        \item \textbf{Generate locales:}
+        \item \textbf{Copy theme to themes directory:}
+\newline \url{https://github.com/AISK11/Artix/tree/main/configs/refind/themes/refind-theme}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{locale-gen}
-\end{Verbatim}      
-        \item \textbf{Set language:}
-\newline File (\textbf{\textcolor{file}{/etc/locale.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-LANG=en_US.UTF-8
-\end{Verbatim}
-        \item \textbf{Set keyboard:}
-\newline File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-KEYMAP=us
-\end{Verbatim}
-    \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Network}
-        \begin{enumerate}
-            \item \textbf{Set hostname:}
-\newline File (\textbf{\textcolor{file}{/etc/hostname}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-<HOSTNAME>
-\end{Verbatim}
-            \item \textbf{Install network packages:}
-            \begin{itemize}
-                \item \textbf{Install WiFi control:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S wpa_supplicant
-\end{Verbatim}
-                \item \textbf{Install DHCP client:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dhcpcd
-\end{Verbatim}
-            \end{itemize}
-
-    \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Install bootloader}
-\begin{enumerate}
-    \item \textbf{Download packages:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S efibootmgr grub
-\end{Verbatim}
-
-    \item \textbf{Find UUID of encrypted luks fs:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{blkid} | \textcolor{command}{grep} "crypto_LUKS"
-\end{Verbatim}    
-
-    \item \textbf{Edit GRUB config for encryption:}
-\newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
-root=</dev/vg0/root>"
-...
-GRUB_ENABLE_CRYPTODISK=y
-...
-\end{Verbatim}
-
-    \item \textbf{Make sure EFI partition is mounted!}
-\newline See section \underline{\textbf{\ref{mount_fs}}}.
-
-    \item \textbf{Install GRUB for UEFI:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=x86_64-efi --efi-directory=<\textcolor{dir}{/efi/}> 
-[--bootloader-id=<Arch_UEFI>] --recheck [--removable]
-\end{Verbatim}
-
-    \item \textbf{Make sure BOOT partition is mounted!}
-\newline See section \underline{\textbf{\ref{mount_fs}}}.
-
-    \item \textbf{Install GRUB for BIOS:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-install} --target=i386-pc [--boot-directory=<\textcolor{dir}{/boot/}>] 
-[--bootloader-id=<Arch_BIOS>] --recheck <\textcolor{block}{/dev/sdX}>
-\end{Verbatim}
-
-    \item \textbf{Make/Update GRUB config file:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
-\end{Verbatim}
-
-    \item \textbf{Avoid entering password twice:}
-    \begin{enumerate}
-        \item \textbf{Create LUKS key:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{mkdir} <\textcolor{dir}{/root/.luks/}>
-\textcolor{root}{[root#]} \textcolor{command}{dd} bs=512 count=4 if=<\textcolor{block}{/dev/random}> of=<\textcolor{file}{/root/.luks/key}>
-iflag=fullblock
-\textcolor{root}{[root#]} \textcolor{command}{chmod} 0000 <\textcolor{file}{/root/.luks/key}>
-\textcolor{root}{[root#]} \textcolor{command}{cryptsetup} -v luksAddKey <\textcolor{block}{/dev/sdX3}> <\textcolor{file}{/root/.luks/key}>
-\end{Verbatim}
-    \item \textbf{Add LUKS key to initramfs image:}
-\newline File (\textbf{\textcolor{file}{/etc/mkinitcpio.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-FILES=(/root/.luks/key)
-...
-\end{Verbatim}
-    \item \textbf{Recreate initramfs image:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{mkinitcpio} -P
-\end{Verbatim}
-    \item \textbf{Set initramfs files privileges:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{chmod} 0600 \textcolor{file}{/boot/initramfs-linux*}
-\end{Verbatim}
-    \item \textbf{Add GRUB parameter to unlock LUKS using encrypt hook:}
-\newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<UUID>:<luks_lvm> \char92 
-root=</dev/vg0/root> \textcolor{file}{cryptkey=rootfs:/root/.luks/key}"
-...
-GRUB_ENABLE_CRYPTODISK=y
-...
-\end{Verbatim}
-    \item \textbf{Make/Update GRUB config file:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
+\textcolor{root}{(chroot) root#} \textcolor{command}{git} clone https://www.github.com/aisk11/artix
+\textcolor{root}{(chroot) root#} \textcolor{command}{cp} -r <\textcolor{dir}{./artix/configs/refind/themes/refind-theme/}>
+<\textcolor{dir}{/boot/EFI/BOOT/themes/}>
 \end{Verbatim}
     \end{enumerate}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Finish installation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Root Password}
+
+
+\section{Root User}
 \begin{enumerate}
-    \item \textbf{Create root password:}
+    \item \textbf{Set password for root user:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{passwd} root
-> <PASSWORD>
-> <PASSWORD-VERIFY>
+\textcolor{root}{(chroot) root#} \textcolor{command}{passwd} root
+> <NEW_ROOT_PASSWORD>
+> <NEW_ROOT_PASSWORD (VERIFY)>
 \end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Finish installation}
+
+\section{Finishing}
 \begin{enumerate}
-    \item \textbf{Exit chroot:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{[root#]} \textcolor{command}{exit}
-\end{Verbatim}
-    \item \textbf{Umount disk partitions:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{umount} -R <\textcolor{dir}{/mnt/}>
-\end{Verbatim}
     \item \textbf{Reboot:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{poweroff}
+\textcolor{root}{(chroot) root#} \textcolor{command}{reboot}
 \end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Post-Installation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \chapter{Post-Installation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Disable pcspkr module}
+\section{Blacklist pcspkr}
 \begin{enumerate}
-    \item \textbf{Blacklist pcspkr module:}
+    \item \textbf{See if pcspkr is in use:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lsmod} | \textcolor{command}{grep} -i pcspkr
+\end{Verbatim}
+    \item \textbf{Add pcspkr to blacklisted file:}
 \newline File (\textbf{\textcolor{file}{/etc/modprobe.d/blacklist.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
 blacklist pcspkr
 \end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Install CPU microcode}
-\begin{enumerate}
-    \item \textbf{Install microcode:}
-    \begin{itemize}
-        \item \textbf{Intel CPU:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S intel-ucode
-\end{Verbatim}        
-        \item \textbf{AMD CPU:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S amd-ucode
-\end{Verbatim}             
-    \end{itemize}
-    \item \textbf{Reconfigure GRUB to apply change:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{grub-mkconfig} -o <\textcolor{file}{/boot/grub/grub.cfg}>
-\end{Verbatim}    
-    \item \textbf{Reboot:}
+    \item \textbf{Reboot PC:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{reboot}
-\end{Verbatim}       
-    \item \textbf{Verify, that microcode is working:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{dmesg} | \textcolor{command}{grep} "microcode"
-\end{Verbatim}   
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Create SWAP file}
-\underline{\href{https://chrisdown.name/2018/01/02/in-defence-of-swap.html}{https://chrisdown.name/2018/01/02/in-defence-of-swap.html}}
-\begin{enumerate}
-    \item \textbf{Allocate size for swap file:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{fallocate} -l <2GB> \textcolor{file}{/swap}
-\end{Verbatim}
-        \item \textbf{Set permissions for swap file:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{chmod} 0600 \textcolor{file}{/swap}
-\end{Verbatim}
-    \item \textbf{Make swap file:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkswap} \textcolor{file}{/swap}
-\end{Verbatim}
-    \item \textbf{Activate swap file:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{swapon} \textcolor{file}{/swap}
-\end{Verbatim}
-    \item \textbf{Add swap file to fstab:}
-\newline File (\textbf{\textcolor{file}{/etc/fstab}}:)    
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-\textcolor{comment}{## Swap:}
-/swap   none    swap    sw    0 0
 \end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Improve EXT4 performance}
+
+\section{Create doas group}
 \begin{enumerate}
-    \item \textbf{Add parameters to ext4:}
-    \begin{itemize}
-        \item Do not update atime for files (applies also nodiratime).
-        \item Change journal commiting from default 5 seconds to 60.
-    \end{itemize}
-File (\textbf{\textcolor{file}{/etc/fstab}}):
+    \item \textbf{Install doas:}
 \begin{Verbatim}[commandchars=\\\{\}]
-...
-UUID=<UUID> <MOUNT_POINT> <ext4> <defaults>\textcolor{command}{,noatime,commit=60} <FSCK>
-...
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Create admin group (doas)}
-\begin{enumerate}
-    \item \textbf{Set up privilege escalation:}
-    \begin{enumerate}
-        \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S doas
-\end{Verbatim}
-        \item \textbf{Create group for privilege escalation:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{groupadd} <doas>
-\end{Verbatim}
-        \item \textbf{Create privilege rules for \textit{doas} group:}
-\newline File (\textbf{\textcolor{file}{/etc/doas.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## <permit|deny> [nopass|persist] [USER]:[GROUP] [as <USER2>]}
-\textcolor{comment}{[cmd <COMMAND> [args <ARGUMENTS>]}
-permit [nopass] :<doas>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] opendoas
+\textcolor{root}{root#} [\textcolor{command}{yes}] | \textcolor{command}{pacman} -Rns sudo
 \end{Verbatim}
     \item \textbf{Create symlink for apps that needs sudo:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{ln} -sf \textcolor{file}{/usr/bin/doas} \textcolor{file}{/usr/bin/sudo}
 \end{Verbatim}
-    \end{enumerate}
-
+    \item \textbf{Create group for privilege escalation:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{groupadd} <doas>
+\end{Verbatim}
+    \item \textbf{Add rights to the group:}
+\newline File (\textbf{\textcolor{file}{/etc/doas.conf}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/doas/doas.conf}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## <permit|deny> [nopass|persist] <USER>[:GROUP] [as <USER2>]}
+\textcolor{comment}{[cmd <COMMAND> [args <ARGUMENTS>]}
+permit nopass :doas
+\end{Verbatim}
+    \item \textbf{Change read permissions for doas config file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chmod} 0600 \textcolor{file}{/etd/doas.conf}
+\end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Create admin user (doas)}
+
+\section{Create non-root user}
 \begin{enumerate}
     \item \textbf{Create user with home directory:}
-    \begin{enumerate}
-        \item \textbf{Create user with home directory:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{useradd} -m [-s <\textcolor{file}{/bin/bash}>] <USER>
+\textcolor{root}{root#} \textcolor{command}{useradd} -m <USER>
+\textcolor{root}{root#} \textcolor{command}{passwd} <USER>
+> <NEW_USER_PASSWORD>
+> <NEW_USER_PASSWORD (VERIFY)>
 \end{Verbatim}
-        \item \textbf{Add user to admin \textit{doas} group:}
+    \item \textbf{Add user to the doas group:}
 \begin{Verbatim}[commandchars=\\\{\}]
 \textcolor{root}{root#} \textcolor{command}{usermod} -aG <doas> <USER>
 \end{Verbatim}
-        \item \textbf{Create password for this user:}
+\end{enumerate}
+
+\section{Additional Basic Tools}
+\begin{itemize}
+    \item \textbf{Manuals:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{passwd} <USER>
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] man-db man-pages tldr
+\textcolor{user}{user\$} \textcolor{command}{tldr} -u
+\end{Verbatim}    
+    \item \textbf{Hardware monitoring:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] usbutils inxi
+\end{Verbatim}
+    \item \textbf{System monitoring:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] htop neofetch ncdu tree
+\end{Verbatim}
+    \item \textbf{Networking:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] mtr
+\end{Verbatim}
+    \item \textbf{File management:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] zip unzip
+\end{Verbatim}
+    \item \textbf{Multimedia:}
+    \begin{itemize}
+        \item \textbf{Music:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] mpv youtube-dl ffmpeg
+\end{Verbatim}        
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Local Settings}
+\label{local_settings}
+\section{Hostname}
+Valid hostname characters: \textbf{a-z}, \textbf{0-9} and hyphens (\textbf{-}), but not on start.
+\begin{enumerate}
+    \item \textbf{Set hostname:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{echo} "<HOSTNAME>" > \textcolor{file}{/etc/hostname}
+\end{Verbatim}    
+\end{enumerate}
+
+\section{Date \& Time}
+\label{datetime}
+\subsection{Timezone}
+\begin{enumerate}
+    \item \textbf{List timezones:}
+\newline \textbf{\textcolor{dir}{/usr/share/zoneinfo/}}
+    \item \textbf{Set timezone:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> \textcolor{file}{/etc/localtime}
+\end{Verbatim}   
+\end{enumerate}
+\subsection{System Clock}
+\begin{enumerate}
+    \item \textbf{Show current datetime:}
+    \begin{itemize}
+        \item \textbf{Default:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{date}
+\end{Verbatim}   
+        \item \textbf{ISO 8601 (YYYY-MM-DDThh:mm:ss(+|-)xx:xx):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{date} '+\%Y-\%m-\%dT\%H:\%M:\%S\%:z'
+\end{Verbatim}
+        \item \textbf{Hardware clock (RTC):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{hwclock}
+\end{Verbatim}
+    \end{itemize}
+    \item \textbf{Set time:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{date} <MMDDhhmmYYYY>
+\end{Verbatim}
+    \item \textbf{Update hwclock (RTC):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{hwclock} --systohc
+\end{Verbatim}
+\end{enumerate}
+
+\section{Locales}
+\begin{enumerate}
+    \item \textbf{Show current locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{locale}
+\end{Verbatim}
+    \item \textbf{Supported locales:}
+\newline \textbf{\textcolor{dir}{/usr/share/i18n/locales/}}
+    \item \textbf{Choose locales:}
+\newline File (\textbf{\textcolor{file}{/etc/locale.gen}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+en_DK.UTF-8 UTF-8
+en_DK ISO-8859-1
+en_GB.UTF-8 UTF-8
+en_GB ISO-8859-1
+...
+en_US.UTF-8 UTF-8
+en_US ISO-885-1
+...
+\end{Verbatim}
+    \item \textbf{Generate locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{locale-gen}
+\end{Verbatim}
+    \item \textbf{Show all available locales:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{locale} -a
+\end{Verbatim}
+    \item \textbf{Set system locale:}
+\newline File (\textbf{\textcolor{file}{/etc/locale.conf}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/artix/locale.conf}
+    \item \textbf{Apply changes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{reboot}
+\end{Verbatim}
+\end{enumerate}
+
+\section{CLI Keyboard}
+Dracut initramfs will include keymap and font on initramfs on next re-generation!
+\begin{itemize}
+    \item \textbf{Keymap:}
+    \begin{enumerate}
+        \item \textbf{List all available keyboards:}
+\newline \textbf{\textcolor{dir}{/usr/share/kbd/keymaps/[i386/]}}
+        \item \textbf{Set CLI keyboard language:}
+\newline File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+KEYMAP=us
+\end{Verbatim}
+    \item \textbf{Apply changes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{reboot}
 \end{Verbatim}
     \end{enumerate}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Package Manager %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Package Manager}
-\underline{\href{https://wiki.archlinux.org/title/Pacman/Rosetta}{https://wiki.archlinux.org/title/Pacman/Rosetta}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Settings}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Select mirrors}
-\begin{itemize}
-    \item \textbf{Select Mirrors:}
-\newline File (\textbf{\textcolor{file}{/etc/pacman.d/mirrorlist}}).
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Configure pacman}
-\begin{itemize}
-    \item \textbf{Select Mirrors:}
-\newline File (\textbf{\textcolor{file}{/etc/pacman.conf}}):
+    \item \textbf{Font:}
+    \begin{enumerate}
+        \item \textbf{Show current CLI font:}
 \begin{Verbatim}[commandchars=\\\{\}]
-...
-\textcolor{comment}{### Ignore during update:}
-\textcolor{comment}{## Ignore package from being updated:}
-#IgnorePkg=<PKG> [PKG2]
-\textcolor{comment}{## Do not touch file when upgrading:}
-#NoUpgrade=</PATH/TO/FILE> [/PATH/TO/FILE2]
+\textcolor{user}{user\$} \textcolor{command}{showconsolefont}
+\end{Verbatim}
+        \item \textbf{Show available fonts:}
+\newline \textbf{\textcolor{dir}{/usr/share/kbd/consolefonts/}}
+        \item \textbf{Set font:}
+        \begin{itemize}
+            \item \textbf{Temporary:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{setfont} <lat2-16>
+\end{Verbatim}
+            \item \textbf{Permanently:}
+\newline File (\textbf{\textcolor{file}{/etc/vconsole.font}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+FONT=eurlatgr
+\end{Verbatim}
+        \end{itemize}
+        \item \textbf{Apply changes:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{reboot}
+\end{Verbatim}
+    \end{enumerate}
+\end{itemize}
 
-\textcolor{comment}{###  Misc:}
-\textcolor{comment}{## Allow colors:}
-Color
-\textcolor{comment}{## Check for available disk space:}
-CheckSpace
-\textcolor{comment}{## Verbose info for download and update:}
-VerbosePkgLists
-\textcolor{comment}{## Easter egg:}
-ILoveCandy
-...
-\textcolor{comment}{## Allow multilib:}
-[multilib]
-Include = /etc/pacman.d/mirrorlist
-...
-\end{Verbatim}
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Pacman}
+
+\chapter{Dinit}
+\section{List services}
 \begin{itemize}
-    \item \textbf{Packages:}
-\newline \underline{\href{https://archlinux.org/packages/}{https://archlinux.org/packages/}}
+    \item \textbf{List all services:}
+\newline \textbf{\textcolor{dir}{/etc/dinit.d/}}
+    \item \textbf{List all loaded services:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dinitctl} list
+\end{Verbatim}
+    \item \textbf{Status of a service:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dinitctl} status <SERVICE>
+\end{Verbatim}
 \end{itemize}
-\subsection{Update PKG}
+
+\section{Start/Stop}
 \begin{itemize}
-    \item \textbf{Update system:}
+    \item \textbf{Start service:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Syu
+\textcolor{root}{root#} \textcolor{command}{dinitctl} start <SERVICE>
 \end{Verbatim}
-    \item \textbf{Update system and do not use cache if used few minutes ago:}
+    \item \textbf{Stop service:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Syyu
-\end{Verbatim} 
+\textcolor{root}{root#} \textcolor{command}{dinitctl} stop <SERVICE>
+\end{Verbatim}
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{List PKGs}
+
+\section{Enable/Disable}
 \begin{itemize}
-    \item \textbf{List all installed PKGs:}
+    \item \textbf{List enabled services:}
+\newline \textbf{\textcolor{dir}{/etc/dinit.d/boot.d/}}
+    \item \textbf{Enable service on startup:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Q[q]
+\textcolor{root}{root#} \textcolor{command}{dinitctl} enable <SERVICE>
 \end{Verbatim}
-    \item \textbf{List specifically installed PKGs:}
+    \item \textbf{Disable service on startup:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Qe[q]
-\end{Verbatim}
-    \item \textbf{List unneeded dependencie PKGs:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Qdt[q]
+\textcolor{root}{root#} \textcolor{command}{dinitctl} disable <SERVICE>
 \end{Verbatim}
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Search PKG}
+
+\section{Logs}
 \begin{itemize}
-    \item \textbf{Search packages that contains word in title/description:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Ss[q] <WORD>
-\end{Verbatim}
-    \item \textbf{Search installed packages that contains word in title/description:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -Qs[q] <WORD>
-\end{Verbatim} 
+    \item \textbf{See logs for services:}
+\newline \textbf{\textcolor{dir}{/var/log/dinit/}}    
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Install PKG}
-\begin{itemize}
-    \item \textbf{Install specific package:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S <PKG> [PKG2]
-\end{Verbatim}
-    \item \textbf{Install specific package from different repository:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S <REPO>/<PKG>
-\end{Verbatim}
-    \item \textbf{Install packages matching regex:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S \$(pacman -Ssq "<REGEX>")
-\end{Verbatim}
-    \item \textbf{Install packages with similar pattern:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} [--need] -S <plasma-\{desktop,nm\}>
-\end{Verbatim}    
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Remove PKG}
-\begin{itemize}
-    \item \textbf{Remove specific package:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -R <PKG>
-\end{Verbatim}
-    \item \textbf{Remove specific package with it's dependencies:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Rs <PKG>
-\end{Verbatim}
-    \item \textbf{Remove specific package with it's dependencies and system config files (not dotfiles):}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Rns <PKG>
-\end{Verbatim}
-    \item \textbf{Remove old versions of installed packages:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Sc[c]
-\end{Verbatim}
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{PKG Licenses}
+
+
+\chapter{Network}
+\label{network}
+\section{Rfkill}
 \begin{enumerate}
+    \item \textbf{List rfkill rules:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{rfkill} list
+\end{Verbatim}    
+    \item \textbf{Block all RF devices:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{rfkill} block all
+\end{Verbatim}
+\end{enumerate}
+
+\section{Ethernet}
+\subsection{Monitoring}
+\begin{itemize}
+    \item \textbf{Show link info:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ethtool} <eth0>
+\end{Verbatim}
+\end{itemize}
+\subsection{Connect}
+\begin{enumerate}
+    \item \textbf{Put interface logically UP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} l set <eth0> up
+\end{Verbatim}
+    \item \textbf{Connect to network:}
+    \begin{itemize}
+        \item \textbf{Static IP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} a add <10.0.0.11>/<24> dev <eth0>
+\textcolor{root}{root#} \textcolor{command}{ip} r add default via <10.0.0.1> [dev <eth0>]
+\end{Verbatim}
+        \item \textbf{DHCP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dhcpcd} <eth0>
+\end{Verbatim}
+    \end{itemize}
+\end{enumerate}
+
+\section{Wi-Fi}
+\subsection{Configuration}
+\begin{enumerate}
+    \item \textbf{Configure wpa\_supplicant:}
+\newline File (\textbf{\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/wpa_supplicant/wpa_supplicant.conf}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{comment}{## Basic settings (needed to be able to launch wpa_cli).}
+ctrl_interface=/run/wpa_supplicant
+update_config=1
+
+\textcolor{comment}{## Country for wireless channels (2 letter ISO country code, e.g. DK = Denmark).}
+country=DK
+
+\textcolor{comment}{## UNPROTECTED:}
+network=\{
+  ssid="<ESSID>"
+  scan_ssid=1                 \textcolor{comment}{## Find hidden network}
+  key_mgmt=NONE
+  priority=3                  \textcolor{comment}{## Connection priority}
+\}
+
+\textcolor{comment}{## WPA-PSK:}
+network=\{
+  ssid="<ESSID>"
+  scan_ssid=1                 \textcolor{comment}{## Find hidden network}
+  key_mgmt=WPA-PSK
+  psk="<PASSWORD>"
+  #psk=<32byte-HEX-NUMBER>
+  priority=1                  \textcolor{comment}{## Connection priority}
+\}
+
+\textcolor{comment}{## WPA-EAP:}
+network=\{
+  ssid="<ESSID>"
+  scan_ssid=1                 \textcolor{comment}{## Find hidden network}
+  key_mgmt=WPA-EAP
+  #eap=PEAP
+  identity="<EMAIL@ADDRESS>"
+  password="<PASSWORD>"
+  #psk=<32byte-HEX-NUMBER>
+  #ca_cert="/etc/cert/ca.pem"
+  #phase1="peaplabel=0"
+  phase2="auth=MSCHAPV2"
+  priority=2                  \textcolor{comment}{## Connection priority}
+\}
+\end{Verbatim}    
+    \item \textbf{Change config file permissions:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{chmod} 0600 <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
+\end{Verbatim}
+\end{enumerate}
+\subsection{Connect}
+\begin{enumerate}
+    \item \textbf{Unblock Wi-Fi in rfkill:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{rfkill} unblock wlan
+\end{Verbatim}
+    \item \textbf{Put interface logically UP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} l set <wlan0> up
+\end{Verbatim}
+    \item \textbf{Find ESSID:}
+    \begin{enumerate}
+        \item \textbf{Run wpa\_supplicant process:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{wpa\_supplicant} -B -D wext -i <wlan0>
+-c <\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}>
+\end{Verbatim}        
+        \item \textbf{See available interfaces and select one:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{wpa_cli} interface
+\textcolor{root}{root#} \textcolor{command}{wpa_cli} interface <wlan0>
+\end{Verbatim}
+        \item \textbf{Show current wireless link status:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{wpa_cli} status
+\textcolor{user}{user\$} \textcolor{command}{iw} <wlan0> link
+\end{Verbatim}
+         \item \textbf{See current wlan status and scan for networks:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{wpa_cli} scan
+\textcolor{root}{root#} \textcolor{command}{wpa_cli} scan_results
+\end{Verbatim}
+        \item \textbf{Add ESSID to <\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}>.}
+    \item \textbf{Remove current wpa\_supplicant process to avoid problems:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{ps} -ef | \textcolor{command}{grep} '<wlan0>' | \textcolor{command}{grep} 'wpa_supplicant'
+\textcolor{root}{root#} \textcolor{command}{kill} -9 <PID>
+\textcolor{root}{root#} \textcolor{command}{rm} -f <\textcolor{file}{/run/wpa_supplicant/<wlan0>}>
+\end{Verbatim}
+    \end{enumerate}
+    \item \textbf{Connect to configured ESSID:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{wpa\_supplicant} -B -D wext -i <wlan0>
+-c <\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}>
+\end{Verbatim}
+    \item \textbf{Connect to network:}
+    \begin{itemize}
+        \item \textbf{Static IP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{ip} a add <10.0.0.11>/<24> dev <wlan0>
+\textcolor{root}{root#} \textcolor{command}{ip} r add default via <10.0.0.1> [dev <wlan0>]
+\end{Verbatim}
+        \item \textbf{DHCP:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dhcpcd} <wlan0>
+\end{Verbatim}
+    \end{itemize}
+\end{enumerate}
+
+\section{DHCP}
+\subsection{Configuration}
+\begin{enumerate}
+    \item \textbf{Configuration file:}
+\newline File (\textbf{\textcolor{file}{/etc/dhcpcd.conf}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/dhcpcd/dhcpcd.conf}
+\end{enumerate}
+
+\section{DNS}
+DNS resolvers list: \url{https://www.privacytools.io/#dns}
+\begin{enumerate}
+    \item \textbf{Configure DNS server list:}
+\newline File (\textbf{\textcolor{file}{/etc/resolv.conf}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/configs/artix/resolv.conf}
+\end{enumerate}
+
+\section{Bluetooth @TODO}
+
+
+\chapter{Pacman}
+\section{Files}
+\begin{itemize}
+    \item \textbf{Configuration:}
+    \begin{itemize}
+        \item \textbf{\textcolor{file}{/etc/pacman.conf}}
+    \end{itemize}
+    \item \textbf{Mirrors:}
+    \begin{itemize}
+        \item \textbf{\textcolor{file}{/etc/pacman.d/mirrorlist}} 
+        \item \textbf{\textcolor{file}{/etc/pacman.d/mirrorlist-arch}}
+    \end{itemize}
+\end{itemize}
+\section{Update System}
+\begin{enumerate}
+    \item \textbf{Synchronize DB and upgrade pkgs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Syyu
+\end{Verbatim}
+    \item \textbf{Remove all files from cache:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Scc
+\end{Verbatim}
+\end{enumerate}
+
+\section{Install Packages}
+\begin{enumerate}
+    \item \textbf{Search for a package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Ss[q] <REGEX>
+\end{Verbatim}
+    \item \textbf{Show info about package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Sii <PACKAGE>
+\end{Verbatim}
     \item \textbf{Install package:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S expac
-\end{Verbatim}    
-    \item \textbf{Query package to see its license:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{expac} [-Ss|-Qs] '\% - \%n' <REGEX>
-\end{Verbatim}       
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] <PACKAGE>
+\end{Verbatim}   
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{AUR}
-\underline{\href{https://aur.archlinux.org/}{https://aur.archlinux.org/}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Manual Installation:}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Setting up}
-\begin{enumerate}
-    \item \textbf{Install:}
+
+\section{List Packages}
+\begin{itemize}
+    \item \textbf{List all installed packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S base-devel git
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Q[q]
 \end{Verbatim}
+    \item \textbf{List explicitly installed packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qe[q]
+\end{Verbatim}
+    \item \textbf{List installed dependency packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qd[q]
+\end{Verbatim}
+    \item \textbf{List unrequired [optional] dependencies:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qdt[t][q]
+\end{Verbatim}
+    \item \textbf{Search within locally installed packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qs[q] <REGEX>
+\end{Verbatim}
+    \item \textbf{Show info about installed package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qii <PACKAGE>
+\end{Verbatim}
+\end{itemize}
+
+\section{Package Files}
+\begin{itemize}
+    \item \textbf{Check for missing files:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qk[k] [PACKAGE]
+\end{Verbatim}
+    \item \textbf{Show which package owns the file:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Qo <FILE>
+\end{Verbatim}
+    \item \textbf{List all files of an installed package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Ql <PACKAGE>
+\end{Verbatim}    
+    \item \textbf{List all files of a remote package:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Fyy
+\textcolor{user}{user\$} \textcolor{command}{pacman} -Fl <PACKAGE>
+\end{Verbatim}    
+\end{itemize}
+
+\section{Remove Packages}
+\begin{itemize}
+    \item \textbf{Uninstall package with dependencies and config files):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -Rns <PACKAGE>
+\end{Verbatim}   
+\end{itemize}
+
+
+\chapter{AUR}
+\label{AUR}
+\section{Setting Up}
+\begin{enumerate}
+    \item \textbf{Install dependencies:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] base-devel
+\end{Verbatim} 
     \item \textbf{Change compilation variables:}
-\newline File (\textcolor{file}{/etc/makepkg.conf}):
+\newline File (\textbf{\textcolor{file}{/etc/makepkg.conf}}):
 \begin{Verbatim}[commandchars=\\\{\}]
 ...
 MAKEFLAGS="-j\$(nproc)"
@@ -1070,34 +1261,29 @@ MAKEFLAGS="-j\$(nproc)"
 \end{Verbatim}
     \item \textbf{Create directory for AUR packages:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/etc/AUR/}>
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/aur/}>
 \end{Verbatim}
-    \item \textbf{Transfer directory ownership:}
+    \item \textbf{Transfer directory ownership to doas group:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{chown} -R :doas <\textcolor{dir}{/etc/AUR/}>
+\textcolor{root}{root#} \textcolor{command}{chown} -R :doas <\textcolor{dir}{/aur/}>
 \end{Verbatim}
-    \item \textbf{Make directory writable for \textit{doas} group:}
+    \item \textbf{Make directory writable for doas group:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{chmod} -R 0775 <\textcolor{dir}{/etc/AUR/}>
+\textcolor{root}{root#} \textcolor{command}{chmod} -R 0775 <\textcolor{dir}{/aur/}>
 \end{Verbatim}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Install package}
-\label{aur_install}
+
+\section{Install Package}
 \begin{enumerate}
     \item \textbf{Find package in AUR repository:}
-\newline \underline{\href{https://aur.archlinux.org/}{https://aur.archlinux.org/}}
-    \item \textbf{Navigate to \textit{AUR} directory:}
+\newline \url{https://aur.archlinux.org/}
+    \item \textbf{Clone AUR package to AUR directory:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{/etc/AUR/}>
-\end{Verbatim}
-    \item \textbf{Clone AUR package:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{git} clone <\underline{\href{https://aur.archlinux.org/bvi.git}{https://aur.archlinux.org/bvi.git}}>
+\textcolor{user}{user\$} \textcolor{command}{git} clone <\underline{\href{https://aur.archlinux.org/bvi.git}{https://aur.archlinux.org/bvi.git}}> <\textcolor{dir}{/aur/bvi/}>
 \end{Verbatim}
     \item \textbf{Go to cloned directory:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{./bvi/}>
+\textcolor{user}{user\$} \textcolor{command}{cd} <\textcolor{dir}{/aur/bvi/}>
 \end{Verbatim}
     \item \textbf{Check AUR package content:}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -1120,768 +1306,674 @@ MAKEFLAGS="-j\$(nproc)"
     \end{enumerate}
 \end{enumerate}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRUB %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{GRUB}
-\section{Docs}
-\begin{itemize}
-    \item \underline{\href{https://www.gnu.org/software/grub/manual/grub/html_node/Simple-configuration.html}{GRUB simple config doc}}
-    \item \underline{\href{https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt}{Linux kernel parameters}}
-\end{itemize}
-\section{Configuration (WiP)}
+\section{DEB Packages}
 \begin{enumerate}
-    \item \textbf{Basic GRUB settings:}
-\newline File (\textbf{\textcolor{file}{/etc/default/grub}}):
+    \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{#########################}
-\textcolor{comment}{##  GRUB MENU ENTRIES  ##}
-\textcolor{comment}{#########################}
-\textcolor{comment}{## GRUB menu timeout (-1 = infinite, 0 = skipped):}
-GRUB_TIMEOUT=1
-\textcolor{comment}{## Show menu (\textit{hidden} and \textit{countdown} waits with hidden menu):}
-GRUB_TIMEOUT_STYLE=menu
-\textcolor{comment}{## GRUB menu default option (0 = 1st option):}
-GRUB_DEFAULT=0
-\textcolor{comment}{## Disable submenus and instead show all options on main menu:}
-GRUB_DISABLE_SUBMENU=y
-\textcolor{comment}{## Disable recovery mode entry in GRUB menu:}
-GRUB_DISABLE_RECOVERY="true"
-\textcolor{comment}{## Show Menu only when Shift key is held down during GRUB's start-up,}
-\textcolor{comment}{## requires executable file /etc/grub.d/31_hold_shift:}
-GRUB_FORCE_HIDDEN_MENU="true"
-
-\textcolor{comment}{#########################}
-\textcolor{comment}{##     ENCRYPTION      ##}
-\textcolor{comment}{#########################}
-\textcolor{comment}{## Decrypt root partition on LVM + use key used for /boot decrypt:}
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=<LUKS_UUID>:<luks_lvm> \char92 
-root=</dev/vg0/root> cryptkey=rootfs:</root/.luks/key>"
-\textcolor{comment}{## Enable encrypted GRUB (/boot partition):}
-GRUB_ENABLE_CRYPTODISK=y
-\textcolor{comment}{## Preload both GPT and MBR modules,}
-\textcolor{comment}{## (prompt for password may not be shown without this):}
-GRUB_PRELOAD_MODULES="part_gpt part_msdos"
-
-\textcolor{comment}{#########################}
-\textcolor{comment}{##        OTHER        ##}
-\textcolor{comment}{#########################}
-\textcolor{comment}{## GRUB distributor:}
-GRUB_DISTRIBUTOR="Arch"
-\textcolor{comment}{## Disable most log messages;}
-\textcolor{comment}{## Print only messages with smaller loglevel then specified;}
-\textcolor{comment}{## default ethX and wlanX names:}
-GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 net.ifnames=0"
-
-\textcolor{comment}{#########################}
-\textcolor{comment}{##       VISUAL        ##}
-\textcolor{comment}{#########################}
-\textcolor{comment}{## GRUB font (.pf2),}
-\textcolor{comment}{## find available fonts with \$(pacman -Ql grub | grep pf2):}
-GRUB_FONT="</usr/share/grub/unicode.pf2>"
-\textcolor{comment}{## GRUB menu colors (FOREGROUND/BACKGROUND)"}
-GRUB_COLOR_NORMAL="blue/black"
-GRUB_COLOR_HIGHLIGHT="black/blue"
-\textcolor{comment}{## Use graphics framebuffer in GRUB;}
-\textcolor{comment}{## keep = pass framebuffer to kernel (TTY resolution);}
-\textcolor{comment}{## text = use if there are problems:}
-GRUB_GFXPAYLOAD_LINUX=keep
-\textcolor{comment}{## Select resolution:}
-GRUB_GFXMODE=1920x1080x32
-\textcolor{comment}{## Select image as a background:}
-#GRUB_BACKGROUND="\textcolor{file}{/boot/grub/<IMAGE.png>}"
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Menu Colors}
-\begin{center}
-    \begin{small}
-    \begin{tabular}{|p{4cm}|p{4cm}|}
-    \hline
-    \textbf{Color BG} & \textbf{Color BG + FG} \\
-    \hline
-    black & X \\
-    \hline
-    blue & light-blue \\
-    \hline
-    green & light-green \\
-    \hline
-    cyan & light-cyan \\
-    \hline
-    red & light-red \\
-    \hline
-    magenta & light-magenta \\
-    \hline
-    brown & yellow \\
-    \hline
-    light-gray & dark-gray  \\
-    \hline
-    \end{tabular}
-    \end{small}
-\end{center}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Update GRUB}
-\label{GRUB}
-\begin{enumerate}
-    \item \textbf{Update GRUB:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{grub-mkconfig} -o \textcolor{file}{/boot/grub/grub.cfg}
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Local Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Local Settings}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Hostname and DNSDomainname}
-\begin{enumerate}
-    \item \textbf{Display hostname and dnsdomainname:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{hostname}
-\textcolor{user}{user\$} \textcolor{command}{dnsdomainname}
-\end{Verbatim}
-    \item \textbf{Change hostname:}
-\newline File (\textbf{\textcolor{file}{/etc/hostname}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-<HOSTNAME>
-\end{Verbatim}
-File (\textbf{\textcolor{file}{/etc/hosts}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-\textcolor{comment}{## IPv4 localhost:}
-127.0.0.1   localhost
-127.0.1.1   <HOSTNAME>
-#127.0.0.1  <HOSTNAME>.<DOMAIN-NAME> <HOSTNAME>
-\textcolor{comment}{## IPv6 localhost:}
-::1   localhost6
-::1   <HOSTNAME>
-#::1  <HOSTNAME>.<DOMAIN-NAME> <HOSTNAME>
-...
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Time and Date}
-\begin{enumerate}
-    \item \textbf{Show current timezone:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{timedatectl} -a
-\end{Verbatim}
-    \item \textbf{List available timezones:}
-    \newline Dir: (\textcolor{dir}{/usr/share/zoneinfo/}).
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{timedatectl} list-timezones
-\end{Verbatim}
-    \item \textbf{Change timezone:}
-    \begin{itemize}
-        \item \textbf{Timedatectl way:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{timedatectl} set-timezone <UTC|Europe/Copenhagen>
-\end{Verbatim}        
-        \item \textbf{Arch way:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/share/zoneinfo/Europe/Copenhagen}> 
-\textcolor{file}{/etc/localtime}
-\end{Verbatim}
-    \end{itemize}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Locales and Keyboard}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Locales}
-    \begin{enumerate}
-        \item \textbf{View locales:}
-        \begin{itemize}
-            \item \textbf{View locales:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{localectl}
-\end{Verbatim}            
-            \item \textbf{View generated locales:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{localectl} list-locales
-\end{Verbatim}
-        \end{itemize}
-    
-        \item \textbf{Generate locales to be used (uncomment them):}
-\newline File (\textbf{\textcolor{file}{/etc/locale.gen}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-...
-en_US.UTF-8 UTF-8
-en_US ISO-8859-1
-...
-\end{Verbatim}
-        \item \textbf{Generate locales:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{locale-gen}
-\end{Verbatim}      
-        \item \textbf{Set locale:}
-\newline File (\textbf{\textcolor{file}{/etc/locale.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-LANG=en_US.UTF-8
-\textcolor{comment}{## First day in a week MON, not SUN:}
-#LC_TIME="en_GB.UTF-8"
-\textcolor{comment}{## Default paper size:}
-#LC_PAPER="en_GB.UTF-8"
-#LC_MEASUREMENT="en_GB.UTF-8"
-\end{Verbatim}
-        \item \textbf{OPTIONAL: export environment variable:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{export} LANG=en_US.UTF-8
-\end{Verbatim}    
-    \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{CLI Keyboard}
-\begin{itemize}
-    \item \textbf{Language:}
-    \begin{enumerate}
-        \item \textbf{See available keyboards:}
-\newline Dir (\textbf{\textcolor{dir}{/usr/share/kbd/keymaps/[i386/]}}).
-        \item \textbf{Show current keyboard:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{localectl}
-\end{Verbatim}                
-        
-        \item \textbf{Set keyboard:}
-\newline File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-KEYMAP=us
-\end{Verbatim}    
-    \end{enumerate}
-    
-    \item \textbf{Font:}
-    \begin{enumerate}
-        \item \textbf{Show look of the font:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{showconsolefont}
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dpkg
 \end{Verbatim}  
-        \item \textbf{Set font:}
-        \begin{itemize}
-            \item \textbf{Temporary:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{setfont} <lat2-16>
-\end{Verbatim}                
-            \item \textbf{Permanently:}
-\newline File (\textbf{\textcolor{file}{/etc/vconsole.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-FONT=lat2-16
-\end{Verbatim}    
-        \end{itemize}
-    \end{enumerate}
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Network %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Network}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Rename Interface}
-\begin{enumerate}
-    \item \textbf{Find interface name in the system:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{udevadm} info \textcolor{dir}{/sys/class/net/<INTERFACE>}
-\end{Verbatim}    
-\end{enumerate}
-
-\begin{itemize}
-    \item \textbf{Manually rename interfaces:}
-\newline File: (\textcolor{file}{\textbf{/etc/udev/rules.d/70-persistent-net.rules}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## ethernet (rename enp1s0 to eth0):}
-#SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \char092
-#ENV\{ID_NET_NAME_PATH\}="<enp1s0>", \char092
-#ATTR\{type\}=="1", KERNEL=="eth*", NAME="<eth0>"
-\textcolor{comment}{## wireless (rename wlp0s20f3 to wlan0):}
-#SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \char092
-#ENV\{ID_NET_NAME_PATH\}=="<wlp0s20f3>", \char092
-#ATTR\{type\}=="1", KERNEL=="wlan*", NAME="<wlan0>"
-\end{Verbatim}
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Rfkill}
-\begin{enumerate}
-    \item \textbf{Block every RF device:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{rfkill} block all
-\end{Verbatim}  
-    \item \textbf{Unblock WiFi:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{rfkill} unblock wlan
-\end{Verbatim}  
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Interfaces}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Ethernet}
-\begin{enumerate}
-    \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{pacman} -S ethtool
-\end{Verbatim} 
-    \item \textbf{Check carrier speed:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{ethtool} <eth0>
-\end{Verbatim}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Wireless}
-\begin{enumerate}
-    \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S wpa_supplicant iw wireless_tools
-\end{Verbatim} 
-    \item \textbf{Do not run wpa\_supplciant service at start:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{systemctl} disable wpa_supplicant.service
-\end{Verbatim} 
-    \item \textbf{Scan for SSIDs:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{iwlist} <wlan0> scan [| \textcolor{command}{grep} -i ssid]
-\end{Verbatim}
-
-    \item \textbf{WiFi config:}
-\newline File (\textbf{\textcolor{file}{/etc/wpa\_supplicant/wpa\_supplicant.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## Basic settings and language for zones:}
-ctrl_interface=/run/wpa_supplicant
-update_config=1
-country=<2-LETTER-ISO-CODE>
-
-\textcolor{comment}{## WPA-PSK protected:}
-network=\{
-    ssid="<ESSID>"
-    scan_ssid=1 \textcolor{comment}{# Find hidden network}
-    key_mgmt=WPA-PSK
-    psk="<PLAINTEXT-PASSWD>"
-    \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
-    priority=1 \textcolor{comment}{# To which WiFi connect first}
-\}
-
-\textcolor{comment}{## WPA-EAP protected::}
-network=\{
-        ssid="<ESSID>"
-        scan_ssid=1 \textcolor{comment}{# Find hidden network}
-        key_mgmt=WPA-EAP
-        \textcolor{comment}{#eap=PEAP}
-        identity="<USERNAME>@<DOMAIN>"
-        password="<PLAINTEXT-PASSWD>"
-        \textcolor{comment}{#psk=<32byte-HEX-NUMBER>}
-        \textcolor{comment}{#ca_cert="/etc/cert/ca.pem"}
-        \textcolor{comment}{#phase1="peaplabel=0"}
-        phase2="auth=MSCHAPV2"
-        priority=2 \textcolor{comment}{# To which WiFi connect first}
-\}
-
-\textcolor{comment}{## Unprotected:}
-network=\{
-    ssid="<ESSID>"
-    scan_ssid=1 \textcolor{comment}{# Find hidden network}
-    key_mgmt=NONE
-    priority=3 \textcolor{comment}{# To which WiFi connect first}
-\}
-\end{Verbatim}
-
-    \item \textbf{Change WiFi file permissions:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{chmod} 0600 <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
-\end{Verbatim}
-
-    \item \textbf{Connect to WiFi:}
-    \begin{enumerate}
-        \item \textbf{Bring everything down for restart:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{dhcpcd} --release <wlan0>
-\textcolor{root}{root#} \textcolor{command}{ip} a flush <wlan0>
-\textcolor{root}{root#} \textcolor{command}{ip} l set <wlan0> down
-\end{Verbatim}        
-    \item \textbf{Start WiFi:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{rfkill} unblock wlan
-[\textcolor{root}{root#} \textcolor{command}{macchanger} -A <wlan0>]
-\textcolor{root}{root#} \textcolor{command}{rm} -rf \textcolor{file}{/var/lib/dhcpcd/*}
-\textcolor{root}{root#} \textcolor{command}{rm -f} \textcolor{file}{/run/wpa_supplicant/<wlan0>}
-#\textcolor{root}{root#} \textcolor{command}{killall} -9 wpa_supplicant
-\textcolor{root}{root#} \textcolor{command}{ps} -ef | \textcolor{command}{grep} "wpa_supplicant" | \textcolor{command}{grep} "<wlan0>" |
-\textcolor{command}{tr} -s ' ' | \textcolor{command}{cut} -d ' ' -f 2 | \textcolor{command}{xargs} kill -9
-\textcolor{root}{root#} \textcolor{command}{ip} l set <wlan0> up
-\textcolor{root}{root#} \textcolor{command}{systemctl} start wpa_supplicant.service
-\textcolor{root}{root#} \textcolor{command}{systemctl} start dhcpcd.service
-\textcolor{root}{root#} \textcolor{command}{wpa_supplicant} -B -D wext -i <wlan0> 
--c <\textcolor{file}{/etc/wpa_supplicant/wpa_supplicant.conf}>
-\textcolor{root}{root#} \textcolor{command}{dhcpcd} <wlan0>
-\end{Verbatim}
-    \end{enumerate}
-
-    \item \textbf{Check WiFi stats:}
-    \begin{itemize}
-        \item \textbf{Check state (and if connected WiFi interface:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{iw} dev
-\end{Verbatim}
-        \item \textbf{Check carrier speed:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{iwlist} <wlan0> bitrate
-\end{Verbatim}
-    \end{itemize}
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{DHCP client}
-\begin{enumerate}
-    \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S dhcpcd
-\end{Verbatim} 
-    \item \textbf{Do not run dhcpcd service at start:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{systemctl} disable dhcpcd.service
-\end{Verbatim} 
-    \item \textbf{Configure DHCP client:}
-File (\textbf{\textcolor{file}{/etc/dhcpcd.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{#################}
-\textcolor{comment}{### Anonymity ###}
-\textcolor{comment}{#################}
-\textcolor{comment}{## Send FQDN hostname to the DHCP server so it can be registered in DNS:}
-#hostname
-\textcolor{comment}{## Send only hostname to the DHCP server:}
-#hostname_short
-\textcolor{comment}{## Do not send DHCP option 60 (Vendor class id) in default format:}
-\textcolor{comment}{## dhcpcd-<version>:<os>:<machine>:<platform>} 
-\textcolor{comment}{## (e.g. dhcpcd-5.5.6:NetBSD-6.99.5:i386:i386)}
-\textcolor{comment}{## Send empty vendorclassid (or not at all):}
-vendorclassid ""
-
-\textcolor{comment}{#################}
-\textcolor{comment}{### IPv4/IPv6 ###}
-\textcolor{comment}{#################}
-\textcolor{comment}{## Don't attempt to obtain IPv4:}
-#noipv4
-\textcolor{comment}{## Don't attempt to obtain IPv4LL}
-noipv4ll
-\textcolor{comment}{## Don't attempt to obtain IPv6:}
-#noipv6
-\textcolor{comment}{## Don't check if obtained IP address is taken by arp (increases speed):}
-noarp
-
-\textcolor{comment}{#####################}
-\textcolor{comment}{### IPv4 settings ###}
-\textcolor{comment}{#####################}
-\textcolor{comment}{## Use MAC address in format xx:xx:xx and then is encoded as hex}
-\textcolor{comment}{## for interfaces whose MAC > 8 butes, clientid = "", and dhcpcd sends}
-\textcolor{comment}{## default clientid of HW family and HW address:}
-#clientid
-\textcolor{comment}{## OR use DHCP Unique Identifier (DUID):}
-#duid
-\textcolor{comment}{## Remove any pre-existing IPv4 addresses when adding IPv4 address:}
-noalias
-
-\textcolor{comment}{#####################}
-\textcolor{comment}{### IPv6 settings ###}
-\textcolor{comment}{#####################}
-\textcolor{comment}{## Use MAC address when generating SLAAC address for the interface:}
-slaac hwaddr
-\textcolor{comment}{## OR generate Stable Private IPv6 Address based from the DUID:}
-#slaac private
-
-\textcolor{comment}{#######################}
-\textcolor{comment}{### Default Gateway ###}
-\textcolor{comment}{#######################}
-\textcolor{comment}{## Request default gateway (default):}
-gateway
-\textcolor{comment}{## Don't obtain default gateway:}
-#nogateway
-
-\textcolor{comment}{###########}
-\textcolor{comment}{### DNS ###}
-\textcolor{comment}{###########}
-\textcolor{comment}{## https://linux.die.net/man/5/dhcpd-options}
-\textcolor{comment}{## Request DNS servers from a server:}
-#option domain_name_servers
-\textcolor{comment}{## Request domain-name for current network:}
-option domain_name
-\textcolor{comment}{## Do not write to /etc/resolv.conf:}
-nohook resolv.conf
-
-\textcolor{comment}{################}
-\textcolor{comment}{### Required ###}
-\textcolor{comment}{################}
-\textcolor{comment}{## A ServerID is required by RFC2131.}
-require dhcp_server_identifier
-\end{Verbatim} 
-\end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{DNS}
-\begin{enumerate}
-    \item \textbf{Configure DNS server list:}
-\newline File: (\textbf{\textcolor{file}{/etc/resolv.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## Uncensored DNS - Denmark - Unicast:}
-#nameserver 89.233.43.71
-\textcolor{comment}{## CZ.NIC:}
-#nameserver 193.17.47.1
-#nameserver 185.43.135.1
-\textcolor{comment}{## Quad9:}
-#nameserver 1.1.1.1
-#nameserver 1.0.0.1
-\end{Verbatim}
+    \item \textbf{Download .deb package.}
+    \item \textbf{Install package with dpkg:}
 \end{enumerate}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{NTP}
-\textbf{Not needed!}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Texteditor and Shell %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Texteditor and Shell}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Texteditor}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Vim}
+\chapter{Vim \& Zsh}
+\section{Vim}
 \begin{enumerate}
-    \item \textbf{Install:}
+    \item \textbf{Create symlink for visudo (ignores EDITOR and VISUAL):}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vim
+\textcolor{root}{root#} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/bin/vim}> /usr/bin/vi
 \end{Verbatim}
-    \item \textbf{Replace vi:}
+    \item \textbf{Set as default editor:}
+\newline File (\textbf{\textcolor{file}{/etc/profile}}):
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ln} -sf <\textcolor{file}{/usr/bin/vim}> <\textcolor{file}{/usr/bin/vi}>
+...
+VISUAL="/bin/vim"
+EDITOR="/bin/vim"
 \end{Verbatim}
-    \item \textbf{Set vim as default editor:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{export} EDITOR=vim
-\end{Verbatim}
-    \item \textbf{Configure vim:}
-\newline File (\textbf{\textcolor{file}{\~/.vimrc}}):
-\newline See (\underline{\href{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.vimrc}{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.vimrc}})
+    \item \textbf{Configuration:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.vimrc}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/dotfiles/.vimrc}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Bvi}
+
+\section{Bvi}
 \begin{enumerate}
     \item \textbf{Install:}
     \begin{itemize}
-        \item \textbf{Link:} \underline{\href{https://aur.archlinux.org/packages/bvi/}{https://aur.archlinux.org/packages/bvi/}}
-        \item \textbf{See \underline{\ref{aur_install}}.}
+        \item \url{https://aur.archlinux.org/packages/bvi/}
+        \item \textbf{See section: \underline{\ref{AUR}}.}
     \end{itemize}
-    \item \textbf{Configure:}
-\newline File (\textbf{\textcolor{file}{\~/.bvirc}}):
-\newline See (\underline{\href{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.bvirc}{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.bvirc}})
+    \item \textbf{Configuration:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.bvirc}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/dotfiles/.bvirc}
 \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Zsh}
 \begin{enumerate}
+    \item \textbf{Install packages:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] zsh zsh-syntax-highlighting 
+zsh-autosuggestions [zsh-completions]
+\end{Verbatim}
+    \item \textbf{Set as default shell:}
+    \begin{itemize}
+        \item \textbf{User by user:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{chsh} -l
+\textcolor{user}{user\$} \textcolor{command}{chsh} -s <\textcolor{file}{/bin/zsh}>
+> <USER_PASSWORD>
+\end{Verbatim}        
+        \item \textbf{User by root:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{usermod} -s <\textcolor{file}{/bin/zsh}> <USER>
+\end{Verbatim}
+    \end{itemize}
+    \item \textbf{Configuration:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.zshrc}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/dotfiles/.zshrc}
+\end{enumerate}
+
+
+\chapter{Audio}
+\section{Install}
+\begin{enumerate}
     \item \textbf{Install:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S zsh zsh-syntax-highlighting
-zsh-autosuggestions [zsh-completions]
-\end{Verbatim}    
-    \item \textbf{Configure:}
-\newline File (\textbf{\textcolor{file}{\~/.zshrc}}):
-\newline See \underline{\href{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.zshrc}{https://github.com/AISK11/ArchLinux/blob/main/dotfiles/.zshrc}}
-    \item \textbf{Set ZSH as default shell:}
-    \begin{itemize}
-        \item \textbf{User change:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{chsh} -s \textcolor{file}{/bin/zsh}
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] alsa-utils pulseaudio
 \end{Verbatim}
-        \item \textbf{Root change:}
+\end{enumerate}
+
+\section{Audio}
+\begin{itemize}
+    \item \textbf{Get audio:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{usermod} -s \textcolor{file}{/bin/zsh} <USER>
+\textcolor{user}{user\$} \textcolor{command}{amixer} get <Master|PCM|Headphone|Speaker>
+\end{Verbatim}
+    \item \textbf{Mute and unmute:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} set <Master|PCM|Headphone|Speaker> <mute|unmute|toggle>
+\end{Verbatim}
+    \item \textbf{Set volume:}
+    \begin{itemize}
+        \item \textbf{Specific volume:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} set <Master|PCM|Headphone|Speaker> <0-100>\%
+\end{Verbatim}        
+        \item \textbf{Increase/decrease volume:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} set <Master|PCM|Headphone|Speaker> <0-100>\%<+|->
+\end{Verbatim}   
+    \end{itemize}
+\end{itemize}
+
+\section{Microphone}
+\begin{itemize}
+    \item \textbf{Get mic:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} get Capture
+\end{Verbatim}
+    \item \textbf{Mute and unmute:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} set Capture <cap|nocap|toggle>
+\end{Verbatim}
+    \item \textbf{Set volume:}
+    \begin{itemize}
+        \item \textbf{Specific volume:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} set Capture <0-100>\%
+\end{Verbatim}        
+        \item \textbf{Increase/decrease volume:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{amixer} set Capture <0-100>\%<+|->
+\end{Verbatim}   
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Xorg}
+\section{GPU Drivers}
+\begin{enumerate}
+    \item \textbf{Detect GPUs:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{lspci} -v | \textcolor{command}{grep} -i -e 'VGA' -e '3D'
+\end{Verbatim}
+    \item \textbf{Install drivers:}
+    \begin{itemize}
+        \item \textbf{Intel (open source):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] xf86-video-intel mesa lib32-mesa 
+vulkan-intel lib32-vulkan-intel [intel-gpu-tools]
+\end{Verbatim}
+        \item \textbf{Nvidia (proprietary):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] nvidia nvidia-utils lib32-nvidia-utils 
+[nvtop] [nvidia-settings]
+\end{Verbatim}
+    \end{itemize}
+    \item \textbf{Monitor drivers:}
+    \begin{itemize}
+        \item \textbf{Intel:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{intel_gpu_top} [-s <MILISECONDS>]
+\end{Verbatim}
+        \item \textbf{Nvidia:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{nvtop} [-d <TENTHS_OF_A_SECOND>]
+\textcolor{user}{user\$} \textcolor{command}{nvidia-settings}
 \end{Verbatim}
     \end{itemize}
 \end{enumerate}
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% X %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Xorg WIP}
-\underline{\url{https://wiki.archlinux.org/title/Hardware_video_acceleration}}
-\underline{\url{https://wiki.archlinux.org/title/Intel_graphics}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Drivers}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Detect devices:}
-\begin{itemize}
-    \item \textbf{Find GPUs:}
+\section{Touchpad Drivers}
+\begin{enumerate}
+    \item \textbf{Uninstall synaptics driver:}
+\newline Explanation: causing middle button to be almost whole area bug.
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{user}{user\$} \textcolor{command}{lspci} -v | \textcolor{command}{grep} -A 1 "VGA"
+\textcolor{root}{root#} \textcolor{command}{pacman} -Rns xf86-input-synaptics
+\end{Verbatim}    
+\end{enumerate}
+
+\section{Xorg}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] xorg xorg-drivers xorg-xinit
 \end{Verbatim}
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Intel}
+    \item \textbf{Start X on tty1:}
+\newline File (\textbf{\textcolor{file}{\~/.zshrc}}||\textbf{\textcolor{file}{\~/.bashrc}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+...
+if [[ -z \$\{DISPLAY\} ]] && [[ \$(tty) = '/dev/tty1' ]]; then
+    source /etc/profile
+    startx
+fi
+...
+\end{Verbatim}
+\end{enumerate}
+\section{Brightness}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] light
+\end{Verbatim}
+    \item \textbf{Get current brightness:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{light} -G
+\end{Verbatim}
+    \item \textbf{Set minimum brightness:}
+    \begin{enumerate}
+        \item \textbf{See current minimum brightness:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{light} -P
+\end{Verbatim}
+        \item \textbf{Set minimum brightness}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{light} -N 1
+\end{Verbatim}
+    \end{enumerate}
+    \item \textbf{Set brightness:}
     \begin{itemize}
-        \item \textbf{Open source:}
+        \item \textbf{Specific value:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{light} -S <MIN-100>
+\end{Verbatim}
+        \item \textbf{Increase/decrease value:}
+        \begin{itemize}
+            \item \textbf{Increase:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{light} -A <0-100>
+\end{Verbatim}
+            \item \textbf{Decrease:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{light} -U <0-100>
+\end{Verbatim}
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+
+\chapter{Window Manager @WIP}
+\section{Bspwm}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] bspwm
+\end{Verbatim}
+\end{enumerate}
+
+
+\section{I3}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] bspwm
+\end{Verbatim}
+    \item \textbf{Run i3 after Xorg:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.xinitrc}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/dotfiles/.xinitrc}
+    \item \textbf{I3 configuration:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.config/i3/config}}):
+\newline \url{}    
+\end{enumerate}
+\section{I3 Tools}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] feh light rxvt-unicode
+\end{Verbatim}
+
+
+\chapter{WM Tools @WIP}
+\section{Fonts}
 \begin{itemize}
-        \item \textbf{Intel GPU (open-source):}
+    \item \textbf{See all installed fonts:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S xf86-video-intel
+\textcolor{user}{user\$} \textcolor{command}{fc-list}
 \end{Verbatim}
-        \item \textbf{OpenGL support:}
+    \item \textbf{Install fonts from repository:}
+    \begin{itemize}
+        \item \textbf{Unicode coverage and emojis:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S mesa [lib32-mesa]
-\end{Verbatim}
-        \item \textbf{Vulkan support:}
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] noto-fonts
+\end{Verbatim}        
+        \item \textbf{Chinese, Japanese and Korean:}
 \begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S vulkan-icd-loader lib32-vulkan-icd-loader 
-vulkan-intel [lib32-vulkan-intel]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] noto-fonts-cjk
 \end{Verbatim}
+        \item \textbf{Other:}
+        \begin{itemize}
+            \item \textbf{Monospaced:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] ttf-fira-mono ttf-dejavu
+\end{Verbatim}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Install custom font:}
+    \begin{enumerate}
+        \item \textbf{Create global and local directory for fonts:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{mkdir} <\textcolor{dir}{\texttildelow/.local/share/fonts/}>
+\textcolor{root}{root#} \textcolor{command}{mkdir} <\textcolor{dir}{/usr/local/share/fonts/}>
+\end{Verbatim}
+        \item \textbf{Download font (TTF or OTF).}
+        \item \textbf{Move font to the directory:}
+        \begin{itemize}
+            \item \textbf{Global:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mv} <\textcolor{file}{FONT}> <\textcolor{dir}{/usr/local/share/fonts/}>
+\end{Verbatim}
+            \item \textbf{Local:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{mv} <\textcolor{file}{FONT}> <\textcolor{dir}{\texttildelow/.local/share/fonts/}>
+\end{Verbatim}
+        \end{itemize}
+    \end{enumerate}
+    \item \textbf{Install fontawesome (desktop free version):}
+    \begin{enumerate}
+        \item \textbf{Download fontawesome:}
+\newline \url{https://fontawesome.com/download}
+        \item \textbf{Install fontawesome (globally):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{unzip} <\textcolor{file}{\texttildelow/Downloads/fontawesome-free-6.1.1-desktop.zip}>
+\textcolor{root}{root#} \textcolor{command}{cp} -r <\textcolor{dir}{\texttildelow/Downloads/fontawesome-free-6.1.1-desktop/otfs/}>
+\textcolor{dir}{/usr/local/share/fonts/fontawesome/}
+\textcolor{user}{user\$} \textcolor{command}{rm} -rf \textcolor{file}{\texttildelow/Downloads/fontawesome*}
+\end{Verbatim}
+    \end{enumerate}
+\end{itemize}
+
+\section{Terminal Emulator}
+\begin{enumerate}
+    \item \textbf{Install terminal emulator:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] rxvt-unicode
+\end{Verbatim}
+    \item \textbf{Configure terminal emulator:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.Xresources}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/dotfiles/.Xresources}
+    \item \textbf{Apply changes for current X session:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\#} \textcolor{command}{xrdb} \textcolor{file}{\texttildelow/.Xresources}
+\end{Verbatim}
+\end{enumerate}
+
+\section{Bar}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] polybar
+\end{Verbatim}
+    \item \textbf{Config:}
+\newline File (\textbf{\textcolor{file}{\texttildelow/.config/polybar/config.ini}}):
+\newline \url{https://github.com/AISK11/Artix/blob/main/dotfiles/.config/polybar/config.ini}
+\end{enumerate}
+
+\section{Compositor}
+
+\section{Lxappearance}
+
+
+\chapter{GUI Programs}
+\section{Atom}
+\begin{enumerate}
+    \item \textbf{Download dependencies:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] atom
+\end{Verbatim}
+\end{enumerate}
+
+\section{Steam}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] lib32-fontconfig ttf-liberation 
+wqy-zenhei steam
+\end{Verbatim}    
+    \item \textbf{Enable Proton support:}
+\newline \menu[,]{Steam, Settings, Steam Play, Enable Steam Play for all other titles, Restart Steam}
+    \item \textbf{Disable shader pre-caching:}
+\newline \menu[,]{Steam, Settings, Shader Pre-Caching, Disable Shader Pre-Caching}
+    \item \textbf{Run game with Nvidia instead of intel:}
+\begin{verbatim}
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia %command%
+\end{verbatim}
+\end{enumerate}
+
+
+\chapter{Virtualization @WIP}
+\section{Theory}
+\begin{figure}[ht]
+    \begin{center}
+        \includegraphics[width=120mm]{./src/img/virtualizations2.png}
+        \caption{Comparison between Xen, KVM and QEMU hypervisors.}
+        \label{fig:3}
+    \end{center}
+\end{figure}
+\begin{itemize}
+    \item \textbf{Hardware VM (HVM):} full virtualization, VMs are not aware, that they are sharing processing time with other clients on the same hardware.
+    \item \textbf{Paravirtual (PV):} lighter virtualization, near native speed compared to HVM.
+\end{itemize}
+
+\section{Virtualization Support}
+\begin{enumerate}
+    \item \textbf{See if virtualization is supported:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{grep} -E 'vmx|svm|0xc0f' \textcolor{file}{/proc/cpuinfo}
+\end{Verbatim}
+    \item \textbf{If virtualization is not supported, check if it is not disabled in BIOS/UEFI.}
+\end{enumerate}
+
+\section{Virtualbox (T2 Hypervisor)}
+
+
+
+\section{KVM/QEMU (T1/T2 Hypervisor)}
+\begin{verbatim}
+        .----------------.  .----------------.
+        |                |  |                |
+        |      L2        |  |      L2        |
+        | (Nested Guest) |  | (Nested Guest) |
+        |                |  |                |
+        |----------------'--'----------------|
+        |                                    |
+        |       L1 (Guest Hypervisor)        |
+        |          KVM (/dev/kvm)            |
+        |                                    |
+.------------------------------------------------------.
+|                 L0 (Host Hypervisor)                 |
+|                    KVM (/dev/kvm)                    |
+|------------------------------------------------------|
+|        Hardware (with virtualization extensions)     |
+'------------------------------------------------------'
+\end{verbatim}
+\subsection{Installation}
+\begin{enumerate}
+    \item \textbf{Enable nested KVM:}
+    \begin{enumerate}
+        \item \textbf{Check if KVM module is loaded:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{lsmod} | \textcolor{command}{grep} -i kvm_intel
+\end{Verbatim}        
+        \item \textbf{Configure kvm module to allow nesting:}
+\newline File (\textbf{\textcolor{file}{/etc/modprobe.d/virtualization.conf}}):
+\begin{Verbatim}[commandchars=\\\{\}]
+options kvm-intel nested=y
+\end{Verbatim}
+        \item \textbf{Reload module:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{modprobe} -r kvm_intel
+\textcolor{root}{root#} \textcolor{command}{modprobe} kvm_intel
+\end{Verbatim}   
+        \item \textbf{Verify if nested is enabled (Y):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{user}{user\$} \textcolor{command}{cat} \textcolor{file}{/sys/module/kvm_intel/parameters/nested}
+\end{Verbatim}
+    \end{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] qemu libvirt libvirt-dinit edk2-ovmf
+iptables-nft dnsmasq virt-manager virt-viewer
+\end{Verbatim}
+    \item \textbf{Do not start libvirtd on startup and now (if running):}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dinitctl} disable libvirtd
+\textcolor{root}{root#} \textcolor{command}{dinitctl} stop libvirtd
+\end{Verbatim}
+    \item \textbf{Create directory for iso files:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{mkdir} \textcolor{dir}{/iso/}
+\end{Verbatim}
+\end{enumerate}
+\subsection{Start virtualizing:}
+\begin{enumerate}
+    \item \textbf{Start libvirt and virtlog daemons:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{dinitctl} start libvirtd
+\textcolor{root}{root#} \textcolor{command}{virtlogd} -d
+\end{Verbatim}
+    \item \textbf{Start (default) network:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{virsh} net-list --all
+\textcolor{root}{root#} \textcolor{command}{virsh} net-start <default>
+\end{Verbatim}
+    \item \textbf{Start libvirt GUI client:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} \textcolor{command}{virt-manager}
+\end{Verbatim}
+\end{enumerate}
+\subsection{Libvirt files:}
+\begin{itemize}
+    \item \textbf{Images (qcow2):} \textbf{\textcolor{dir}{/var/lib/libvirt/images/}}
+\end{itemize}
+
+\section{Xen (T1 Hypervisor) @TODO}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed]
+\end{Verbatim}
+\end{enumerate}
+
+
+\chapter{Programming \& Development @TODO}
+\section{Git}
+\subsection{Configuration}
+\begin{enumerate}
+    \item \textbf{Change default branch from 'master' to 'main':}
+\end{enumerate}
+
+\section{Atom}
+
+\chapter{Additional Software}
+\section{Fosscord (Discord Client)}
+\subsection{Client @WIP}
+\begin{enumerate}
+    \item \textbf{Install:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S [--needed] yarn
+\textcolor{user}{user\$} \textcolor{command}{git} clone \underline{\href{https://github.com/fosscord/fosscord-client}{https://github.com/fosscord/fosscord-client}}
+\textcolor{user}{user\$} \textcolor{command}{cd} \textcolor{dir}{./fosscord-client/}
+\textcolor{user}{user\$} \textcolor{command}{yarn} install
+\textcolor{user}{user\$} \textcolor{command}{yarn} run
+> linux
+\end{Verbatim}        
+\end{enumerate}
+\subsection{Server @TODO}
+
+
+\chapter{Anonymity \& Security}
+\begin{Verbatim}[commandchars=\\\{\}]
+motd /etc/issue
+
+usbguard
+macchanger
+nftables
+
+\end{Verbatim}
+
+
+
+
+\chapter{Xen???}
+\begin{itemize}
+    \item \url{https://wiki.archlinux.org/title/Xen}
+    \item \url{https://aur.archlinux.org/xen.git}
+\end{itemize}
+\begin{Verbatim}[commandchars=\\\{\}]
+/etc/AUR/xen/pkg/xen/boot/xen.gz
+/etc/AUR/xen/pkg/xen/boot/xen.efi
+/etc/AUR/xen/xen.conf
+\end{Verbatim}        
+
+
+\chapter{ToDo}
+\begin{Verbatim}[commandchars=\\\{\}]
+zsh parameter colors
+bspwm
+polybar
+lockscreen
+rofi
+compton
+power saving
+
+virtualization (KVM or Xen)
+
+GUI programs for: wifi
+
+Programming: Atom, git, Unity
+
+GUI: lxappearance, keepassxc, Firefox, Fosscord/Webcord
+
+security + anonymity
+
+VIRTUALIZATION:
+See archcraft apps and rice
+See debian getty program
+See QubesOS Xen solution
+test optimization Arch, Debian, Artix
+
+
+Rice:
+.zshrc = PS1
+rxvt-unicode = color scheme + Font
+bspwm + polybar + compton = desktop 9 Font
+lxappearance = gtk theme
+icons
+(rEFInd + CLI font)
+\end{Verbatim}
+
+
+
+\chapter{Quick Reference}
+\section{Filesystem}
+\begin{itemize}
+    \item \textbf{Btrfs:}
+    \begin{itemize}
+        \item \url{https://btrfs.readthedocs.io/en/latest/Introduction.html}
+        \item \url{https://wiki.archlinux.org/title/Btrfs}
+        \item \url{https://wiki.gentoo.org/wiki/Btrfs}
     \end{itemize}
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Nvidia}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{AMD/ATI}
-Cannot test at the the time.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% i3-gaps %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{i3-gaps}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% i3 programs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{i3 programs}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Power Management %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Power Management}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Audio %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Audio}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% System Hardening %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{System Hardening}
-\underline{\url{https://wiki.archlinux.org/title/Security}}
+\section{Bootloaders}
 \begin{itemize}
-    \item \textbf{Hardened kernel}
-    \item \textbf{SELinux}
-    \item \textbf{USB Guard}
-    \item \textbf{DNS over HTTPS}
-    \item \textbf{no MOTD}
-    \item \textbf{Black Arch repo}
-    \item \textbf{Firewall}
-    \item \textbf{Proxy}
-    \item \textbf{Honeypot}
-    \item \textbf{System logging + monitoring}
+    \item \textbf{rEFInd:}
+    \begin{itemize}
+        \item \url{https://www.rodsbooks.com/refind/}
+    \end{itemize}
+    \item \textbf{GRUB:}
+    \begin{itemize}
+        \item \url{https://gnu.huihoo.org/grub-0.90/html_chapter/grub_12.html}
+        \item \url{https://web.mit.edu/rhel-doc/3/rhel-rg-en-3/s1-grub-configfile.html}
+    \end{itemize}
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Software %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Software}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Help}
+\section{Linux}
 \begin{itemize}
-    \item \textbf{Manuals:}
-    \begin{enumerate}
-        \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S man-db man-pages
-\end{Verbatim}
-    \end{enumerate}
-
-    \item \textbf{TLDR:}
-    \begin{enumerate}
-        \item \textbf{Install:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} [\textcolor{command}{yes} |] \textcolor{command}{pacman} -S tldr
-\end{Verbatim}
-        \item \textbf{Update it's cache:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{tldr} -u
-\end{Verbatim}
-    \end{enumerate}
-
+    \item \textbf{Kernel:}
+    \begin{itemize}
+        \item \url{https://www.kernel.org/doc/html/}
+        \item \url{https://www.kernel.org/doc/html/v4.14/admin-guide/kernel-parameters.html}
+    \end{itemize}
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% System Maintenance %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{System Maintenance}
-\underline{\href{https://wiki.archlinux.org/title/System\_maintenance}{https://wiki.archlinux.org/title/System\_maintenance}}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Things to consider in the future %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Things to consider in the future}
+\section{Microcode}
 \begin{itemize}
-    \item \textbf{Init system:} SystemD -> runit/OpenRC
-    \item \textbf{X11 implementation:} Xorg -> Wayland
-    \item \textbf{GPU driver:} Nvidia -> Nouveau
-    \item \textbf{Virtualization:} use XEN
-    \item \textbf{UEFI entries}
-\begin{Verbatim}[commandchars=\\\{\}]
-efibootmgr --create --disk /dev/sda --part 1 --label test 
---loader /EFI/opensuse/grubx64.efi    
-\end{Verbatim}
-    
-    
-        \item \textbf{Configure DNS server list:}
-\newline File: (\textbf{\textcolor{file}{/etc/resolv.conf}}):
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{comment}{## Uncensored DNS - Denmark - Unicast}
-#nameserver 89.233.43.71
-\textcolor{comment}{## CZ.NIC}
-#nameserver 193.17.47.1
-#nameserver 185.43.135.1
-\textcolor{comment}{## Quad9}
-#nameserver 1.1.1.1
-#nameserver 1.0.0.1
-
-\textcolor{comment}{## Use unbound as DNS resolver:}
-nameserver 127.0.0.1
-nameserver ::1
-\textcolor{comment}{## See https://man7.org/linux/man-pages/man5/resolv.conf.5.html}
-options trust-ad
-\end{Verbatim}
-    
+    \item \textbf{Microcode:}
+    \begin{itemize}
+        \item \url{https://gms.tf/check-cpu-microcode-version-on-linux.html}
+        \item \url{https://wiki.archlinux.org/title/Microcode}
+        \item \url{https://wiki.gentoo.org/wiki/Microcode}
+        \item \url{https://wiki.debian.org/Microcode}
+    \end{itemize}
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{References}
-\section{Misc}
+\section{Init Systems}
 \begin{itemize}
-    \item \textbf{Color palettes:}
-\newline \underline{\href{https://designs.ai/colors/color-wheel}{https://designs.ai/colors/color-wheel}}
+    \item \textbf{Dinit:}
+    \begin{itemize}
+        \item \url{https://davmac.org/projects/dinit/}
+        \item \url{https://github.com/davmac314/dinit/}
+        \item \url{https://wiki.artixlinux.org/Main/Dinit}
+    \end{itemize}
+    \item \textbf{Elogind:}
+    \begin{itemize}
+        \item \url{https://wiki.artixlinux.org/Main/Elogind}
+        \item \url{https://wiki.gentoo.org/wiki/Elogind}
+    \end{itemize}
 \end{itemize}
 
-
+\section{X11 and WM}
 \begin{itemize}
-    \item \textbf{System Maintenance:}
-\newline \underline{\href{https://wiki.archlinux.org/title/System\_maintenance}{https://wiki.archlinux.org/title/System\_maintenance}}
-    \item \textbf{App list:}
-\newline \underline{\href{https://wiki.archlinux.org/title/List\_of\_applications}{https://wiki.archlinux.org/title/List\_of\_applications}}
-
-    \item \textbf{Boot Procedure:}
-\newline \underline{\href{https://wiki.archlinux.org/title/Arch\_boot\_process}{https://wiki.archlinux.org/title/Arch\_boot\_process}}
-    \item \textbf{Partition Optimal:}
-\newline \underline{\href{https://rainbow.chard.org/2013/01/30/how-to-align-partitions-for-best-performance-using-parted/}{Partitioning}}
-    \item \textbf{Booted from UEFI:}
-\begin{Verbatim}[commandchars=\\\{\}]
-\textcolor{root}{root#} \textcolor{command}{ls /sys/firmware/efi/efivars}
-bootctl status
-\end{Verbatim}
+    \item \textbf{Xorg:}
+    \begin{itemize}
+        \item \textbf{https://wiki.archlinux.org/title/Xorg}
+    \end{itemize}
+    \item \textbf{i3:}
+        \begin{itemize}
+            \item \textbf{https://wiki.archlinux.org/title/I3}
+        \end{itemize}
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\href{https://wiki.archlinux.org/title/General_recommendations}{WIKI}
 
+\section{Useful}
+\begin{itemize}
+    \item \textbf{Zsh documentation:} \url{https://zsh.sourceforge.io/Doc/}
+    \item \textbf{Zsh highlighting} \url{https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md}
+    \item \textbf{Linux app list:} \url{https://wiki.archlinux.org/title/List_of_applications}
+    \item \textbf{I3 config options:} \url{https://i3wm.org/docs/userguide.html}
+    \item \textbf{Polybar:} \url{https://github.com/polybar/polybar/wiki/Configuration}
+    \item \textbf{Polybar themes:} \url{https://github.com/kiddae/polybar-themes}    
+\end{itemize}
 
-
+\section{Virtualization}
+\begin{itemize}
+    \item \textbf{KVM:}
+    \begin{itemize}
+        \item \textbf{Nested KVM guests:} \url{https://www.kernel.org/doc/html/v5.16-rc1/virt/kvm/running-nested-guests.html}
+        \item \textbf{Installation:} \url{https://wiki.archlinux.org/title/Libvirt}
+        \item \textbf{Default network manual config:} \url{https://jamielinux.com/docs/libvirt-networking-handbook/nat-based-network.html}
+    \end{itemize}
+    \item \textbf{Xen:}
+    \begin{itemize}
+        \item \textbf{Installation:} \url{https://wiki.archlinux.org/title/Xen}
+    \end{itemize}
+\end{itemize}
 \end{document}
